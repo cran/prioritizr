@@ -1,0 +1,108 @@
+#' @include Solver-proto.R
+NULL
+
+#' Problem solvers
+#'
+#' Specify the software and configurations used to solve a conservation planning
+#' problem. Below is a list of different solvers that can be added to a
+#' \code{\link{ConservationProblem-class}} object. By default the best available
+#' software currently installed on the system will be used.
+#'
+#' One of gurobi, Rsymphony, or lpsymphony packages must be installed prior to
+#' solving.
+#'
+#' \describe{
+#'
+#'  \item{\code{add_default_solver}}{This solver uses the best software
+#'    currently installed on the system.}
+#'
+#'   \item{\code{\link{add_gurobi_solver}}}{\href{http://gurobi.com}{Gurobi} is a
+#'     state-of-the-art commercial optimization software with an R package
+#'     interface. It is by far the fastest of the solvers available in this
+#'     package, however, it is also the only solver that is not freely
+#'     available. That said, licenses are available to academics at no cost. The
+#'     \code{gurobi} package is distributed with the Gurobi software suite.
+#'     This solver uses the \code{gurobi} package to solve problems.}
+#'
+#'   \item{\code{\link{add_rsymphony_solver}}}{
+#'     \href{https://projects.coin-or.org/SYMPHONY}{SYMPHONY} is an open-source
+#'     integer programming solver that is part of the Computational
+#'     Infrastructure for Operations Research (COIN-OR) project, an initiative
+#'     to promote development of open-source tools for operations research (a
+#'     field that includes linear programming). The \code{Rsymphony} package
+#'     provides an interface to COIN-OR and is available on CRAN. This solver
+#'     uses the \code{Rsymphony} package to solve problems.}
+#'
+#'  \item{\code{\link{add_lpsymphony_solver}}}{The \code{lpsymphony} package
+#'    provides a different interface to the COIN-OR software suite. Unlike the
+#'    \code{Rsymhpony} package, the \code{lpsymphony} package is distributed
+#'    through
+#'    \href{https://doi.org/doi:10.18129/B9.bioc.lpsymphony}{Bioconductor}.
+#'    On Windows and Mac, \code{lpsymphony} may be easier to install.
+#'    This solver uses the \code{lpsymphony} package
+#'    to solve.}
+#'
+#' }
+#'
+#' @name solvers
+#'
+#' @seealso \code{\link{constraints}},  \code{\link{decisions}},
+#'  \code{\link{objectives}} \code{\link{penalties}},
+#'  \code{\link{portfolios}}, \code{\link{problem}},
+#'  \code{\link{targets}}.
+#'
+#' @examples
+#' \donttest{
+#' # load data
+#' data(sim_pu_raster, sim_features)
+#'
+#' # create basic problem
+#' p <- problem(sim_pu_raster, sim_features) %>%
+#'   add_min_set_objective() %>%
+#'   add_relative_targets(0.1) %>%
+#'   add_binary_decisions()
+#'
+#' # create vector to store plot titles
+#' titles <- c()
+#'
+#' # create empty stack to store solutions
+#' s <- stack()
+#'
+#' # create problem with added rsymphony solver and limit the time spent
+#' # searching for the optimal solution to 2 seconds
+#' if (requireNamespace("Rsymphony", quietly = TRUE)) {
+#'   titles <- c(titles, "Rsymphony (2s)")
+#'   p1 <- p %>% add_rsymphony_solver(time_limit = 2)
+#'   s <- addLayer(s, solve(p1))
+#' }
+#'
+#' # create problem with added rsymphony solver and limit the time spent
+#' # searching for the optimal solution to 5 seconds
+#' if (requireNamespace("Rsymphony", quietly = TRUE)) {
+#'   titles <- c(titles, "Rsymphony (5s)")
+#'   p2 <- p %>% add_rsymphony_solver(time_limit = 5)
+#'   s <- addLayer(s, solve(p2))
+#' }
+#'
+#' # if the gurobi is installed: create problem with added gurobi solver
+#' if (requireNamespace("gurobi", quietly = TRUE)) {
+#'   titles <- c(titles, "gurobi (5s)")
+#'   p3 <- p %>% add_gurobi_solver(gap = 0.1, presolve = 2, time_limit = 5)
+#'   s <- addLayer(s, solve(p3))
+#' }
+#'
+#' # if the lpsymphony is installed: create problem with added lpsymphony solver
+#' # note that this solver is skipped on Linux systems due to instability
+#' # issues
+#' if (requireNamespace("lpsymphony", quietly = TRUE) &
+#'     isTRUE(Sys.info()[["sysname"]] != "Linux")) {
+#'   titles <- c(titles, "lpsymphony")
+#'   p4 <- p %>% add_lpsymphony_solver(gap = 0.1, time_limit = 10)
+#'   s <- addLayer(s, solve(p4))
+#' }
+#'
+#' # plot solutions
+#' plot(s, main = titles, axes = FALSE, box = FALSE)
+#' }
+#'
+NULL
