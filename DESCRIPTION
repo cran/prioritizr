@@ -1,6 +1,6 @@
 Package: prioritizr
 Type: Package
-Version: 3.0.3
+Version: 3.0.4
 Title: Systematic Conservation Prioritization in R
 Description: Conservation prioritization using integer
     programming techniques. To solve large-scale problems, users
@@ -22,12 +22,12 @@ Authors@R: c(person(c('Jeffrey', 'O'), 'Hanson',
                email='joseph.bennett@carleton.ca', role = c('aut')),
              person(c('Hugh', 'P'), 'Possingham',
                email='hugh.possingham@tnc.org', role = c('aut')))
-Imports: utils, methods, proto, assertthat, data.table, uuid, Matrix,
-        rgeos, plyr, parallel, doParallel, magrittr
+Imports: utils, methods, assertthat, data.table, uuid, Matrix, rgeos,
+        plyr, parallel, doParallel, magrittr
 Suggests: testthat, knitr, roxygen2, ape, shiny, xtable, rhandsontable,
         RandomFields, velox, maptools, PBSmapping, spdep, gurobi,
         lpsymphony, Rsymphony, rmarkdown
-Depends: R(>= 3.3.2), raster, sp
+Depends: R(>= 3.4.0), raster, sp, proto
 LinkingTo: Rcpp, RcppArmadillo, BH
 License: GPL-3
 LazyData: true
@@ -68,7 +68,7 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'problem.R' 'rij_matrix.R' 'run_calculations.R' 'simulate.R'
         'solve.R' 'solvers.R' 'targets.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2017-11-22 05:48:37 UTC; richard
+Packaged: 2018-03-24 13:36:05 UTC; richard
 Author: Jeffrey O Hanson [aut],
   Richard Schuster [aut, cre],
   Nina Morrell [aut],
@@ -79,4 +79,4 @@ Author: Jeffrey O Hanson [aut],
   Hugh P Possingham [aut]
 Maintainer: Richard Schuster <mail@richard-schuster.com>
 Repository: CRAN
-Date/Publication: 2017-11-22 10:08:44 UTC
+Date/Publication: 2018-03-25 15:23:07 UTC

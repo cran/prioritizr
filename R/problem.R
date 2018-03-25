@@ -73,7 +73,7 @@ NULL
 #'   object.
 #'
 #' @param rij \code{data.frame} containing information on the amount of
-#'    each feature in each planning unit. This argument is only used argument to
+#'    each feature in each planning unit. This argument is only used if
 #'    \code{x} is a \code{data.frame}. Similar to \code{features}, the
 #'    argument to \code{rij} must follow the conventions used by
 #'    Marxan. It must contain the following columns:
@@ -87,6 +87,13 @@ NULL
 #' @param rij_matrix \code{matrix} or \code{\link[Matrix]{dgCMatrix-class}}
 #'    object specifying the amount of each feature (rows) within each planning
 #'    unit (columns). Only used when \code{x} is a numeric vector of costs.
+#'
+#' @param run_checks \code{logical} flag indicating whether checks should be
+#'   run to ensure the integrity of the input data. These checks are run by
+#'   default; however, for large data sets they may substantially increase run
+#'   time. If it is taking a prohibitively long time to create the
+#'   prioritization problem, it is suggested to try setting \code{run_checks}
+#'   to \code{FALSE}.
 #'
 #' @param ... not used.
 #'
@@ -236,18 +243,22 @@ methods::setGeneric("problem",
                     function(x, features, ...) standardGeneric("problem"))
 
 #' @name problem
-#' @usage \S4method{problem}{Raster,Raster}(x, features, ...)
+#' @usage \S4method{problem}{Raster,Raster}(x, features, run_checks = TRUE, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "Raster", features = "Raster"),
-  function(x, features, ...) {
-    assertthat::assert_that(inherits(x, "Raster"), inherits(features, "Raster"))
-    assertthat::assert_that(isTRUE(raster::cellStats(x, "min") > 0),
-      isTRUE(all(raster::cellStats(features, "max") > 0)),
-      raster::nlayers(x) == 1, raster::nlayers(features) >= 1,
-      raster::compareRaster(x, features, res = TRUE, tolerance = 1e-5,
-        stopiffalse = FALSE))
+  function(x, features, run_checks = TRUE, ...) {
+    assertthat::assert_that(
+      inherits(x, "Raster"), inherits(features, "Raster"),
+      raster::nlayers(x) == 1, raster::nlayers(features) >= 1)
+    if (run_checks) {
+      assertthat::assert_that(
+        isTRUE(raster::cellStats(x, "min") >= 0),
+        isTRUE(all(raster::cellStats(features, "min") >= 0)),
+        raster::compareRaster(x, features, res = TRUE, tolerance = 1e-5,
+                              stopiffalse = FALSE))
+    }
     if (inherits(x, c("RasterStack", "RasterBrick")))
       x <- x[[1]]
     pproto(NULL, ConservationProblem,
@@ -258,12 +269,12 @@ methods::setMethod(
 })
 
 #' @name problem
-#' @usage \S4method{problem}{Spatial,Raster}(x, features, cost_column, ...)
+#' @usage \S4method{problem}{Spatial,Raster}(x, features, cost_column, run_checks = TRUE, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "Spatial", features = "Raster"),
-  function(x, features, cost_column, ...) {
+  function(x, features, cost_column, run_checks = TRUE, ...) {
     assertthat::assert_that(
       inherits(x, c("SpatialPolygonsDataFrame", "SpatialLinesDataFrame",
                     "SpatialPointsDataFrame")),
@@ -271,14 +282,18 @@ methods::setMethod(
     cost_column <- match.arg(cost_column, names(x))
     x <- x[is.finite(x[[cost_column]]), ]
     assertthat::assert_that(
-      isTRUE(all(x[[cost_column]] > 0)),
       length(x) > 0,
-      isTRUE(all(raster::cellStats(features, "max", na.rm = TRUE) > 0)),
       raster::nlayers(features) >= 1,
-      raster::compareCRS(x@proj4string, features@crs),
-      isTRUE(rgeos::gIntersects(methods::as(raster::extent(x),
-                                            "SpatialPolygons"),
-        methods::as(raster::extent(features), "SpatialPolygons"))))
+      raster::compareCRS(x@proj4string, features@crs))
+    if (run_checks) {
+      assertthat::assert_that(
+        isTRUE(all(x[[cost_column]] >= 0)),
+        isTRUE(all(raster::cellStats(features, "min") >= 0)),
+        isTRUE(rgeos::gIntersects(methods::as(raster::extent(x),
+                                              "SpatialPolygons"),
+                                  methods::as(raster::extent(features),
+                                              "SpatialPolygons"))))
+    }
     pproto(NULL, ConservationProblem,
       constraints = pproto(NULL, Collection),
       penalties = pproto(NULL, Collection),
@@ -388,7 +403,7 @@ methods::setMethod(
     cost_column <- match.arg(cost_column, names(x))
     x <- x[is.finite(x[[cost_column]]), ]
     assertthat::assert_that(
-      isTRUE(all(x[[cost_column]] > 0)),
+      isTRUE(all(x[[cost_column]] >= 0)),
       length(x) > 0,
       all(features %in% names(x)),
       all(colSums(!is.na(as.matrix(x[, features, drop = FALSE]))) > 0))
@@ -415,7 +430,7 @@ methods::setMethod(
     cost_column <- match.arg(cost_column, names(x))
     x <- x[is.finite(x[[cost_column]]), ]
     assertthat::assert_that(
-      isTRUE(all(x[[cost_column]] > 0)),
+      isTRUE(all(x[[cost_column]] >= 0)),
       length(x) > 0,
       all(features %in% names(x)),
       all(colSums(!is.na(as.matrix(x@data[, features, drop = FALSE]))) > 0))

@@ -42,7 +42,7 @@ test_that("add_proportion_decisions (compile)", {
   n_pu <- length(raster::Which(!is.na(sim_pu_raster), cells = TRUE))
   expect_equal(o$lb(), rep(0, n_pu))
   expect_equal(o$ub(), rep(1, n_pu))
-  expect_equal(o$vtype(), rep("S", n_pu))
+  expect_equal(o$vtype(), rep("C", n_pu))
 })
 
 test_that("add_proportion_decisions (solve)", {
@@ -73,7 +73,7 @@ test_that("add_semicontinuous_decisions (compile)", {
   n_pu <- length(raster::Which(!is.na(sim_pu_raster), cells = TRUE))
   expect_equal(o$lb(), rep(0, n_pu))
   expect_equal(o$ub(), rep(0.3, n_pu))
-  expect_equal(o$vtype(), rep("S", n_pu))
+  expect_equal(o$vtype(), rep("C", n_pu))
   # check that invalid inputs result in an error
   expect_error(p %>% add_semicontinuous_decisions(NA))
   expect_error(p %>% add_semicontinuous_decisions(Inf))
@@ -95,4 +95,31 @@ test_that("add_semicontinuous_decisions (solve)", {
   # check that solutions have correct decisions
   expect_true(isTRUE(all(round(na.omit(values(s)), 5) <= 0.3)))
   expect_true(isTRUE(all(na.omit(values(s)) >= 0)))
+})
+
+test_that("add_semicontinuous_decisions (solve with locked constraints)", {
+  skip_on_cran()
+  skip_if_not(any_solvers_installed())
+  # generate solution
+  data(sim_pu_raster, sim_features)
+  s <- problem(sim_pu_raster, sim_features) %>%
+    add_min_set_objective() %>%
+    add_relative_targets(0.1) %>%
+    add_locked_in_constraints(sim_locked_in_raster) %>%
+    add_locked_out_constraints(sim_locked_out_raster) %>%
+    add_semicontinuous_decisions(0.3) %>%
+    add_default_solver(time_limit = 5) %>%
+    solve()
+  s2 <- problem(sim_pu_raster, sim_features) %>%
+    add_min_set_objective() %>%
+    add_relative_targets(0.1) %>%
+    add_locked_out_constraints(sim_locked_out_raster) %>%
+    add_locked_in_constraints(sim_locked_in_raster) %>%
+    add_semicontinuous_decisions(0.3) %>%
+    add_default_solver(time_limit = 5) %>%
+    solve()
+  # check that solutions have correct decisions
+  expect_true(isTRUE(all(round(na.omit(values(s)), 5) <= 0.3)))
+  expect_true(isTRUE(all(na.omit(values(s)) >= 0)))
+  expect_equal(values(s), values(s2))
 })
