@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Summary</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h2>Summary</h2>
+
+<p>The <em>prioritizr R</em> package uses integer linear programming (ILP) techniques to provide a flexible interface for building and solving conservation planning problems [@r11; @r16]. It supports a broad range of objectives, constraints, and penalties that can be used to custom-tailor conservation planning problems to the specific needs of a conservation planning exercise. Once built, conservation planning problems can be solved using a variety of commercial and open-source exact algorithm solvers. In contrast to the algorithms conventionally used to solve conservation problems, such as heuristics or simulated annealing [@r3], the exact algorithms used here are guaranteed to find optimal solutions. Furthermore, conservation problems can be constructed to optimize the spatial allocation of different management actions or zones, meaning that conservation practitioners can identify solutions that benefit multiple stakeholders. Finally, this package has the functionality to read input data formatted for the <em>Marxan</em> conservation planning program [@r3], and find much cheaper solutions in a much shorter period of time than <em>Marxan</em> [@r1].</p>
+
+<h2>Introduction</h2>
+
+<p>Systematic conservation planning is a rigorous, repeatable, and structured approach to designing new protected areas that efficiently meet conservation objectives [@r4]. Historically, conservation decision-making has often evaluated parcels opportunistically as they became available for purchase, donation, or under threat. Although purchasing such areas may improve the <em>status quo</em>, such decisions may not substantially enhance the long-term persistence of target species or communities. Faced with this realization, conservation planners began using decision support tools to help simulate alternative reserve designs over a range of different biodiversity and management goals and, ultimately, guide protected area acquisitions and management actions. Due to the systematic, evidence-based nature of these tools, conservation prioritization can help contribute to a transparent, inclusive, and more defensible decision making process.</p>
+
+<p>A conservation planning exercise typically starts by defining a study area. This study area should encompass all the areas relevant to the decision maker or the hypothesis being tested. The extent of a study area could encompass a a few important localities [e.g. @r18], a single state [e.g. @r17], an entire country [@r19], or the entire planet [@r20]. Next, the study area is divided into a set of discrete areas termed <em>planning units</em>. Each planning unit represents a discrete locality in the study area that can be managed independently of other areas. The general idea is that some combination of the planning units can be selected for conservation purposes. Planning units are often created as square or hexagon cells that are sized according to the scale of the management and the resolution of the data that underpin the planning exercise [but see @r5]. Next, <em>cost data</em> are obtained and overlaid with the planning units. The cost data indicate the relative expenditure associated with managing each planning unit. For example, if the goal of the conservation planning exercise is to identify priority areas for expanding a local protected area system then the cost data could represent the physical cost of purchasing the land. Alternatively, if such data is not available, then human density is often used as a surrogate. Other examples of cost data include pest management costs [@r22], and the opportunity cost of foregone commercial activities [e.g. from logging, agriculture, or fishing; @r21], or simply the size of the planning unit. Next, the <em>conservation features</em> that are relevant to the conservation planning exercise are defined. These features could be species (e.g. <em>Neofelis nebulosa</em>, the Clouded Leopard), populations, or habitats (e.g. mangroves or cloud forest) of interest. Finally, spatially explicit data should be obtained for each conservation feature, so that we know which features occur in which planning units (or how much of each feature occurs in each planning unit). Note that this process is not sequential&mdash;meaning that often planning units will often be remade depending on data quality and computational resources, different cost data sets will often be investigated, and the prioritization process will often be rerun using different sets of conservation features. After assembling all the data, the next step is to define the conservation planning problem.</p>
+
+<p>The <em>prioritizr R</em> package will not help you with assembling your planning unit data, cost data or feature data&mdash;but it will help you with defining and solving your planning problem. Formulating a conservation planning problem as a well-defined mathematical optimization problem is extremely useful because (i) it means that we can solve the exact problem you are dealing with and (ii) there is a rich body of knowledge we can draw on to deliver high quality solutions in a short period of time. In general, the goal of an optimization problem is to minimize (or maximize) an <em>objective function</em> that is calculated using a set of <em>decision variables</em>, subject to a series of <em>constraints</em> to ensure that solution exhibits specific properties. The objective function describe the quantity which we are trying to minimize (e.g. cost of the solution) or maximize (e.g. number of features conserved). The decision variables represent the entities that we can control, and indicate which planning units are selected for protection and which of those are not. The constraints can be thought of as rules that the need decision variables need to follow. For example, a commonly used constraint is specifying that the solution must not exceed a certain budget.</p>
+
+<p>Fortunately, a wide variety of approaches have been developed for solving optimization problems. Reserve design problems are frequently solved using simulated annealing [@r6] or heuristics [@r8; @r7]. These methods are conceptually simple and can be applied to a wide variety of optimization problems. However, they do not scale well for large or complex problems [@r1]. Additionally, these methods cannot tell you how close any given solution is to the optimal solution. Honestly, why would you go to all the effort of obtaining planning unit, cost, and feature data if you don&#39;t know how good the solution is at the end of it? The <em>prioritizr R</em> package uses exact algorithms to efficiently solve conservation planning problems to within a pre-specified a optimality gap. In other words, you can specify that you need the optimal solution (i.e. a gap of 0 %) and the algorithms will, given enough time, find the optimal solution. In the past, exact algorithms have been too slow to be useful for most conservation planning exercises [@r9], but improvements over the last decade mean that they are much faster and more effective than other commonly used methods [@r23; @r1].</p>
+
+<p>In this package, optimization problems are expressed using <em>integer linear programming</em> (ILP) so that they can be solved using (linear) exact algorithm solvers. The general form of an integer programming problem can be expressed in matrix notation using the following equation.</p>
+
+<p>\[\text{Minimize} \space \boldsymbol{c}^\text{T} \boldsymbol{x} \space
+\space \text{subject to} \space A\boldsymbol{x}
+\space \Box \space \boldsymbol{b}\]</p>
+
+<p>Here, where \(x\) is a vector of decision variables, \(c\) and \(b\) are vectors of known coefficients, and \(A\) is the constraint matrix. The final term specifies a series of structural constants and the \(\Box\) symbol is used to indicate that the relational operators for the constraints can be either \(\geq\), \(=\), or \(\leq\). In the context of a conservation planning problem, \(c\) could be used to represent the planning unit costs, \(A\) could be used to store the data showing the presence / absence (or amount) of each feature in each planning unit, \(b\) could be used to represent minimum amount of habitat required for each species in the solution, the \(\Box\) could be set to \(\geq\) symbols to indicate that the total amount of each feature in the solution must exceed the quantities in \(b\). But there are many other ways of formulating the reserve selection problem [@r11].</p>
+
+<h2>Package overview</h2>
+
+<p>The <em>prioritizr R</em> package contains eight main types of functions. These
+functions are used to:</p>
+
+<ul>
+<li>create a new conservation planning <a href="https://prioritizr.net/reference/problem.html">problem</a> by specifying the planning units, features, and management zones of conservation interest (e.g. species, ecosystems).</li>
+<li>add an <a href="https://prioritizr.net/reference/objectives.html">objective</a> to a conservation planning problem.</li>
+<li>add <a href="https://prioritizr.net/reference/targets.html">targets</a> to a problem to specify how much of each feature is desired or required to be conserved in the solutions.</li>
+<li>add. <a href="https://prioritizr.net/reference/constraints.html">constraints</a> to a conservation planning problem to ensure that solutions exhibit specific properties (e.g. select specific planning units for protection).</li>
+<li>add <a href="https://prioritizr.net/reference/penalties.html">penalties</a> to a problem to penalize solutions according to specific metric (e.g. connectivity).</li>
+<li>add <a href="https://prioritizr.net/reference/decisions.html">decisions</a> to a problem to specify the nature of the decisions in the problem.</li>
+<li>add methods to generate a <a href="https://prioritizr.net/reference/portfolios.html">portfolio</a> of solutions.</li>
+<li>add one of the <a href="https://prioritizr.net/reference/solvers.html">solvers</a> to  a conservation problem to specify which software should be used to solve it and customize the optimization process.</li>
+<li><a href="https://prioritizr.net/reference/solve.html">solve</a> a conservation problem.</li>
+</ul>
+
+<h2>Package work flow</h2>
+
+<p>The general work flow when using the <em>prioritizr R</em> package starts with creating a new conservation planning <code>problem</code> object using data relevant to the conservation planning problem. Specifically, the <code>problem</code> object should be constructed using data that specify the planning units, biodiversity features, management zones (if applicable), and costs. After creating a new <code>problem</code> object, it can be customized&mdash;by adding objectives, penalties, constraints, and other information&mdash;to build a precise representation of the conservation planning problem required, and then solved to obtain a set of near-optimal solutions.</p>
+
+<p>All conservation planning problems require an objective. An objective specifies the property which is used to compare different feasible solutions. Simply put, the objective is the property of the solution which should be maximized or minimized during the optimization process. For instance, with the minimum set objective (specified using <code>add_min_set_objective</code>), we are seeking to minimize the cost of the solution (similar to <em>Marxan</em>). On the other hand, with the maximum coverage objective (specified using <code>add_max_cover_objective</code>), we are seeking to maximize the number of different features represented in the solution.</p>
+
+<p>Many objectives require <code>targets</code> (e.g. the minimum set objective). Targets are a specialized set of constraints that relate to the total quantity of each feature secured in the solution (e.g. amount of suitable habitat or number of individuals). In the case of the minimum set objective ( <code>add_min_set_objective</code>), they are used to ensure that solutions secure a sufficient quantity of each feature, and in other objectives, such as the maximum features objective ( <code>add_max_features_objective</code>) they are used to assess whether a feature has been adequately conserved by a candidate solution. Targets can be expressed numerically as the total amount required for a given feature (using <code>add_absolute_targets</code>), or as a proportion of the total amount found in the planning units (using <code>add_relative_targets</code>). Note that not all objectives require targets, and a warning will be thrown if an attempt is made to add targets to a problem with an objective that does not use them.</p>
+
+<p>Constraints and penalties can be added to a conservation planning problem to ensure that solutions exhibit a specific property or penalize solutions which don&#39;t exhibit a specific property (respectively). The difference between constraints and penalties, strictly speaking, is constraints are used to rule out potential solutions that don&#39;t exhibit a specific property. For instance, constraints can be used to ensure that specific planning units are selected in the solution for prioritization (using <code>add_locked_in_constraints</code>) or not selected in the solution for prioritization (using <code>add_locked_out_constraints</code>). On the other hand, penalties are combined with the objective of a problem, with a penalty factor, and the overall objective of the problem then becomes to minimize (or maximize) the primary objective function and the penalty function. For example, penalties can be added to a problem to penalize solutions that are excessively fragmented (using <code>add_boundary_penalties</code>). These penalties have a <code>penalty</code> argument that specifies the relative importance of having spatially clustered solutions. When the argument to <code>penalty</code> is high, then solutions which are less fragmented are valued more highly&mdash;even if they cost more&mdash;and when the argument to <code>penalty</code> is low, then the solutions which are more fragmented are valued less highly.</p>
+
+<p>After building a conservation problem, it can then be solved to obtain a solution (or portfolio of solutions if desired). The solution is returned in the same format as the planning unit data used to construct the problem. This means that if raster or shapefile / vector data was used when initializing the problem, then the solution will also be in raster or shapefile / vector data. This can be very helpful when it comes to interpreting and visualizing solutions because it means that the solution data does not first have to be merged with spatial data before they can be plotted on a map.</p>
+
+<h2>Usage</h2>
+
+<p>Here we will provide an introduction to using the <em>prrioritizr R</em> package to build and solve a conservation planning problem. <strong>Please note that we will not cover conservation planning with multiple zones in this vignette, for more information on developing plans that involve allocating planning units to multiple management zones please see the <a href="zones.html">zones vignette</a>.</strong></p>
+
+<p>First, we will load the <em>prioritizr</em> package.</p>
+
+<pre><code class="r"># load prioritizr package
+library(prioritizr)
+</code></pre>
+
+<h3>Data</h3>
+
+<p>Now we will load some built-in data sets that are distributed with the <em>prioritizr R</em> package. This package contains several different planning unit data sets. To provide a comprehensive overview of the different ways that we can initialize a conservation planning problem we will load each of them.</p>
+
+<p>First, we will load the raster planning unit data (<code>sim_pu_raster</code>). Here, the planning units are represented as a raster (i.e. a <code>RasterLayer</code> object) and each pixel corresponds to the spatial extent of each panning unit. The pixel values correspond to the acquisition costs of each planning unit.</p>
+
+<pre><code class="r"># load raster planning unit data
+data(sim_pu_raster)
+
+# print description of the data
+print(sim_pu_raster)
+</code></pre>
+
+<pre><code>## class       : RasterLayer 
+## dimensions  : 10, 10, 100  (nrow, ncol, ncell)
+## resolution  : 0.1, 0.1  (x, y)
+## extent      : 0, 1, 0, 1  (xmin, xmax, ymin, ymax)
+## coord. ref. : NA 
+## data source : in memory
+## names       : layer 
+## values      : 190.1328, 215.8638  (min, max)
+</code></pre>
+
+<pre><code class="r"># plot the data
+plot(sim_pu_raster)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" style="display: block; margin: auto;" /></p>
+
+<p>Secondly, we will load one of the spatial vector planning unit data sets (<code>sim_pu_polygons</code>). Here, each polygon (i.e. feature using ArcGIS terminology) corresponds to a different planning unit. This data set has an attribute table that contains additional information about each polygon. Namely, the <code>cost</code> field (column) in the attribute table contains the acquisition cost for each planning unit.</p>
+
+<pre><code class="r"># load polygon planning unit data
+data(sim_pu_polygons)
+
+# print first six rows of attribute table
+head(sim_pu_polygons@data)
+</code></pre>
+
+<pre><code>##       cost locked_in locked_out
+## 1 215.8638     FALSE      FALSE
+## 2 212.7823     FALSE      FALSE
+## 3 207.4962     FALSE      FALSE
+## 4 208.9322     FALSE       TRUE
+## 5 214.0419     FALSE      FALSE
+## 6 213.7636     FALSE      FALSE
+</code></pre>
+
+<pre><code class="r"># plot the planning units
+spplot(sim_pu_polygons, zcol = &quot;cost&quot;)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" /></p>
+
+<p>Thirdly, we will load some planning unit data stored in tabular format (i.e. <code>data.frame</code> format). For those familiar with <em>Marxan</em> or dealing with very large conservation planning problems (&gt; 10 million planning units), it may be useful to work with data in this format because it does not contain any spatial information which will reduce computational burden. When using tabular data to initialize conservation planning problems, the data must follow the conventions used by <em>Marxan</em>. Specifically, each row in the planning unit table must correspond to a different planning unit. The table must also have an &ldquo;id&rdquo; column to provide a unique integer identifier for each planning unit, and it must also have a column that indicates the cost of each planning unit. For more information, please see the <a href="http://marxan.net/downloads/uq_marxan_web_2/module4.html">official <em>Marxan</em> documentation</a>.</p>
+
+<pre><code class="r"># specify file path for planning unit data
+pu_path &lt;- system.file(&quot;extdata/input/pu.dat&quot;, package = &quot;prioritizr&quot;)
+
+# load in the tabular planning unit data
+# note that we use the data.table::fread function, as opposed to the read.csv
+# function, because it is much faster
+pu_dat &lt;- data.table::fread(pu_path, data.table = FALSE)
+
+# preview first six rows of the tabular planning unit data
+# note that it has some extra columns other than id and cost as per the
+# Marxan format
+head(pu_dat)
+</code></pre>
+
+<pre><code>##   id       cost status    xloc     yloc
+## 1  3        0.0      0 1116623 -4493479
+## 2 30   752727.5      3 1110623 -4496943
+## 3 56  3734907.5      0 1092623 -4500408
+## 4 58  1695902.1      0 1116623 -4500408
+## 5 84  3422025.6      0 1098623 -4503872
+## 6 85 17890758.4      0 1110623 -4503872
+</code></pre>
+
+<p>Finally, we will load data showing the spatial distribution of the conservation features. Our conservation features (<code>sim_features</code>) are represented as a stack of raster objects (i.e. a <code>RasterStack</code> object) where each layer corresponds to a different feature (e.g. a multi-band GeoTIFF where each band corresponds to a different feature). The pixel values in each layer correspond to the amount of suitable habitat available in a given planning unit. Note that our planning unit raster layer and our conservation feature stack have exactly the same spatial properties (i.e. resolution, extent, coordinate reference system) so their pixels line up perfectly.</p>
+
+<pre><code class="r"># load feature data
+data(sim_features)
+
+# plot the distribution of suitable habitat for each feature
+plot(sim_features, main = paste(&quot;Feature&quot;, seq_len(nlayers(sim_features))),
+     nr = 2, box = FALSE, axes = FALSE)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" /></p>
+
+<h3>Initialize a problem</h3>
+
+<p>After having loaded our planning unit and feature data, we will now try initializing the some conservation planning problems. There are a lot of different ways to initialize a conservation planning problem, so here we will just showcase a few of the more commonly used methods. For an exhaustive description of all the ways you can initialize a conservation problem, see the help file for the <code>problem</code> function (which you can open using the code <code>?problem</code>). First off, we will initialize a conservation planning problem using the raster data.</p>
+
+<pre><code class="r"># create problem
+p1 &lt;- problem(sim_pu_raster, sim_features)
+
+# print problem
+print(p1)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      none
+##   targets:        none
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<pre><code class="r"># print number of planning units
+number_of_planning_units(p1)
+</code></pre>
+
+<pre><code>## [1] 90
+</code></pre>
+
+<pre><code class="r"># print number of features
+number_of_features(p1)
+</code></pre>
+
+<pre><code>## [1] 5
+</code></pre>
+
+<p>Generally, we recommend initializing problems using raster data where possible. This is because the <code>problem</code> function needs to calculate the amount of each feature in each planning unit, and by providing both the planning unit and feature data in raster format with the same spatial resolution, extents, and coordinate systems, this means that the <code>problem</code> function does not need to do any geo-processing behind the scenes. But sometimes we can&#39;t use raster planning unit data because our planning units aren&#39;t equal-sized grid cells. So, below is an example showing how we can initialize a conservation planning problem using planning units that are formatted as spatial vector data. Note that if we had pre-computed the amount of each feature in each planning unit and stored the data in the attribute table, we could pass in the names of the columns as an argument to the <code>problem</code> function.</p>
+
+<pre><code class="r"># create problem with spatial vector data
+# note that we have to specify which column in the attribute table contains
+# the cost data
+p2 &lt;- problem(sim_pu_polygons, sim_features, cost_column = &quot;cost&quot;)
+
+# print problem
+print(p2)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: SpatialPolygonsDataFrame (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      none
+##   targets:        none
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<p>We can also initialize a conservation planning problem using tabular planning unit data (i.e. a <code>data.frame</code>). Since the tabular planning unit data does not contain any spatial information, we also have to provide the feature data in tabular format (i.e. a <code>data.frame</code>) and data showing the amount of each feature in each planning unit in tabular format (i.e. a <code>data.frame</code>). The feature data must have an &ldquo;id&rdquo; column containing a unique integer identifier for each feature, and the planning unit by feature data must contain the following three columns: &ldquo;pu&rdquo; corresponding to the planning unit identifiers, &ldquo;species&rdquo; corresponding to the feature identifiers, and &ldquo;amount&rdquo; showing the amount of a given feature in a given planning unit.</p>
+
+<pre><code class="r"># set file path for feature data
+spec_path &lt;- system.file(&quot;extdata/input/spec.dat&quot;, package = &quot;prioritizr&quot;)
+
+# load in feature data
+spec_dat &lt;- data.table::fread(spec_path, data.table = FALSE)
+
+# print first six rows of the data
+# note that it contains extra columns
+head(spec_dat)
+</code></pre>
+
+<pre><code>##   id prop spf   name
+## 1 10  0.3   1  bird1
+## 2 11  0.3   1  nvis2
+## 3 12  0.3   1  nvis8
+## 4 13  0.3   1  nvis9
+## 5 14  0.3   1 nvis14
+## 6 15  0.3   1 nvis20
+</code></pre>
+
+<pre><code class="r"># set file path for planning unit vs. feature data
+puvspr_path &lt;- system.file(&quot;extdata/input/puvspr.dat&quot;, package = &quot;prioritizr&quot;)
+
+# load in planning unit vs feature data
+puvspr_dat &lt;- data.table::fread(puvspr_path, data.table = FALSE)
+
+# print first six rows of the data
+head(puvspr_dat)
+</code></pre>
+
+<pre><code>##   species  pu     amount
+## 1      26  56 1203448.84
+## 2      26  58  451670.10
+## 3      26  84  680473.75
+## 4      26  85   97356.24
+## 5      26  86   78034.76
+## 6      26 111 4783274.17
+</code></pre>
+
+<pre><code class="r"># create problem
+p3 &lt;- problem(pu_dat, spec_dat, cost_column = &quot;cost&quot;, rij = puvspr_dat)
+
+# print problem
+print(p3)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: data.frame (1751 units)
+##   cost:           min: 0, max: 41569219.38232
+##   features:       bird1, nvis2, nvis8, ... (17 features)
+##   objective:      none
+##   targets:        none
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<p>For more information on initializing problems, please see the help page for the <code>problem</code> function (which you can open using the code <code>?problem</code>). Now that we have initialized a conservation planning problem, we will show you how you can customize it to suit the exact needs of your conservation planning scenario. Although we initialized the conservation planning problems using several different methods, moving forward, we will only use raster-based planning unit data to keep things simple.</p>
+
+<h3>Add an objective</h3>
+
+<p>The next step is to add an objective to the problem. A problem objective is used to specify the overall goal of the problem (i.e. the quantity that is to be maximized or minimized). All conservation planning problems involve minimizing or maximizing some kind of objective. For instance, we might require a solution that conserves enough habitat for each species while minimizing the overall cost of the reserve network. Alternatively, we might require a solution that maximizes the number of conserved species while ensuring that the cost of the reserve network does not exceed the budget. Please note that objectives are added in the same way regardless of the type of data used to initialize the problem.</p>
+
+<p>The <em>prioritizr R</em> package supports a variety of different objective functions.</p>
+
+<ul>
+<li><strong>Minimum set objective</strong>: Minimize the cost of the solution whilst ensuring that all targets are met [@r11]. This objective is similar to that used in <em>Marxan</em> [@r3]. For example, we can add a minimum set objective to a problem using the following code.</li>
+</ul>
+
+<pre><code class="r"># create a new problem that has the minimum set objective
+p3 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+      add_min_set_objective()
+
+# print the problem
+print(p3)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        none
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Maximum cover objective</strong>: Represent at least one instance of as many features as possible within a given budget [@r12].</li>
+</ul>
+
+<pre><code class="r"># create a new problem that has the maximum coverage objective and a budget
+# of 5000
+p4 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+      add_min_set_objective()
+
+# print the problem
+print(p4)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        none
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Maximum features objective</strong>: Fulfill as many targets as possible while ensuring that the cost of the solution does not exceed a budget [inspired by @r10]. This object is similar to the maximum cover objective except that we have the option of later specifying targets for each feature. In practice, this objective is more useful than the maximum cover objective because features often require a certain amount of area for them to persist and simply capturing a single instance of habitat for each feature is generally unlikely to enhance their long-term persistence.</li>
+</ul>
+
+<pre><code class="r"># create a new problem that has the maximum features objective and a budget
+# of 5000
+p5 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+      add_max_features_objective(budget = 5000)
+
+# print the problem
+print(p5)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Maximum representation objective [budget (5000)]
+##   targets:        none
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Maximum phylogenetic representation objective</strong>: Maximize the phylogenetic diversity of the features represented in the solution subject to a budget [inspired by @r13; @r14]. This objective is similar to the maximum features objective except that emphasis is placed on phylogenetic representation rather than individual features. The <em>prioritizr R</em> package contains a simulated phylogeny that can be used with the simulated feature data (<code>sim_phylogny</code>).</li>
+</ul>
+
+<pre><code class="r"># load simulated phylogeny data
+data(sim_phylogeny)
+
+# create a new problem that has the maximum phylogenetic representation
+# objective and a budget of 5000
+p6 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+      add_max_phylo_objective(budget = 5000, tree = sim_phylogeny)
+
+# print the problem
+print(p6)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Phylogenetic representation objective [budget (5000)]
+##   targets:        none
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Maximum utility objective</strong>: Secure as much of the features as possible without exceeding a budget. This objective is functionally equivalent to selecting the planning units with the greatest amounts of each feature (e.g. species richness). Generally, we don&#39;t encourage the use of this objective because it will only rarely identify complementary solutions&mdash;solutions which adequately conserve a range of different features&mdash;except perhaps to explore trade-offs or provide a baseline solution with which to compare other solutions.</li>
+</ul>
+
+<pre><code class="r"># create a new problem that has the maximum utility objective and a budget
+# of 5000
+p7 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+      add_max_utility_objective(budget = 5000)
+
+# print the problem
+print(p7)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Maximum utility objective [budget (5000)]
+##   targets:        none
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<h3>Add targets</h3>
+
+<p>Most conservation planning problems require targets. Targets are used to specify the minimum amount or proportion of a feature&#39;s distribution that needs to be protected in the solution. For example, we may want to develop a reserve network that will secure 20% of the distribution for each feature for minimal cost.</p>
+
+<p>There are four ways for specifying targets in the <em>prioritizr R</em> package:</p>
+
+<ul>
+<li><strong>Absolute targets</strong>: Targets are expressed as the total amount of each feature in the study area that need to be secured. For example, if we had binary feature data that showed the absence or presence of suitable habitat across the study area, we could set an absolute target as 5 to mean that we require 5 planning units with suitable habitat in the solution.</li>
+</ul>
+
+<pre><code class="r"># create a problem with targets which specify that the solution must conserve
+# a need a sum total of 3 units of suitable habitat for each feature
+p8 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+      add_min_set_objective() %&gt;%
+      add_absolute_targets(3)
+
+# print problem
+print(p8)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Absolute targets [targets (min: 3, max: 3)]
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Relative targets</strong>: Targets are set as a proportion (between 0 and 1) of the total amount of each feature in the study area. For example, if we had binary feature data and the feature occupied a total of 20 planning units in the study area, we could set a relative target of 50 % to specify that the solution must secure 10 planning units for the feature. We could alternatively specify an absolute target of 10 to achieve the same result, but sometimes proportions are easier to work with.</li>
+</ul>
+
+<pre><code class="r"># create a problem with the minimum set objective and relative targets of 10 %
+# for each feature
+p9 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+      add_min_set_objective() %&gt;%
+      add_relative_targets(0.1)
+
+# print problem
+print(p9)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<pre><code class="r"># create a problem with targets which specify that we need 10 % of the habitat
+# for the first feature, 15 % for the second feature, 20 % for the third feature
+# 25 % for the fourth feature and 30 % of the habitat for the fifth feature
+targets &lt;- c(0.1, 0.15, 0.2, 0.25, 0.3)
+p10 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+      add_min_set_objective() %&gt;%
+      add_relative_targets(targets)
+
+# print problem
+print(p10)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.3)]
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Log-linear targets</strong>: Targets are expressed using scaling factors and log-linear interpolation. This method for specifying targets is commonly used for global prioritization analyses [@r15].</li>
+</ul>
+
+<pre><code class="r"># create problem with added log-linear targets
+p11 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_loglinear_targets(10, 0.9, 100, 0.2)
+
+# print problem
+print(p11)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Absolute targets [targets (min: 17.290505409161, max: 21.5906174426385)]
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Manual targets</strong>: Targets are manually specified. This is only really recommended for advanced users or problems that involve multiple management zones. See the <a href="zones.html">zones vignette</a> for more information on these targets.</li>
+</ul>
+
+<p>As with the functions for specifying the objective of a problem, if we try adding multiple targets to a problem, only the most recently added set of targets are used.</p>
+
+<h3>Add constraints</h3>
+
+<p>A constraint can be added to a conservation planning problem to ensure that all solutions exhibit a specific property. For example, they can be used to make sure that all solutions select a specific planning unit or that all selected planning units in the solution follow a certain configuration.</p>
+
+<p>The following constraints can be added to conservation planning problems in the <em>prioritizr R</em> package.</p>
+
+<ul>
+<li><strong>Locked in constraints</strong>: Add constraints to ensure that certain planning units are prioritized in the solution. For example, it may be desirable to lock in planning units that are inside existing protected areas so that the solution fills in the gaps in the existing reserve network.</li>
+</ul>
+
+<pre><code class="r"># create problem with constraints which specify that the first planning unit
+# must be selected in the solution
+p12 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_locked_in_constraints(1)
+
+# print problem
+print(p12)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;Locked in planning units [1 locked units]&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Locked out constraints</strong>: Add constraints to ensure that certain planning units are not prioritized in the solution. For example, it may be useful to lock out planning units that have been degraded and are not suitable for conserving species.</li>
+</ul>
+
+<pre><code class="r"># create problem with constraints which specify that the second planning unit
+# must not be selected in the solution
+p13 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_locked_out_constraints(2)
+
+# print problem
+print(p13)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;Locked out planning units [1 locked units]&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Neighbor constraints</strong>: Add constraints to a conservation problem to ensure that all selected planning units have at least a certain number of neighbors.</li>
+</ul>
+
+<pre><code class="r"># create problem with constraints which specify that all selected planning units
+# in the solution must have at least 1 neighbor
+p14 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_neighbor_constraints(1)
+
+# print problem
+print(p14)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;Neighbor constraint [number of neighbors (1), zones]&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Contiguity constraints</strong>: Add constraints to a conservation problem to ensure that all selected planning units are spatially connected to each other and form spatially contiguous unit.</li>
+</ul>
+
+<pre><code class="r"># create problem with constraints which specify that all selected planning units
+# in the solution must form a single contiguous unit
+p15 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_contiguity_constraints()
+
+# print problem
+print(p15)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;Contiguity constraints [apply constraints? (1), zones]&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Feature contiguity constraints</strong>: Add constraints to ensure that each feature is represented in a contiguous unit of dispersible habitat. These constraints are a more advanced version of those implemented in the <code>add_contiguity_constraints</code> function, because they ensure that each feature is represented in a contiguous unit and not that the entire solution should form a contiguous unit.</li>
+</ul>
+
+<pre><code class="r"># create problem with constraints which specify that the planning units used
+# to conserve each feature must form a contiguous unit
+p16 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_feature_contiguity_constraints()
+
+# print problem
+print(p16)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;Feature contiguity constraints [apply constraints? (1), layer.1 zones, layer.2 zones, layer.3 zones, layer.4 zones, layer.5 zones]&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<p>The <code>add_locked_in_constraints</code> and <code>add_locked_out_constraints</code> functions are incredibly useful for real-world conservation planning exercises, so it&#39;s worth pointing out that there are several ways we can specify which planning units should be locked in or out of the solutions. If we use raster planning unit data, we can also use raster data to specify which planning units should be locked in our locked out.</p>
+
+<pre><code class="r"># load data to lock in or lock out planning units
+data(sim_locked_in_raster)
+data(sim_locked_out_raster)
+
+# plot the locked data
+plot(stack(sim_locked_in_raster, sim_locked_out_raster),
+     main = c(&quot;Locked In&quot;, &quot;Locked Out&quot;), box = FALSE, axes = FALSE)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-23" alt="plot of chunk unnamed-chunk-23" style="display: block; margin: auto;" /></p>
+
+<pre><code class="r"># create a problem using raster planning unit data and use the locked raster
+# data to lock in some planning units and lock out some other planning units
+p17 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_locked_in_constraints(sim_locked_in_raster) %&gt;%
+       add_locked_out_constraints(sim_locked_out_raster)
+
+# print problem
+print(p17)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;Locked out planning units [10 locked units]
+##                    Locked in planning units [10 locked units]&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<p>If our planning unit data are in a spatial vector format (similar to the <code>sim_pu_polygons</code> data) or a tabular format (similar to <code>pu_dat</code>), we can use the field names in the data to refer to which planning units should be locked in and / or out. For example, the <code>sim_pu_polygons</code> object has <code>TRUE</code> / <code>FALSE</code> values in the &ldquo;locked_in&rdquo; field which indicate which planning units should be selected in the solution. We could use the data in this field to specify that those planning units with <code>TRUE</code> values should be locked in using the following methods.</p>
+
+<pre><code class="r"># preview first six rows of the attribute table for sim_pu_polygons
+head(sim_pu_polygons@data)
+</code></pre>
+
+<pre><code>##       cost locked_in locked_out
+## 1 215.8638     FALSE      FALSE
+## 2 212.7823     FALSE      FALSE
+## 3 207.4962     FALSE      FALSE
+## 4 208.9322     FALSE       TRUE
+## 5 214.0419     FALSE      FALSE
+## 6 213.7636     FALSE      FALSE
+</code></pre>
+
+<pre><code class="r"># specify locked in data using the field name
+p18 &lt;- problem(sim_pu_polygons, sim_features, cost_column = &quot;cost&quot;) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_locked_in_constraints(&quot;locked_in&quot;)
+
+# print problem
+print(p18)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: SpatialPolygonsDataFrame (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;Locked in planning units [10 locked units]&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<pre><code class="r"># specify locked in data using the values in the field
+p19 &lt;- problem(sim_pu_polygons, sim_features, cost_column = &quot;cost&quot;) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_locked_in_constraints(which(sim_pu_polygons$locked_in))
+
+# print problem
+print(p19)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: SpatialPolygonsDataFrame (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;Locked in planning units [10 locked units]&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<h3>Add penalties</h3>
+
+<p>We can also add penalties to a problem to favor or penalize solutions according to a secondary objective. Unlike the constraint functions, these functions will add extra information to the objective function of the optimization function to penalize solutions that do not exhibit specific characteristics. For example, penalties can be added to a problem to avoid highly fragmented solutions at the expense of accepting slightly more expensive solutions. All penalty functions have a <code>penalty</code> argument that controls the relative importance of the secondary penalty function compared to the primary objective function. It is worth noting that incredibly low or incredibly high <code>penalty</code> values&mdash;relative to the main objective function&mdash;can cause problems to take a very long time to solve, so when trying out a range of different penalty values it can be helpful to limit the solver to run for a set period of time.</p>
+
+<p>The <em>prioritizr R</em> package currently offers only two methods for adding penalties to a conservation planning problem.</p>
+
+<ul>
+<li><strong>Boundary penalties</strong>:  Add penalties to penalize solutions that are excessively fragmented. These penalties are similar to those used in <em>Marxan</em> [@r3; @r1].</li>
+</ul>
+
+<pre><code class="r"># create problem with penalties that penalize fragmented solutions with a
+# penalty factor of 0.01
+p20 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_boundary_penalties(penalty = 0.01)
+
+# print problem
+print(p20)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;Boundary penalties [edge factor (min: 0.5, max: 0.5), penalty (0.01), zones]&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Connectivity penalties</strong>: Add penalties to favor solutions that select combinations of planning units with high connectivity between them. These penalties are similar to those used in <em>Marxan with Zones</em> [@r2; @r1]. This function supports both symmetric and asymmetric connectivities among planning units.</li>
+</ul>
+
+<pre><code class="r"># create problem with penalties that favor combinations of planning units with
+# high connectivity, here we will use only the first four layers in
+# sim_features for the features and we will use the fifth layer in sim_features
+# to represent the connectivity data, where the connectivity_matrix function
+# will create a matrix showing the average strength of connectivity between
+# adjacent planning units using the data in the fifth layer of sim_features
+p21 &lt;- problem(sim_pu_raster, sim_features[[1:4]]) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_boundary_penalties(penalty = 5,
+                              data = connectivity_matrix(sim_pu_raster,
+                                                         sim_features[[5]]))
+
+# print problem
+print(p21)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, layer.4 (4 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      default
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;Boundary penalties [edge factor (min: 0.5, max: 0.5), penalty (5), zones]&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<h3>Add the decision types</h3>
+
+<p>Conservation planning problems involve making decisions on how planning units will be managed. These decisions are then associated with management actions (e.g. turning a planning unit into a protected area). The type of decision describes how the action is applied to planning units. For instance, the default decision-type is a binary decision type, meaning that we are either selecting or not selecting planning units for management.</p>
+
+<p>The <em>prioritizr R</em> package currently offers the following types of decisions for customizing problems.</p>
+
+<ul>
+<li><strong>Binary decisions</strong>: Add a binary decision to a conservation planning problem. This is the classic decision of either prioritizing or not prioritizing a planning unit. Typically, this decision has the assumed action of buying the planning unit to include in a protected area network. If no decision is added to a problem object, then this decision class will be used by default.</li>
+</ul>
+
+<pre><code class="r"># add binary decisions to a problem
+p22 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_binary_decisions()
+
+# print problem
+print(p22)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Proportion decisions</strong>: Add a proportion decision to a problem. This is a relaxed decision where a part of a planning unit can be prioritized, as opposed to the default of the entire planning unit. Typically, this decision has the assumed action of buying a fraction of a planning unit to include in a protected area network. Generally, problems can be solved much faster with proportion-type decisions than binary-type decisions, so they can be very useful when commercial solvers are not available.</li>
+</ul>
+
+<pre><code class="r"># add proportion decisions to a problem
+p23 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_proportion_decisions()
+
+# print problem
+print(p23)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Proportion decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Semi-continuous decisions</strong>: Add a semi-continuous decision to a problem. This decision is similar to proportion decisions except that it has an upper bound parameter. By default, the decision can range from prioritizing none (0%) to all (100%) of a planning unit. However, a upper bound can be specified to ensure that at most only a fraction (e.g. 80%) of a planning unit can be purchased. This type of decision may be useful when it is not practical to conserve the entire area indicated by a planning unit.</li>
+</ul>
+
+<pre><code class="r"># add semi-continuous decisions to a problem, where we can only manage at most
+# 50 % of the area encompassed by a planning unit
+p24 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_semicontinuous_decisions(0.5)
+
+# print problem
+print(p24)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Semicontinuous decision [upper limit (0.5)]
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<h3>Add a solver</h3>
+
+<p>Next, after specifying the mathematical formulation that underpins your conservation planning problem, you can specify how the problem should be solved. If you do not specify this information, the <em>prioritizr R</em> package will automatically use the best solver currently installed on your system with some reasonable defaults. <strong>We strongly recommend installing the <a href="http://gurobi.com">Gurobi software suite and the <em>gurobi</em> <em>R</em> package</a> to solve problems, and for more information on this topic please refer to the <a href="gurobi_installation.hmtl">Gurobi Installation Guide</a></strong>.</p>
+
+<p>Currently, the <em>prioritizr R</em> package only supports three different solvers.</p>
+
+<ul>
+<li><strong><em>Gurobi</em> solver</strong>: <a href="http://gurobi.com"><em>Gurobi</em></a> is a state of the art commercial optimization software. It is by far the fastest of the solvers that can be used to solve conservation problems. However, it is not freely available. That said, special licenses are available to academics at no cost.</li>
+</ul>
+
+<pre><code class="r"># create a problem and specify that Gurobi should be used to solve the problem
+# and specify an optimality gap of zero to obtain the optimal solution
+p25 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_binary_decisions() %&gt;%
+       add_gurobi_solver(gap = 0)
+
+# print problem
+print(p25)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         Gurobi [first_feasible (0), gap (0), presolve (2), threads (1), time_limit (2147483647), verbose (1)]
+</code></pre>
+
+<ul>
+<li><strong><em>Rsymphony</em> solver</strong>: <a href="https://projects.coin-or.org/SYMPHONY"><em>SYMPHONY</em></a> is an open-source integer programming solver that is part of the Computational Infrastructure for Operations Research (COIN-OR) project, an initiative to promote development of open-source tools for operations research. The <em>Rsymphony R</em> package provides an interface to COIN-OR and is available on The Comprehensive R Archive Network (CRAN).</li>
+</ul>
+
+<pre><code class="r"># create a problem and specify that Rsymphony should be used to solve the
+# problem and specify an optimality gap of zero to obtain the optimal solution
+p26 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_binary_decisions() %&gt;%
+       add_rsymphony_solver(gap = 0)
+
+# print problem
+print(p26)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         Rsymphony [first_feasible (0), gap (0), time_limit (-1), verbose (1)]
+</code></pre>
+
+<ul>
+<li><strong><em>lpsymphony</em> solver</strong>: The <em>lpsymphony R</em> package provides a different interface to the COIN-OR software suite. This package may be easier to install on Windows and Mac OSX operating systems than the <em>Rsymphony R</em> package. Unlike the <em>Rsymphony R</em> package, the <em>lpsymphony R</em> package is distributed through <a href="http://bioconductor.org/packages/release/bioc/html/lpsymphony.html">Bioconductor</a>.</li>
+</ul>
+
+<pre><code class="r"># create a problem and specify that lpsymphony should be used to solve the
+# problem and specify an optimality gap of zero to obtain the optimal solution
+p27 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_binary_decisions() %&gt;%
+       add_lpsymphony_solver(gap = 0)
+
+# print problem
+print(p27)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      default
+##   solver:         Lpsymphony [first_feasible (0), gap (0), time_limit (-1), verbose (1)]
+</code></pre>
+
+<h3>Add a portfolio</h3>
+
+<p>Many conservation planning exercises require a portfolio of solutions. For example, real-world exercises can involve presenting decision makers with a range of near-optimal decisions. Additionally, the number of times that different planning units are selected in different solutions can provide insight into their relative importance.</p>
+
+<p>The following methods are available for generating a portfolio of solutions.</p>
+
+<ul>
+<li><strong>Cuts portfolio</strong>: Generate a portfolio of distinct solutions within a pre-specified optimality gap. If the <em>Gurobi</em> optimization solver is available for solving problems, this is by far the fastest method for generating a portfolio that contains a specific number of solutions that are all within a specified distance from optimality.</li>
+</ul>
+
+<pre><code class="r"># create a problem and specify that a portfolio containing 10 solutions
+# should be created using using Bender&#39;s cuts
+p28 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_binary_decisions() %&gt;%
+       add_cuts_portfolio(number_solutions = 10)
+
+# print problem
+print(p28)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      Cuts portfolio [number_solutions (10)]
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Pool portfolio</strong>: Generate a portfolio of solutions by extracting all the feasible solutions discovered during the optimization process. This is the fastest method for generating a portfolio of solutions. However, it does not return a specified number of solutions and it does not provide any guarantees on the quality of the solutions. This method requires that the <em>Gurobi</em> optimization solver to be specified for solving problems.</li>
+</ul>
+
+<pre><code class="r"># create a problem and specify that a portfolio should be created that
+# contains all the feasible solutions encountered during the optimization
+# process
+p29 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_binary_decisions() %&gt;%
+       add_pool_portfolio()
+
+# print problem
+print(p29)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      Pool portfolio
+##   solver:         default
+</code></pre>
+
+<ul>
+<li><strong>Shuffle portfolio</strong>: Generate a portfolio of solutions by randomly reordering the data prior to attempting to solve the problem. If the <em>Gurobi</em> optimization solver is not available, this method is the fastest method for generating a set number of solutions within a specified distance from optimality.</li>
+</ul>
+
+<pre><code class="r"># create a problem and specify a portfolio should be created that contains
+# 10 solutions and that any duplicate solutions should not be removed
+p30 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_binary_decisions() %&gt;%
+       add_shuffle_portfolio(number_solutions = 10, remove_duplicates = FALSE)
+
+# print problem
+print(p30)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      Shuffle portfolio [number_solutions (10), remove_duplicates (0), threads (1)]
+##   solver:         default
+</code></pre>
+
+<h3>Solve the problem</h3>
+
+<p>Finally, after formulating our conservation planning problem and specifying how the problem should be solved, we can use the <code>solve</code> function to obtain a solution. Note that the solver will typically print out some information describing the size of the problem and report its progress when searching for a suitable solution.</p>
+
+<pre><code class="r"># formulate the problem
+p31 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_boundary_penalties(penalty = 500, edge_factor = 0.5) %&gt;%
+       add_binary_decisions()
+
+# solve the problem (using the default solver)
+p31 &lt;- solve(p31)
+</code></pre>
+
+<pre><code>## Optimize a model with 293 rows, 234 columns and 1026 nonzeros
+## Variable types: 0 continuous, 234 integer (234 binary)
+## Coefficient statistics:
+##   Matrix range     [2e-01, 1e+00]
+##   Objective range  [1e+02, 4e+02]
+##   Bounds range     [1e+00, 1e+00]
+##   RHS range        [3e+00, 8e+00]
+## Found heuristic solution: objective 20287.196992
+## Found heuristic solution: objective 3087.9617505
+## Presolve time: 0.00s
+## Presolved: 293 rows, 234 columns, 1026 nonzeros
+## Variable types: 0 continuous, 234 integer (234 binary)
+## Presolved: 293 rows, 234 columns, 1026 nonzeros
+## 
+## 
+## Root relaxation: objective 2.265862e+03, 220 iterations, 0.00 seconds
+## 
+##     Nodes    |    Current Node    |     Objective Bounds      |     Work
+##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+## 
+##      0     0 2265.86242    0  234 3087.96175 2265.86242  26.6%     -    0s
+##      0     0 2325.53449    0  232 3087.96175 2325.53449  24.7%     -    0s
+## H    0     0                    2949.7553440 2325.53449  21.2%     -    0s
+##      0     0 2361.03063    0  223 2949.75534 2361.03063  20.0%     -    0s
+##      0     0 2371.27288    0  222 2949.75534 2371.27288  19.6%     -    0s
+##      0     0 2371.27288    0  222 2949.75534 2371.27288  19.6%     -    0s
+## H    0     0                    2604.7426048 2371.27288  8.96%     -    0s
+## 
+## Cutting planes:
+##   Gomory: 3
+## 
+## Explored 1 nodes (347 simplex iterations) in 0.08 seconds
+## Thread count was 1 (of 8 available processors)
+## 
+## Solution count 4: 2604.74 2949.76 3087.96 20287.2 
+## 
+## Optimal solution found (tolerance 1.00e-01)
+## Best objective 2.604742604847e+03, best bound 2.371272882044e+03, gap 8.9633%
+</code></pre>
+
+<pre><code class="r">plot(p31, col = c(&quot;grey90&quot;, &quot;darkgreen&quot;), main = &quot;Solution&quot;,
+     xlim = c(-0.1, 1.1), ylim = c(-0.1, 1.1))
+</code></pre>
+
+<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-36" alt="plot of chunk unnamed-chunk-36" style="display: block; margin: auto;" /></p>
+
+<p>We can plot this solution because the planning unit input data are spatially referenced in a raster format. The output format will always match the planning unit data used to initialize the problem. For example, the solution to a problem with planning units in a spatial vector (shapefile) format would also be in a spatial vector format. Similarly, if the planning units were in a tabular format (i.e. <code>data.frame</code>), the solution would also be returned in a tabular format.</p>
+
+<p>We can also extract attributes from the solution that describe the quality of the solution and the optimization process.</p>
+
+<pre><code class="r"># extract the objective (numerical value being minimized or maximized)
+print(attr(p31, &quot;objective&quot;))
+</code></pre>
+
+<pre><code>## solution_1 
+##   2604.743
+</code></pre>
+
+<pre><code class="r"># extract time spent solving solution
+print(attr(p31, &quot;runtime&quot;))
+</code></pre>
+
+<pre><code>## solution_1 
+## 0.07714295
+</code></pre>
+
+<pre><code class="r"># extract state message from the solver that describes why this specific
+# solution was returned
+print(attr(p31, &quot;status&quot;))
+</code></pre>
+
+<pre><code>## solution_1 
+##  &quot;OPTIMAL&quot;
+</code></pre>
+
+<h3><em>Marxan</em> problems</h3>
+
+<p>Although users are encouraged to build and tailor conservation planning problems to suit their own needs using the <code>problem</code> function, sometimes it just simply easier to use a more familiar formulation.  The <code>marxan_problem</code> function is provided as a convenient wrapper for building and solving <em>Marxan</em>-style conservation problems. If users already have their conservation planning data formatted for use with <em>Marxan</em>, this function can also read <em>Marxan</em> data files and solve the <em>Marxan</em>-style problems using exact algorithm solvers. <strong>Please note that problems built using the <code>marxan_problem</code> function are still solved the same way as a problem initialized using the <code>problem</code> function, and therefore still require the installation of one of the solver packages.</strong></p>
+
+<p>Here is a short example showing how the <code>marxan_problem</code> function can be used to read <em>Marxan</em> input files and the <code>solve</code> function can be used to solve the problem.</p>
+
+<pre><code class="r"># set file path for Marxan input file
+minput &lt;- system.file(&quot;extdata/input.dat&quot;, package = &quot;prioritizr&quot;)
+
+# read Marxan input file
+mp &lt;- marxan_problem(minput)
+
+# print problem
+print(mp)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: data.frame (1751 units)
+##   cost:           min: 0, max: 41569219.38232
+##   features:       bird1, nvis2, nvis8, ... (17 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.3, max: 0.3)]
+##   decisions:      default
+##   constraints:    &lt;Locked out planning units [1 locked units]
+##                    Locked in planning units [317 locked units]&gt;
+##   penalties:      &lt;Boundary penalties [edge factor (min: 1, max: 1), penalty (1), zones]&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<pre><code class="r"># solve the problem
+ms &lt;- solve(mp)
+
+# since the Marxan data was in a tabular format, the solution is also returned
+# in a tabular format, so we will print the first six rows of the table
+# containing the solution
+head(ms)
+</code></pre>
+
+<p>Alternatively, rather then using a <em>Marxan</em> input file to construct the problem, we can manually read in the <em>Marxan</em> data files and input these to the <code>marxan_problem</code> function.</p>
+
+<pre><code class="r"># load data
+pu &lt;- system.file(&quot;extdata/input/pu.dat&quot;, package = &quot;prioritizr&quot;) %&gt;%
+      read.table(sep = &quot;,&quot;, header = TRUE)
+features &lt;- system.file(&quot;extdata/input/spec.dat&quot;, package = &quot;prioritizr&quot;) %&gt;%
+            read.table(sep = &quot;,&quot;, header = TRUE)
+bound &lt;- system.file(&quot;extdata/input/bound.dat&quot;, package = &quot;prioritizr&quot;) %&gt;%
+         read.table(sep = &quot;\t&quot;, header = TRUE)
+rij &lt;- system.file(&quot;extdata/input/puvspr.dat&quot;, package = &quot;prioritizr&quot;) %&gt;%
+       read.table(sep = &quot;,&quot;, header = TRUE)
+
+# build Marxan problem using data.frame objects
+mp2 &lt;- marxan_problem(x = pu, spec = features, puvspr = rij, bound = bound,
+                      blm = 0)
+
+# print problem
+print(mp2)
+</code></pre>
+
+<pre><code>## Conservation Problem
+##   planning units: data.frame (1751 units)
+##   cost:           min: 0, max: 41569219.38232
+##   features:       bird1, nvis2, nvis8, ... (17 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.3, max: 0.3)]
+##   decisions:      default
+##   constraints:    &lt;Locked out planning units [1 locked units]
+##                    Locked in planning units [317 locked units]&gt;
+##   penalties:      &lt;Boundary penalties [edge factor (min: 1, max: 1), penalty (0), zones]&gt;
+##   portfolio:      default
+##   solver:         default
+</code></pre>
+
+<h3>Interpreting the solutions</h3>
+
+<p>After obtaining the solution to a conservation planning problem, it can be useful to calculate various summary statistics to describe its performance (such as solution cost). These statistics could be calculated using external software platforms such as <a href="https://www.arcgis.com/features/index.html">ArcGIS</a> or <a href="http://www.qgis.org/en/site/">QGIS</a>, but it is also possible to calculate these statistics within <em>R</em>. If you are dealing with raster planning unit data, and so your solutions are in raster format, the <code>cellStats</code>, <code>layerStats</code>, <code>extract</code>, and <code>zonal</code> functions from the <em>raster R</em> package can be useful for calculating summary statistics. Below we will create and solve a problem, and then calculate some statistics showcasing these functions.</p>
+
+<pre><code class="r"># formulate the problem
+p32 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
+       add_min_set_objective() %&gt;%
+       add_relative_targets(0.1) %&gt;%
+       add_binary_decisions()
+
+# solve the problem
+p32 &lt;- solve(p32)
+</code></pre>
+
+<pre><code>## Optimize a model with 5 rows, 90 columns and 450 nonzeros
+## Variable types: 0 continuous, 90 integer (90 binary)
+## Coefficient statistics:
+##   Matrix range     [2e-01, 9e-01]
+##   Objective range  [2e+02, 2e+02]
+##   Bounds range     [1e+00, 1e+00]
+##   RHS range        [3e+00, 8e+00]
+## Found heuristic solution: objective 2337.9617505
+## Presolve time: 0.00s
+## Presolved: 5 rows, 90 columns, 450 nonzeros
+## Variable types: 0 continuous, 90 integer (90 binary)
+## Presolved: 5 rows, 90 columns, 450 nonzeros
+## 
+## 
+## Root relaxation: objective 1.931582e+03, 12 iterations, 0.00 seconds
+## 
+##     Nodes    |    Current Node    |     Objective Bounds      |     Work
+##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+## 
+##      0     0 1931.58191    0    4 2337.96175 1931.58191  17.4%     -    0s
+## H    0     0                    1985.6818841 1931.58191  2.72%     -    0s
+## 
+## Explored 1 nodes (12 simplex iterations) in 0.00 seconds
+## Thread count was 1 (of 8 available processors)
+## 
+## Solution count 2: 1985.68 2337.96 
+## 
+## Optimal solution found (tolerance 1.00e-01)
+## Best objective 1.985681884076e+03, best bound 1.931581908865e+03, gap 2.7245%
+</code></pre>
+
+<pre><code class="r"># calculate the number of selected planning units
+cellStats(p32, &quot;sum&quot;)
+</code></pre>
+
+<pre><code>## [1] 10
+</code></pre>
+
+<pre><code class="r"># calculate the cost of the solution
+cellStats(sim_pu_raster * p32, &quot;sum&quot;)
+</code></pre>
+
+<pre><code>## [1] 1985.682
+</code></pre>
+
+<pre><code class="r"># calculate how well features are represented in the solution
+r27 &lt;- feature_representation(p27, p32)
+print(r27)
+</code></pre>
+
+<pre><code>## # A tibble: 5 x 3
+##   feature absolute_held relative_held
+##   &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;
+## 1 layer.1          8.97         0.108
+## 2 layer.2          3.13         0.100
+## 3 layer.3          7.43         0.103
+## 4 layer.4          4.29         0.101
+## 5 layer.5          6.02         0.106
+</code></pre>
+
+<h2>Conclusion</h2>
+
+<p>Hopefully, this vignette has provided an informative introduction to the <em>prioritizr R</em> package. For more worked examples using the <em>prioritizr R</em> package, check out the <a href="tasmania.html">Tasmania</a> and <a href="saltspring.html">Salt Spring Island</a> vignettes. Perhaps, one of the best ways to learn a new piece of software is to just try it out. Test it, try breaking it, make mistakes, and learn from them. We would recommend trying to build conservation planning problems that resemble those you face in your own work&mdash;but using the built-in example data sets. This way you can quickly verify that the problems you build actually mean what you think they mean. For instance, you can try playing around with the targets and see what effect they have on the solutions, or try playing around with penalties and see what effect they have on the solutions.</p>
+
+<p>Finally, if you have any questions about using the <em>prioritizr R</em> package or suggestions for improving the <em>prioritizr R</em> package (perhaps addressing some spelling mistakes found whilst reading this vignette?), please file an issue on the package&#39;s online coding repository (<a href="https://github.com/prioritizr/prioritizr/issues">https://github.com/prioritizr/prioritizr/issues</a>).</p>
+
+<h2>References</h2>
+
+</body>
+
+</html>
