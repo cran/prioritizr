@@ -1,10 +1,12 @@
-context("problem")
+context("problem (negative data")
 
 test_that("x=Raster, features=RasterStack", {
   # load data
   data(sim_pu_raster, sim_features)
   # create problem
-  x <- problem(sim_pu_raster, sim_features)
+  sim_pu_raster[] <- sim_pu_raster[] * runif(length(sim_pu_raster[]), -1, 1)
+  sim_features[] <- sim_features[] * runif(length(sim_features[]), -1, 1)
+  expect_warning(x <- problem(sim_pu_raster, sim_features))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -17,7 +19,6 @@ test_that("x=Raster, features=RasterStack", {
   expect_equal(x$number_of_total_units(), raster::ncell(sim_pu_raster))
   expect_equal(x$planning_unit_indices(),
                raster::Which(!is.na(sim_pu_raster), cells = TRUE))
-  expect_equal(problem(sim_pu_raster, sim_pu_raster)$number_of_features(), 1L)
   # tests for planning_unit_costs field
   expect_equivalent(x$planning_unit_costs(),
                matrix(sim_pu_raster[[1]][!is.na(sim_pu_raster)], ncol = 1))
@@ -42,7 +43,7 @@ test_that("x=Raster, features=RasterStack", {
                     list(rij_matrix(sim_pu_raster, sim_features)))
   expect_equal(names(x$data$rij_matrix), x$zone_names())
   expect_equal(rownames(x$data$rij_matrix[[1]]), x$feature_names())
-  # test that calling targets before they have been inititalized throws error
+  # test that calling targets before they have been initialized throws error
   expect_error(x$feature_targets())
 })
 
@@ -50,7 +51,11 @@ test_that("x=RasterStack, features=ZonesRaster", {
   # load data
   data(sim_pu_zones_stack, sim_features_zones)
   # create problem
-  x <- problem(sim_pu_zones_stack, sim_features_zones)
+  sim_pu_zones_stack[] <- sim_pu_zones_stack[] *
+                          runif(length(sim_pu_zones_stack[]), -1, 1)
+  sim_features_zones[[1]][] <- sim_features_zones[[1]][] *
+                               runif(length(sim_features_zones[[1]][]), -1, 1)
+  expect_warning(x <- problem(sim_pu_zones_stack, sim_features_zones))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -108,7 +113,10 @@ test_that("x=SpatialPolygonsDataFrame, features=RasterStack", {
   data(sim_pu_polygons, sim_features)
   sim_pu_polygons$cost[1:5] <- NA
   # create problem
-  x <- problem(sim_pu_polygons, sim_features, "cost")
+  sim_pu_polygons$cost <- sim_pu_polygons$cost * runif(nrow(sim_pu_polygons),
+                                                       -1, 1)
+  sim_features[] <- sim_features[] * runif(length(sim_features[]), -1, 1)
+  expect_warning(x <- problem(sim_pu_polygons, sim_features, "cost"))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -119,8 +127,6 @@ test_that("x=SpatialPolygonsDataFrame, features=RasterStack", {
   expect_equal(x$number_of_planning_units(), sum(!is.na(sim_pu_polygons$cost)))
   expect_equal(x$planning_unit_indices(), which(!is.na(sim_pu_polygons$cost)))
   expect_equal(x$number_of_total_units(), nrow(sim_pu_polygons))
-  expect_equal(problem(sim_pu_polygons, sim_pu_raster,
-                       "cost")$number_of_features(), 1L)
   # tests for planning_unit_costs field
   expect_equivalent(x$planning_unit_costs(),
                     matrix(sim_pu_polygons$cost[!is.na(sim_pu_polygons$cost)],
@@ -149,7 +155,7 @@ test_that("x=SpatialPolygonsDataFrame, features=RasterStack", {
                       !is.na(sim_pu_polygons[[1]]), ], sim_features)))
   expect_equal(names(x$data$rij_matrix), "cost")
   expect_equal(rownames(x$data$rij_matrix[[1]]), names(sim_features))
-  # test that calling targets before they have been inititalized throws error
+  # test that calling targets before they have been initialized throws error
   expect_error(x$feature_targets())
 })
 
@@ -158,8 +164,13 @@ test_that("x=SpatialPolygonsDataFrame, features=ZonesRaster", {
   data(sim_pu_zones_polygons, sim_features_zones)
   sim_pu_zones_polygons[5, paste0("cost_", 1:3)] <- NA
   sim_pu_zones_polygons[4, "cost_1"] <- NA
+  sim_pu_zones_polygons$cost_1 <- sim_pu_zones_polygons$cost_1 *
+                                  runif(nrow(sim_pu_zones_polygons), -1, 1)
+  sim_features_zones[[1]][] <- sim_features_zones[[1]][] *
+                               runif(length(sim_features_zones[[1]][]), -1, 1)
   # create problem
-  x <- problem(sim_pu_zones_polygons, sim_features_zones, paste0("cost_", 1:3))
+  expect_warning(x <- problem(sim_pu_zones_polygons, sim_features_zones,
+                              paste0("cost_", 1:3)))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -211,110 +222,18 @@ test_that("x=SpatialPolygonsDataFrame, features=ZonesRaster", {
   expect_error(x$feature_targets())
 })
 
-test_that("x=SpatialLinesDataFrame, features=RasterStack", {
-  # load data
-  data(sim_pu_lines, sim_features)
-  sim_pu_lines$cost[1:5] <- NA
-  # create problem
-  x <- problem(sim_pu_lines, sim_features, "cost")
-  # verify that object can be printed
-  suppressMessages(print(x))
-  suppressMessages(x)
-  # tests for integer fields
-  expect_equal(x$feature_names(), names(sim_features))
-  expect_equal(x$zone_names(), "cost")
-  expect_equal(x$number_of_features(), raster::nlayers(sim_features))
-  expect_equal(x$number_of_planning_units(), sum(!is.na(sim_pu_lines$cost)))
-  expect_equal(x$planning_unit_indices(), which(!is.na(sim_pu_lines$cost)))
-  expect_equal(x$number_of_total_units(), nrow(sim_pu_lines))
-  expect_equal(problem(sim_pu_lines, sim_pu_raster,
-                       "cost")$number_of_features(), 1L)
-  # tests for planning_unit_costs field
-  expect_equivalent(x$planning_unit_costs(),
-                    matrix(sim_pu_lines$cost[!is.na(sim_pu_lines$cost)],
-                           ncol = 1))
-  expect_equal(colnames(x$planning_unit_costs()), "cost")
-  # tests for feature_abundances_in_planning_units field
-  expect_equivalent(x$feature_abundances_in_planning_units(),
-                    Matrix::rowSums(x$data$rij_matrix[[1]]))
-  expect_equal(colnames(x$feature_abundances_in_planning_units()),
-               "cost")
-  expect_equal(rownames(x$feature_abundances_in_planning_units()),
-               names(sim_features))
-  # tests for feature_abundances_in_total_units field
-  expect_equivalent(x$feature_abundances_in_total_units(),
-                    matrix(rowSums(rij_matrix(sim_pu_lines, sim_features),
-                                   na.rm = TRUE), ncol = 1))
-  expect_equal(colnames(x$feature_abundances_in_total_units()),
-               "cost")
-  expect_equal(rownames(x$feature_abundances_in_total_units()),
-               names(sim_features))
-  # tests for rij_matrix field
-  expect_equivalent(x$data$rij_matrix,
-                    list(rij_matrix(sim_pu_lines[
-                      !is.na(sim_pu_lines[[1]]), ], sim_features)))
-  expect_equal(names(x$data$rij_matrix), "cost")
-  expect_equal(rownames(x$data$rij_matrix[[1]]), names(sim_features))
-  # test that calling targets before they have been inititalized throws error
-  expect_error(x$feature_targets())
-})
 
-test_that("x=SpatialPointsDataFrame, features=RasterStack", {
-  # load data
-  data(sim_pu_points, sim_features)
-  sim_pu_points$cost[1:5] <- NA
-  # create problem
-  x <- problem(sim_pu_points, sim_features, "cost")
-  # verify that object can be printed
-  suppressMessages(print(x))
-  suppressMessages(x)
-  # tests for integer fields
-  expect_equal(x$feature_names(), names(sim_features))
-  expect_equal(x$zone_names(), "cost")
-  expect_equal(x$number_of_features(), raster::nlayers(sim_features))
-  expect_equal(x$number_of_planning_units(), sum(!is.na(sim_pu_points$cost)))
-  expect_equal(x$planning_unit_indices(), which(!is.na(sim_pu_points$cost)))
-  expect_equal(x$number_of_total_units(), nrow(sim_pu_points))
-  expect_equal(problem(sim_pu_points, sim_pu_raster,
-                       "cost")$number_of_features(), 1L)
-  # tests for planning_unit_costs field
-  expect_equivalent(x$planning_unit_costs(),
-                    matrix(sim_pu_points$cost[!is.na(sim_pu_points$cost)],
-                           ncol = 1))
-  expect_equal(colnames(x$planning_unit_costs()), "cost")
-  # tests for feature_abundances_in_planning_units field
-  expect_equivalent(x$feature_abundances_in_planning_units(),
-                    Matrix::rowSums(x$data$rij_matrix[[1]]))
-  expect_equal(colnames(x$feature_abundances_in_planning_units()),
-               "cost")
-  expect_equal(rownames(x$feature_abundances_in_planning_units()),
-               names(sim_features))
-  # tests for feature_abundances_in_total_units field
-  expect_equivalent(x$feature_abundances_in_total_units(),
-                    matrix(rowSums(rij_matrix(sim_pu_points, sim_features),
-                                   na.rm = TRUE), ncol = 1))
-  expect_equal(colnames(x$feature_abundances_in_total_units()),
-               "cost")
-  expect_equal(rownames(x$feature_abundances_in_total_units()),
-               names(sim_features))
-  # tests for rij_matrix field
-  expect_equivalent(x$data$rij_matrix,
-                    list(rij_matrix(sim_pu_points[
-                      !is.na(sim_pu_points[[1]]), ], sim_features)))
-  expect_equal(names(x$data$rij_matrix), "cost")
-  expect_equal(rownames(x$data$rij_matrix[[1]]), names(sim_features))
-  # test that calling targets before they have been inititalized throws error
-  expect_error(x$feature_targets())
-})
 
 test_that("x=SpatialPolygonsDataFrame, features=character", {
   # simulate data
   data(sim_pu_polygons)
   sim_pu_polygons$cost[2] <- NA
-  sim_pu_polygons$spp1 <- runif(length(sim_pu_polygons))
-  sim_pu_polygons$spp2 <- c(NA, rpois(length(sim_pu_polygons) - 1, 5))
+  sim_pu_polygons$cost <- sim_pu_polygons$cost * runif(nrow(sim_pu_polygons),
+                                                       -1, 1)
+  sim_pu_polygons$spp1 <- runif(length(sim_pu_polygons), -1, 1)
+  sim_pu_polygons$spp2 <- c(NA, rpois(length(sim_pu_polygons) - 1, 5) - 1)
   # create problem
-  x <- problem(sim_pu_polygons, c("spp1", "spp2"), "cost")
+  expect_warning(x <- problem(sim_pu_polygons, c("spp1", "spp2"), "cost"))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -356,7 +275,7 @@ test_that("x=SpatialPolygonsDataFrame, features=character", {
   expect_true(all(x$data$rij_matrix[[1]] == rij[[1]]))
   expect_equal(names(x$data$rij_matrix), "cost")
   expect_equal(rownames(x$data$rij_matrix[[1]]),  c("spp1", "spp2"))
-  # test that calling targets before they have been inititalized throws error
+  # test that calling targets before they have been initialized throws error
   expect_error(x$feature_targets())
 })
 
@@ -365,18 +284,21 @@ test_that("x=SpatialPolygonsDataFrame, features=ZonesCharacter", {
   data(sim_pu_zones_polygons)
   sim_pu_zones_polygons$cost_1[2] <- NA
   sim_pu_zones_polygons[3, c("cost_1", "cost_2")] <- NA
-  sim_pu_zones_polygons$spp1_1 <- runif(length(sim_pu_zones_polygons))
+  sim_pu_zones_polygons$cost_1 <- sim_pu_zones_polygons$cost_1 *
+                                  runif(nrow(sim_pu_zones_polygons), -1, 1)
+  sim_pu_zones_polygons$spp1_1 <- runif(length(sim_pu_zones_polygons), -1, 1)
   sim_pu_zones_polygons$spp2_1 <- c(NA, rpois(length(sim_pu_zones_polygons) - 1,
                                     5))
-  sim_pu_zones_polygons$spp1_2 <- runif(length(sim_pu_zones_polygons))
-  sim_pu_zones_polygons$spp2_2 <- runif(length(sim_pu_zones_polygons))
+  sim_pu_zones_polygons$spp1_2 <- runif(length(sim_pu_zones_polygons), -1, 1)
+  sim_pu_zones_polygons$spp2_2 <- runif(length(sim_pu_zones_polygons), -1, 1)
   sim_pu_zones_polygons <- sim_pu_zones_polygons[1:5, ]
   # create problem
-  x <- problem(sim_pu_zones_polygons,
-               zones(c("spp1_1", "spp2_1"), c("spp1_2", "spp2_2"),
-                     zone_names = c("z1", "z2"),
-                     feature_names = c("spp1", "spp2")),
-               c("cost_1", "cost_2"))
+  expect_warning(x <- problem(sim_pu_zones_polygons,
+                              zones(c("spp1_1", "spp2_1"),
+                                    c("spp1_2", "spp2_2"),
+                                    zone_names = c("z1", "z2"),
+                                    feature_names = c("spp1", "spp2")),
+                              c("cost_1", "cost_2")))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -444,10 +366,10 @@ test_that("x=SpatialPolygonsDataFrame, features=ZonesCharacter", {
 
 test_that("x=data.frame, features=character", {
   # simulate data
-  pu <- data.frame(id = seq_len(10), cost = c(runif(1), NA, runif(8)),
-                   spp1 = runif(10), spp2 = c(rpois(9, 4), NA))
+  pu <- data.frame(id = seq_len(10), cost = c(runif(1), NA, runif(8, -1, 1)),
+                   spp1 = runif(10, -1, 1), spp2 = c(rpois(9, 4), NA))
   # create problem
-  x <- problem(pu, c("spp1", "spp2"), "cost")
+  expect_warning(x <- problem(pu, c("spp1", "spp2"), "cost"))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -494,11 +416,13 @@ test_that("x=data.frame, features=ZonesCharacter", {
   # simulate data
   pu <- data.frame(id = seq_len(10), cost_1 = c(NA, NA, runif(8)),
                    cost_2 = c(0.3, NA, runif(8)),
-                   spp1_1 = runif(10), spp2_1 = c(rpois(9, 4), NA),
-                   spp1_2 = runif(10), spp2_2 = runif(10))
+                   spp1_1 = runif(10, -1, 1), spp2_1 = c(rpois(9, 4), NA),
+                   spp1_2 = runif(10, -1, 1), spp2_2 = runif(10, -1, 1))
   # create problem
-  x <- problem(pu, zones(c("spp1_1", "spp2_1"), c("spp1_2", "spp2_2")),
-               c("cost_1", "cost_2"))
+  expect_warning(x <- problem(pu,
+                              zones(c("spp1_1", "spp2_1"),
+                                    c("spp1_2", "spp2_2")),
+                              c("cost_1", "cost_2")))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -554,12 +478,12 @@ test_that("x=data.frame, features=ZonesCharacter", {
 
 test_that("x=data.frame, features=data.frame (single zone)", {
   # simulate data
-  pu <- data.frame(id = seq_len(10), cost = c(0.1, NA, runif(8)))
+  pu <- data.frame(id = seq_len(10), cost = c(0.1, NA, runif(8, -1, 1)))
   species <- data.frame(id = seq_len(5), name = letters[1:5], targets = 0.5)
   rij <- expand.grid(pu = seq_len(9), species = seq_len(5))
-  rij$amount <- runif(nrow(rij))
+  rij$amount <- runif(nrow(rij), -1, 1)
   # create problem
-  x <- problem(pu, species, rij, "cost")
+  expect_warning(x <- problem(pu, species, rij, "cost"))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -604,14 +528,14 @@ test_that("x=data.frame, features=data.frame (single zone)", {
 
 test_that("x=data.frame, features=data.frame (multiple zones)", {
   # simulate data
-  pu <- data.frame(id = seq_len(10), cost_1 = c(0.1, NA, runif(8)),
-                   cost_2 = c(NA, NA, runif(8)))
+  pu <- data.frame(id = seq_len(10), cost_1 = c(0.1, NA, runif(8, -1, 1)),
+                   cost_2 = c(NA, NA, runif(8, -1, 1)))
   species <- data.frame(id = seq_len(5), name = letters[1:5], targets = 0.5)
   rij <- expand.grid(pu = seq_len(9), species = seq_len(5), zone = 1:2)
-  rij$amount <- runif(nrow(rij))
+  rij$amount <- runif(nrow(rij), -1, 1)
   z <- data.frame(id = 1:2, name = c("z1", "z2"))
   # create problem
-  x <- problem(pu, species, rij, c("cost_1", "cost_2"), z)
+  expect_warning(x <- problem(pu, species, rij, c("cost_1", "cost_2"), z))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -665,11 +589,13 @@ test_that("x=data.frame, features=data.frame (multiple zones)", {
 
 test_that("x=numeric, features=data.frame", {
   # simulate data
-  pu <- data.frame(id = seq_len(10), cost = c(0.2, NA, runif(8)),
-                   spp1 = runif(10), spp2 = c(rpois(9, 4), NA))
+  pu <- data.frame(id = seq_len(10), cost = c(0.2, NA, runif(8, -1, 1)),
+                   spp1 = runif(10, -1, 1), spp2 = c(rpois(9, 4), NA))
   # create problem
-  x <- problem(pu$cost, data.frame(id = seq_len(2), name = c("spp1", "spp2")),
-               as.matrix(t(pu[, 3:4])))
+  expect_warning(x <- problem(pu$cost,
+                              data.frame(id = seq_len(2),
+                                         name = c("spp1", "spp2")),
+                              as.matrix(t(pu[, 3:4]))))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -708,14 +634,16 @@ test_that("x=numeric, features=data.frame", {
 
 test_that("x=matrix, features=data.frame", {
   # simulate data
-  pu <- data.frame(id = seq_len(10), cost_1 = c(NA, NA, runif(8)),
-                   cost_2 = c(0.3, NA, runif(8)),
-                   spp1_1 = runif(10), spp2_1 = c(rpois(9, 4), NA),
-                   spp1_2 = runif(10), spp2_2 = runif(10))
+  pu <- data.frame(id = seq_len(10), cost_1 = c(NA, NA, runif(8, -1, 1)),
+                   cost_2 = c(0.3, NA, runif(8, -1, 1)),
+                   spp1_1 = runif(10, -1, 1), spp2_1 = c(rpois(9, 4), NA),
+                   spp1_2 = runif(10, -1, 1), spp2_2 = runif(10, -1, 1))
   # create problem
-  x <- problem(as.matrix(pu[, 2:3]),
-               data.frame(id = seq_len(2), name = c("spp1", "spp2")),
-               list(as.matrix(t(pu[, 4:5])), as.matrix(t(pu[, 6:7]))))
+  expect_warning(x <- problem(as.matrix(pu[, 2:3]),
+                              data.frame(id = seq_len(2),
+                                         name = c("spp1", "spp2")),
+                              list(as.matrix(t(pu[, 4:5])),
+                                   as.matrix(t(pu[, 6:7])))))
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(x)
@@ -758,51 +686,4 @@ test_that("x=matrix, features=data.frame", {
   expect_equal(rownames(x$data$rij_matrix[[2]]), c("spp1", "spp2"))
   # test that calling targets before they have been inititalized throws error
   expect_error(x$feature_targets())
-})
-
-test_that("invalid problem inputs", {
-  # check that errors are thrown if invalid arguments
-  data(sim_pu_polygons, sim_pu_lines, sim_pu_points, sim_pu_raster,
-       sim_features)
-  expect_error(problem(1, sim_features))
-  expect_error(problem(sim_pu_lines, sim_pu_points, "cost"))
-  expect_error(problem(raster::stack(sim_pu_raster, sim_pu_raster),
-                       sim_features))
-
-  # check that errors are thrown if all planning units have NA cost
-  data(sim_pu_polygons, sim_pu_lines, sim_pu_points, sim_pu_raster,
-       sim_features)
-  sim_pu_polygons$cost <- NA
-  sim_pu_lines$cost <- NA
-  sim_pu_points$cost <- NA
-  suppressWarnings(sim_pu_raster <- raster::setValues(sim_pu_raster, NA))
-  expect_error(problem(sim_pu_raster, sim_features))
-  expect_error(problem(sim_pu_polygons, sim_features, "cost"))
-  expect_error(problem(sim_pu_lines, sim_features, "cost"))
-  expect_error(problem(sim_pu_points, sim_features, "cost"))
-
-  # check that errors are thrown if features only contain NAs
-  data(sim_pu_polygons, sim_pu_lines, sim_pu_points, sim_pu_raster)
-  suppressWarnings(sim_features[[1]] <- raster::setValues(sim_features[[1]],
-                                                          NA))
-  expect_error(problem(sim_pu_raster, sim_features))
-  expect_error(problem(sim_pu_polygons, sim_features, "cost"))
-  expect_error(problem(sim_pu_lines, sim_features, "cost"))
-  expect_error(problem(sim_pu_points, sim_features, "cost"))
-
-  # check that errors are thrown if features only contain zeros
-  data(sim_pu_polygons, sim_pu_lines, sim_pu_points, sim_pu_raster)
-  sim_features[[1]] <- raster::setValues(sim_features[[1]], 0)
-  expect_error(problem(sim_pu_raster, sim_features))
-  expect_error(problem(sim_pu_polygons, sim_features, "cost"))
-  expect_error(problem(sim_pu_lines, sim_features, "cost"))
-  expect_error(problem(sim_pu_points, sim_features, "cost"))
-})
-
-test_that("inheritance", {
-  data(sim_pu_polygons, sim_features)
-  p1 <- problem(sim_pu_polygons, sim_features, "cost")
-  p2 <- p1 %>% add_locked_in_constraints("locked_in")
-  expect_equal(p1$constraints$length(), 0)
-  expect_equal(p2$constraints$length(), 1)
 })

@@ -1,237 +1,327 @@
 <!DOCTYPE html>
-<html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Introduction</title>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
 
-<script type="text/javascript">
-window.onload = function() {
-  var imgs = document.getElementsByTagName('img'), i, img;
-  for (i = 0; i < imgs.length; i++) {
-    img = imgs[i];
-    // center an image if it is the only element of its parent
-    if (img.parentElement.childElementCount === 1)
-      img.parentElement.style.textAlign = 'center';
-  }
-};
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Styles for R syntax highlighter -->
+
+
+<title>Management Zones</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-   pre .operator,
-   pre .paren {
-     color: rgb(104, 118, 135)
-   }
-
-   pre .literal {
-     color: #990073
-   }
-
-   pre .number {
-     color: #099;
-   }
-
-   pre .comment {
-     color: #998;
-     font-style: italic
-   }
-
-   pre .keyword {
-     color: #900;
-     font-weight: bold
-   }
-
-   pre .identifier {
-     color: rgb(0, 0, 0);
-   }
-
-   pre .string {
-     color: #d14;
-   }
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
-<!-- R syntax highlighter -->
-<script type="text/javascript">
-var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
-hljs.initHighlightingOnLoad();
-</script>
 
 
-
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 13px;
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
 }
-
-body {
-  max-width: 800px;
-  margin: auto;
-  padding: 1em;
-  line-height: 20px;
+#header {
+text-align: center;
 }
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
 }
-
-h1 {
-   font-size:2.2em;
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
 }
-
-h2 {
-   font-size:1.8em;
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
 }
-
-h3 {
-   font-size:1.4em;
+#TOC ul ul {
+margin-left: -2em;
 }
-
-h4 {
-   font-size:1.0em;
+#TOC li {
+line-height: 16px;
 }
-
-h5 {
-   font-size:0.9em;
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
 }
-
-h6 {
-   font-size:0.8em;
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
 }
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
 }
-
-pre, img {
-  max-width: 100%;
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
 }
 pre {
-  overflow-x: auto;
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
 }
-pre code {
-   display: block; padding: 0.5em;
+pre:not([class]) {
+background-color: #f7f7f7;
 }
-
 code {
-  font-size: 92%;
-  border: 1px solid #ccc;
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
 }
-
-code[class] {
-  background-color: #F8F8F8;
+p > code, li > code {
+padding: 2px 0px;
 }
-
-table, td, th {
-  border: none;
+div.figure {
+text-align: center;
 }
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
 }
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
 }
-
-@media print {
-   * {
-      background: transparent !important;
-      color: black !important;
-      filter:none !important;
-      -ms-filter: none !important;
-   }
-
-   body {
-      font-size:12pt;
-      max-width:100%;
-   }
-
-   a, a:visited {
-      text-decoration: underline;
-   }
-
-   hr {
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote {
-      padding-right: 1em;
-      page-break-inside: avoid;
-   }
-
-   tr, img {
-      page-break-inside: avoid;
-   }
-
-   img {
-      max-width: 100% !important;
-   }
-
-   @page :left {
-      margin: 15mm 20mm 15mm 10mm;
-   }
-
-   @page :right {
-      margin: 15mm 10mm 15mm 20mm;
-   }
-
-   p, h2, h3 {
-      orphans: 3; widows: 3;
-   }
-
-   h2, h3 {
-      page-break-after: avoid;
-   }
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
 }
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
-
-
 
 </head>
 
 <body>
+
+
+
+
+<h1 class="title toc-ignore">Management Zones</h1>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#simple-minimum-set-problem">Simple minimum set problem</a></li>
+<li><a href="#adding-management-zones">Adding management zones</a></li>
+<li><a href="#multiple-zones-with-varying-costs">Multiple zones with varying costs</a></li>
+<li><a href="#multiple-zones-with-complex-targets">Multiple zones with complex targets</a></li>
+<li><a href="#multiple-zones-with-extra-constraints">Multiple zones with extra constraints</a></li>
+<li><a href="#multiple-zones-with-fragmentation-penalties">Multiple zones with fragmentation penalties</a></li>
+</ul></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
 <h2>Introduction</h2>
-
-<p>One of the main aims in conservation planning is to identify the most cost-effective set of areas to manage biodiversity [@r4]. To achieve this, prioritizations are generally created to identify areas for expanding protected area systems. However, many real-world conservation problems do not simply involve deciding if an area should be protected or not [e.g. @r5; @r18]. Instead, many real-world problems involve a range of different management categories and the goal is to determine which areas should be allocated to which management category. For example, a manager might have a range of different methods (e.g. baiting or trapping at various intensities) for controlling invasive pests in a set of different areas [e.g. @r25]. They would need a prioritization that shows which control methods should be implemented in which areas. In this particular case, a binary prioritization showing which areas contain the most biodiversity is simply not helpful. Furthermore, many real-world problems require decisions that meet multiple, and sometimes conflicting, objectives from different stakeholders. For example, a manager might need to implement a set of no-take and partial-take areas to prevent overfishing, but also ensure that there still remain plenty of areas for fishing activities [e.g. @r26; @r27]. Popularized by <em>Marxan with Zones</em> [@r2], this concept has become known as &ldquo;zones&rdquo; and is becoming increasingly important in conservation planning.</p>
-
-<p>The aim of this vignette is to showcase the zones functionality of the <em>prioritizr R</em> package. It will assume a certain level of familiarity with conservation planning terminology and the <em>prioritizr R</em> package. We recommend reading the <a href="prioritizr.html"><em>prioritizr</em> vignette</a> first if you don&#39;t have much experience in either of these topics.</p>
-
+<p>One of the main aims in conservation planning is to identify the most cost-effective set of areas to manage biodiversity <span class="citation">(Margules &amp; Pressey 2000)</span>. To achieve this, prioritizations are generally created to identify areas for expanding protected area systems. However, many real-world conservation problems do not simply involve deciding if an area should be protected or not <span class="citation">(e.g. Klein <em>et al.</em> 2009; Stigner <em>et al.</em> 2016)</span>. Instead, many real-world problems involve a range of different management categories and the goal is to determine which areas should be allocated to which management category. For example, a manager might have a range of different methods (e.g. baiting or trapping at various intensities) for controlling invasive pests in a set of different areas <span class="citation">(e.g. Cattarino <em>et al.</em> 2018)</span>. They would need a prioritization that shows which control methods should be implemented in which areas. In this particular case, a binary prioritization showing which areas contain the most biodiversity is simply not helpful. Furthermore, many real-world problems require decisions that meet multiple, and sometimes conflicting, objectives from different stakeholders. For example, a manager might need to implement a set of no-take and partial-take areas to prevent overfishing, but also ensure that there still remain plenty of areas for fishing activities <span class="citation">(e.g. Wilson <em>et al.</em> 2010; Klein <em>et al.</em> 2013)</span>. Popularized by <em>Marxan with Zones</em> <span class="citation">(Watts <em>et al.</em> 2009)</span>, this concept has become known as “zones” and is becoming increasingly important in conservation planning.</p>
+<p>The aim of this vignette is to showcase the zones functionality of the <em>prioritizr R</em> package. It will assume a certain level of familiarity with conservation planning terminology and the <em>prioritizr R</em> package. We recommend reading the <a href="prioritizr.html"><em>prioritizr</em> vignette</a> first if you don’t have much experience in either of these topics.</p>
+</div>
+<div id="usage" class="section level2">
 <h2>Usage</h2>
-
+<div id="simple-minimum-set-problem" class="section level3">
 <h3>Simple minimum set problem</h3>
-
-<p>In the <em>prioritizr R</em> package, all conservation planning problems&mdash;including those which contain multiple management zones or actions&mdash;are initialized using the <code>problem</code> function. To refresh our memory on how we can construct problems using the <em>prioritizr R</em> package, let us quickly construct a simple conservation planning problem. This problem will use the simulated built-in planning unit and feature data distributed with the package. It will have a minimum set objective, targets which require that solution secure to 10 % of the habitat in the study area for each feature, and binary decision variables indicating that planning units are selected or not selected for protection.</p>
-
-<pre><code class="r"># load prioritizr package
-library(prioritizr)
-
-# load data
-data(sim_pu_raster, sim_features)
-
-# create targets for each of the five features
-t1 &lt;- rep(0.1, 5)
-
-# build single-zone problem
-p1 &lt;- problem(sim_pu_raster, sim_features) %&gt;%
-      add_min_set_objective() %&gt;%
-      add_relative_targets(t1) %&gt;%
-      add_binary_decisions()
-
-# print problem
-print(p1)
-</code></pre>
-
+<p>In the <em>prioritizr R</em> package, all conservation planning problems—including those which contain multiple management zones or actions—are initialized using the <code>problem</code> function. To refresh our memory on how we can construct problems using the <em>prioritizr R</em> package, let us quickly construct a simple conservation planning problem. This problem will use the simulated built-in planning unit and feature data distributed with the package. It will have a minimum set objective, targets which require that solution secure to 10 % of the habitat in the study area for each feature, and binary decision variables indicating that planning units are selected or not selected for protection.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># load prioritizr package</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(prioritizr)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># load data</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">data</span>(sim_pu_raster, sim_features)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co"># create targets for each of the five features</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">t1 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="fl">0.1</span>, <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co"># build single-zone problem</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">p1 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="st">      </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="st">      </span><span class="kw">add_relative_targets</span>(t1) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="st">      </span><span class="kw">add_binary_decisions</span>()</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co"># print problem</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="kw">print</span>(p1)</a></code></pre></div>
 <pre><code>## Conservation Problem
 ##   planning units: RasterLayer (90 units)
 ##   cost:           min: 190.13276, max: 215.86384
@@ -242,13 +332,9 @@ print(p1)
 ##   constraints:    &lt;none&gt;
 ##   penalties:      &lt;none&gt;
 ##   portfolio:      default
-##   solver:         default
-</code></pre>
-
-<pre><code class="r"># solve problem
-s1 &lt;- solve(p1)
-</code></pre>
-
+##   solver:         default</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># solve problem</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">s1 &lt;-<span class="st"> </span><span class="kw">solve</span>(p1)</a></code></pre></div>
 <pre><code>## Optimize a model with 5 rows, 90 columns and 450 nonzeros
 ## Variable types: 0 continuous, 90 integer (90 binary)
 ## Coefficient statistics:
@@ -277,14 +363,10 @@ s1 &lt;- solve(p1)
 ## Solution count 2: 1985.68 2337.96 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 1.985681884076e+03, best bound 1.931581908865e+03, gap 2.7245%
-</code></pre>
-
-<pre><code class="r"># calculate feature representation
-r1 &lt;- feature_representation(p1, s1)
-print(r1)
-</code></pre>
-
+## Best objective 1.985681884076e+03, best bound 1.931581908865e+03, gap 2.7245%</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># calculate feature representation</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">r1 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p1, s1)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw">print</span>(r1)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   feature absolute_held relative_held
 ##   &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;
@@ -292,64 +374,49 @@ print(r1)
 ## 2 layer.2          3.13         0.100
 ## 3 layer.3          7.43         0.103
 ## 4 layer.4          4.29         0.101
-## 5 layer.5          6.02         0.106
-</code></pre>
-
-<pre><code class="r"># plot solution
-plot(s1, main = &quot;solution&quot;, axes = FALSE, box = FALSE)
-</code></pre>
-
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAIAAAApSmgoAAAACXBIWXMAAAsSAAALEgHS3X78AAAZMUlEQVR4nO3df2xddf348XN6q8LW3q5jgJQ19ltANLRMxpaMHy711z7oYPqNCWoyk1pZMDoiMRozM4YjZkq0GhV/ECCEhKQQF+j4EZNvBBxRNvL9jDKgroBjiFRAGXVrcRRue79/XD+1vUW+p+zSy335eOSE3J5zf7xpxpOz9zn3nLRYLCYAxFVX7QEA8NYSeoDghB4gOKEHCE7oAYITeoDghB4gOKEHCE7oAYITeoDghB4gOKEHCE7oAYITeoDghB4gOKEHCE7oAYITeoDghB4gOKEHCE7oAYITeoDghB4gOKGnZrzyyitpmtbX18/1hWmapmlaKBTeilHB25/QE9CKFSvSNN29e3e1BwJvC3PeOYKaMzo6miRJLper9kCgOuzRUzW///3vV69enc/njz/++Isuuuixxx4rrR8dHb388stPO+20hQsXfuADH7j++uuLxWLZax977LE0TU899dTSj7t3707TdMWKFUmSrFixYs+ePUmSnHPOObfccssrr7zS2Ni4aNGiNE3f4M2ff/75NE2XLFly++23d3R0NDY2XnTRRS+88MK8/TbgLVSEavjb3/6Wz+fTNP3kJz+5evXqJElaWlpefvnlycnJrq6uJElaW1vXrl177LHHJknygx/8oFgsHjlyJEmSXC5XLBYfffTRJElOOeWU0rvt2rUrSZKzzz67WCzefffdbW1tSZJceeWVBw4cmP6qN3jz5557rvS0d7zjHWeccUZdXV2SJJdccknVfkFQOUJPddxzzz1Jkpx22mnPP/98sVi8/PLLP/3pTz/55JP33XdfKcSHDx8uFos7d+5MkqSpqWliYiJj6IvF4tlnn50kya5du4oz//fwBm9eCn2SJL/5zW+KxeJNN92UJElnZ2cVfjVQaaZuqI5ly5YtXrz4ySefPOmkk1atWrVo0aJrrrnm1FNPLRX8oosuamxsTJJk9erVJ5988qFDh5599tmj/9D/75s3NTV9+MMfTpJk5cqVSZL84x//OPoPhaoTeqrjuOOO279//1VXXbVs2bIHH3zw29/+9umnn/7kk0/OfmbpIOrrnhxZ/J+5+9dee+3NDaPszevr60tT+aV/QgxCT3Xcdtttl19+eVtb28DA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WOakvr6+v79/y5Ytra2t+Xx+06ZNpfXd3d0DAwPHHntsf3//tm3bTj755EceeeTmm2+u4LDN0QNkkh71JRBWrly5d+/espVjY2OlB+eff/7srRUh9ABZuR49QHBuJQgQWZok75gZ+lrpvtADZFWjp68IPUAmaTprj75KI5kroQfIqnyuxtQNQCSps24AwntHbd5hSugBMpl9K8FaIfQAWZm6AYjsdc6jr9JI5kroAbJy1g1AcLnijJ34tFgbpRd64pi6fU88+bvy8/ZZhy88PG+fVWvSZLImZ+mFHiCzGtmFLyP0ANkUk6Qws5mTxSoNZW6EHiCjNCmWTd1MVmcgcyT0AJmVzdEXhR4gkmKSTORmrpqozkjmSOgBMpo1dVMjx2aFHiCTNEnSibJmjldnKHMk9ACZle3C26MHCKXoC1MA4U3ObKY9eoBoys+jrw1CD5BRmkzW5OUrhR4gm2KSTObK19SCmvxrCEBVpMW6Gcsc9+j37NmzfPny5ubm7u7u8fHXPzVzaGiooaGhEoP9F6EHyChNJutnLHM5GFsoFNatW7dx48bBwcHh4eFt27bNfs7ExERPT88rr7xSuTEnidADzEExnbHMxc6dO5uamnp6elpaWjZv3tzX1zf7OT/96U+XLl1aobH+i9ADZFasm7nMofX79+/v7OwsPe7o6Dhw4MDk5GTZE375y19+73vfq+SAkyRxMBYgq2Jadh79wb8Xbr755gceeKDsiV/96lcvvPDCspUjIyONjY2lx/l8vlAojI2N5fP/vHfY5OTkhg0bent7p9ZUkNADZDbzPPrjFr1z7afXb926NctLm5ubp+52OTo6msvlph90vf7661taWtauXfviiy9WcLwlpm4AMkpnTd3M4cXt7e379u0rPR4aGmpra6ur+1eB77333jvuuGPJkiXvfe97JyYmlixZsnv37kqN2x49QFZp2Xn0czm9squr6+DBgzt27FizZk1vb+/69etL67dv337OOef87Gc/O3LkSJIkL7300llnnfXwww8ff/zxlRq2PXqAzMr26OcS+vr6+v7+/i1btrS2tubz+U2bNpXWd3d3DwwMHHfccUuXLl26dGlLS0uapkuXLn3Xu95VqVHbowfIZtbB2Ll+M3blypV79+4tWzk2Njb9xyVLlhQKhTczvH9P6AGyc5ligNjKr14p9AChpEnxzR+MrSKhB8is/ObgVRrGHAk9QGambgBCS9NiWTOFHiCamvzukdADZORgLEBsxdkHY4UeIBpTNwCRpUn5wdja6L7QA2RXG2UvI/S8taZuqTMPpu7qMA/yd1X+NkC8/aU1MilfRugBMkpnNbM2ui/0ANn5ZixAbOWXQKgNQg+QkakbgPhM3QBEliaJSyAAhJbaoweIzsFYgMgcjAWIz9QNQHCmbgAiM3UDEF5aVnahB4glndnM2sh8jc43AVRDmiR1M5e5pX7Pnj3Lly9vbm7u7u4eHx8v27pjx473ve99Cxcu/NCHPrRv377KDVvoAbJL62Yscwl9oVBYt27dxo0bBwcHh4eHt23bNn3r888///nPf763t/e55547//zzL7744gqOWugBMiodjJ2+zCH0O3fubGpq6unpaWlp2bx5c19f3/Stu3fvXrZs2dq1a/P5/BVXXDE4ODgyMlKpcZujB8gsffM7x/v37+/s7Cw97ujoOHDgwOTkZF3dP9/wIx/5yLnnnlt6vHv37ra2tkWLFh3lYKcIPUB2M0J/8NDL11133d133132pKuuuuoTn/hE2cqRkZGpO2vm8/lCoTA2NpbP//OelI2NjY2NjcVi8Y477vjKV77yi1/8Ii0/w+fNE3qAbNI0SWc087hFjZ+4+PNbt27N8urm5uap2xqPjo7mcrmGhobpTzh48OCGDRueeeaZ/v7+FStWVGrUiTl6gDlI0xnLXLS3t0+dSzM0NNTW1jY1b5Mkyfj4+Jo1a97//vc/+OCDla18IvQA2aVp/fRlTgdju7q6Dh48uGPHjiNHjvT29q5fv760fvv27cPDw/39/RMTExs2bPjzn//89NNPP/300xMTE5UattADZJQezemV9fX1/f39W7ZsaW1tzefzmzZtKq3v7u4eGBh46KGH9u7d+7+mcdYNQFUc1dUrV65cuXfv3rKVY2NjSZJceOGFV1999VEN7d8TeoCM0qRuZjMrd2LMW0roAbKryeluoQfIrPwLU/boASJJTd0AhJYmSXoUl0CoIqEHyCzNlf1cnWHMkdADZJSaoweIriz05ugBYpl1MNYePUAo6VFdj76KhB4gM1M38UzdJWAeTF2oOpi0rzb+S5ir4ueK1R7CWyXqH8VKSNOc8+gBYjN1AxBZmvhmLEBsaVLnPHqA2HxhCiC0NHEwFiAy59EDxOc8eoDQys+jT83RA0RTdtZNbXRe6AEySpMkN/N69KZuAGKZfR59bRB6gMycRw8QWZom9TObWSf0AMHYoweILa3Ns25q8sACQBWUpm6mL3P8ouyePXuWL1/e3Nzc3d09Pj4+p61HQ+gBMqurm7HMRaFQWLdu3caNGwcHB4eHh7dt25Z969GOuoLvBRBcrn7GMpfz6Hfu3NnU1NTT09PS0rJ58+a+vr7sW4+SOXqAbNKjOo9+//79nZ2dpccdHR0HDhyYnJys+583fOOtR0noATJ57rnnunt6pq/5v//938N/+cu+ffvKntnT03PBBReUrRwZGZm6DXU+ny8UCmNjY/l8PsvWoyT0AJk89NBDr7322vQ1r776an19/ez97qlkT9fc3Dx14/XR0dFcLtfQ0JBx61ESeoBMjrK87e3t11xzTenx0NBQW1vb9P9DvPHWo+RgLMB86OrqOnjw4I4dO44cOdLb27t+/frS+u3btw8PD/+7rRUh9ADzob6+vr+/f8uWLa2trfl8ftOmTaX13d3dAwMD/25rRaTFYrGCbzcPpqax5sHrTrS9Rebz32s+5e+qzNGkt5vi52rsP5zsQv5RzOVyCxYsqPYoqsYePUBwQg8QnNADBCf0AMEJPUBwQg8QnNADBCf0AMEJPUBwQg8QnKtXvpGQ3wVP5vfSDlRE1D+KzA979ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEFx9tQdAFaR9abWH8JYofq44b581z7/Dwxcens+PIxh79ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEJzQAwQn9ADBCT1AcEIPEFxaLBarPQYA3kL26AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4IQeIDihBwhO6AGCE3qA4P4f4yQI9sOCc04AAAAASUVORK5CYII=" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" /></p>
-
+## 5 layer.5          6.02         0.106</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># plot solution</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">plot</span>(s1, <span class="dt">main =</span> <span class="st">&quot;solution&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+</div>
+<div id="adding-management-zones" class="section level3">
 <h3>Adding management zones</h3>
-
-<p>Now let us imagine that instead of having a single management zone (e.g. protected area), we have two management zones. Similar to the example above, we require a solution that secures 10 % of the habitat in the study area for each feature in the first management zone. But we also require a solution that secures 5 % of the habitat in the study area for each feature in the second management zone. Each planning unit must be allocated to either zone or not selected for management at all. In this example, each planning unit costs the same when it is allocated to either of the two zones. We can formulate and solve this problem using the following code.</p>
-
-<pre><code class="r"># create a matrix with the targets
-# here each column corresponds to a different zone,
-# each row corresponds to a different feature, and
-# each cell value corresponds to the target
-t2 &lt;- matrix(NA, ncol = 2, nrow = 5)
-t2[, 1] &lt;- 0.1
-t2[, 2] &lt;- 0.05
-
-# print targets
-print(t2)
-</code></pre>
-
+<p>Now let us imagine that instead of having a single management zone (e.g. protected area), we have two management zones. Similar to the example above, we require a solution that secures 10 % of the habitat in the study area for each feature in the first management zone. But we also require a solution that secures 5 % of the habitat in the study area for each feature in the second management zone. Each planning unit must be allocated to either zone or not selected for management at all. In this example, each planning unit costs the same when it is allocated to either of the two zones. We can formulate and solve this problem using the following code.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># create a matrix with the targets</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co"># here each column corresponds to a different zone,</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co"># each row corresponds to a different feature, and</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co"># each cell value corresponds to the target</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">t2 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA</span>, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">nrow =</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">t2[, <span class="dv">1</span>] &lt;-<span class="st"> </span><span class="fl">0.1</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7">t2[, <span class="dv">2</span>] &lt;-<span class="st"> </span><span class="fl">0.05</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co"># print targets</span></a>
+<a class="sourceLine" id="cb8-10" data-line-number="10"><span class="kw">print</span>(t2)</a></code></pre></div>
 <pre><code>##      [,1] [,2]
 ## [1,]  0.1 0.05
 ## [2,]  0.1 0.05
 ## [3,]  0.1 0.05
 ## [4,]  0.1 0.05
-## [5,]  0.1 0.05
-</code></pre>
-
-<pre><code class="r"># create a zones object that contains the amount of each feature
-# in each planning unit when it is allocated to each zone
-# since our zones pertain to the same habitat data, we will
-# to specify the same habitat data for each zone
-z2 &lt;- zones(&quot;zone 1&quot; = sim_features, &quot;zone 2&quot; = sim_features)
-
-# print zones
-print(z2)
-</code></pre>
-
+## [5,]  0.1 0.05</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># create a zones object that contains the amount of each feature</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co"># in each planning unit when it is allocated to each zone</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co"># since our zones pertain to the same habitat data, we will</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co"># to specify the same habitat data for each zone</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">z2 &lt;-<span class="st"> </span><span class="kw">zones</span>(<span class="st">&quot;zone 1&quot;</span> =<span class="st"> </span>sim_features, <span class="st">&quot;zone 2&quot;</span> =<span class="st"> </span>sim_features)</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co"># print zones</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="kw">print</span>(z2)</a></code></pre></div>
 <pre><code>## Zones
 ##   zones: zone 1, zone 2 (2 zones)
 ##   features: 1, 2, 3, ... (5 features)
-##   data type: RasterStack
-</code></pre>
-
-<pre><code class="r"># create a raster stack with the planning unit data
-# since our planning unit costs are the same for each zone,
-# we will create a stack with two replicates of the cost data
-pu2 &lt;- stack(sim_pu_raster, sim_pu_raster)
-
-# print stack
-print(pu2)
-</code></pre>
-
+##   data type: RasterStack</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co"># create a raster stack with the planning unit data</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co"># since our planning unit costs are the same for each zone,</span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co"># we will create a stack with two replicates of the cost data</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">pu2 &lt;-<span class="st"> </span><span class="kw">stack</span>(sim_pu_raster, sim_pu_raster)</a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co"># print stack</span></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="kw">print</span>(pu2)</a></code></pre></div>
 <pre><code>## class       : RasterStack 
 ## dimensions  : 10, 10, 100, 2  (nrow, ncol, ncell, nlayers)
 ## resolution  : 0.1, 0.1  (x, y)
@@ -357,19 +424,15 @@ print(pu2)
 ## coord. ref. : NA 
 ## names       :  layer.1,  layer.2 
 ## min values  : 190.1328, 190.1328 
-## max values  : 215.8638, 215.8638
-</code></pre>
-
-<pre><code class="r"># build two-zone problem
-p2 &lt;- problem(pu2, z2) %&gt;%
-      add_min_set_objective() %&gt;%
-      add_relative_targets(t2) %&gt;%
-      add_binary_decisions()
-
-# print problem
-print(p2)
-</code></pre>
-
+## max values  : 215.8638, 215.8638</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co"># build two-zone problem</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">p2 &lt;-<span class="st"> </span><span class="kw">problem</span>(pu2, z2) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-3" data-line-number="3"><span class="st">      </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="st">      </span><span class="kw">add_relative_targets</span>(t2) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="st">      </span><span class="kw">add_binary_decisions</span>()</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7"><span class="co"># print problem</span></a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="kw">print</span>(p2)</a></code></pre></div>
 <pre><code>## Conservation Problem
 ##   zones:          zone 1, zone 2 (2 zones)
 ##   planning units: RasterStack (90 units)
@@ -381,13 +444,9 @@ print(p2)
 ##   constraints:    &lt;none&gt;
 ##   penalties:      &lt;none&gt;
 ##   portfolio:      default
-##   solver:         default
-</code></pre>
-
-<pre><code class="r"># solve problem
-s2 &lt;- solve(p2)
-</code></pre>
-
+##   solver:         default</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># solve problem</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">s2 &lt;-<span class="st"> </span><span class="kw">solve</span>(p2)</a></code></pre></div>
 <pre><code>## Optimize a model with 100 rows, 180 columns and 1080 nonzeros
 ## Variable types: 0 continuous, 180 integer (180 binary)
 ## Coefficient statistics:
@@ -416,14 +475,10 @@ s2 &lt;- solve(p2)
 ## Solution count 2: 3174.67 3568.49 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 3.174668195776e+03, best bound 2.911333350606e+03, gap 8.2949%
-</code></pre>
-
-<pre><code class="r"># calculate feature representation
-r2 &lt;- feature_representation(p2, s2)
-print(r2)
-</code></pre>
-
+## Best objective 3.174668195776e+03, best bound 2.911333350606e+03, gap 8.2949%</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co"># calculate feature representation</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">r2 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p2, s2)</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="kw">print</span>(r2)</a></code></pre></div>
 <pre><code>## # A tibble: 10 x 4
 ##    feature zone   absolute_held relative_held
 ##    &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;         &lt;dbl&gt;
@@ -436,45 +491,35 @@ print(r2)
 ##  7 2       zone 2          1.84        0.0590
 ##  8 3       zone 2          4.08        0.0567
 ##  9 4       zone 2          2.52        0.0590
-## 10 5       zone 2          3.67        0.0648
-</code></pre>
-
-<pre><code class="r"># plot solution
-# here we use the category layer function to generate raster showing the zone
-# that each planning unit was allocated. Specifically, pixels with the
-# value 1 are allocated to &quot;zone 1&quot; and pixels with the value 2 are allocated
-# to &quot;zone 2&quot;. Thus units depicted in gray are not allocated
-# to any zone, units depicted in yellow are allocated to zone 1, and units
-# depicted in green are allocated to zone 2
-plot(category_layer(s2), main = &quot;solution&quot;, axes = FALSE, box = FALSE)
-</code></pre>
-
-<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" style="display: block; margin: auto;" /></p>
-
+## 10 5       zone 2          3.67        0.0648</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co"># plot solution</span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="co"># here we use the category layer function to generate raster showing the zone</span></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3"><span class="co"># that each planning unit was allocated. Specifically, pixels with the</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="co"># value 1 are allocated to &quot;zone 1&quot; and pixels with the value 2 are allocated</span></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="co"># to &quot;zone 2&quot;. Thus units depicted in gray are not allocated</span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co"># to any zone, units depicted in yellow are allocated to zone 1, and units</span></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co"># depicted in green are allocated to zone 2</span></a>
+<a class="sourceLine" id="cb20-8" data-line-number="8"><span class="kw">plot</span>(<span class="kw">category_layer</span>(s2), <span class="dt">main =</span> <span class="st">&quot;solution&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+</div>
+<div id="multiple-zones-with-varying-costs" class="section level3">
 <h3>Multiple zones with varying costs</h3>
-
-<p>Real-world problems often have different costs for managing planning units under different zones. These problems also tend to have different expected amounts of each feature when planning units are managed differently. So let us consider a slightly more complex example. Similar to before we will have two management zones. But this time, the cost of managing each planning unit is different depending on which management zone it is assigned to in the solution. Furthermore, when we assign a planning unit to the second zone, we only expect to end up with half of the habitat we would get if we managed the unit in the first zone (e.g. because the second zone is a partial-take zone and the first zone is a no-take zone). We will use the same target data as in the previous example.</p>
-
-<pre><code class="r"># create new planning unit and cost data
-data(sim_pu_zones_stack)
-pu3 &lt;- sim_pu_zones_stack[[1:2]]
-
-# plot cost data
-plot(pu3, main = c(&quot;zone 1&quot;, &quot;zone 2&quot;), axes = FALSE, box = FALSE)
-</code></pre>
-
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAH4CAIAAABljKeVAAAACXBIWXMAAAsSAAALEgHS3X78AAAgAElEQVR4nO3dfXBT190n8HOuJOM3ychgcABTx86LmdiBh5cuy0vWweCQBdxAWxNemqYYwk4CberSbcjEYdgyEA9hJ00ZN3SgnTR06ZSwmLR92HkoC24oibslMSVu7EwMKS/BxnYdvxBjLOnuH9dRpXMFlq/O7zoHfT+TyaDjK+lKv/uV7j069x6u6zoDABracK8AwJ0MAQMghIABEELAAAghYACEEDAAQggYACEEDIDQnR+wzz77zOVyvfzyy8O9IjCIpqamJUuWjBo16q677lq9evWVK1eGe40kcA73CpDbt2+fz+cb7rWAQfT19T3yyCNNTU3Tp0/v7+//9a9/fe7cub/+9a8ul2u4Vy0md2zAdF1vbGysrq7esmXLcK8LDO7EiRNNTU1Tpkz5y1/+ouv6Pffc87e//e3tt9+eN2/ecK9aTOzbRXzllVd4uLVr1zLGuru7n3322XvvvTclJWXKlCl79+41hkc2NzdzzkePHn348OH8/Hy3271kyZKWlhbj0c6fP19SUjJ69Ojx48c/8cQTra2twtP5/f5JkyZt3rz55s2btr3GO4nN9bp8+XJKSsrChQs555qmzZo1izF24cIFe180Ad0uf/jDH5YvX758+fJvfOMbmqYxxr73ve8FAoHCwkLGWFZW1qJFi5KSkhhjL7/8sq7rV69eZYw5HA6Xy/XAAw8Yd1m7dq2u611dXWPHjnU4HIsXL54zZw5jLD8/v7+/P/Tp/H7/sWPHjh07VlJSwhjbuXOnba/0zmBzvUL19/fff//9jLHjx4/b94Jp2BewoB/+8IeMsdzc3Pb29hMnThjV6urq0nW9pqaGMZaWlub3+42CMcb++Mc/6rr++uuvM8YKCgp0XX/llVcYY2vWrGltbW1tbZ0+fTpj7PDhwxGf7plnnkHAYmFzvXp6ehYvXswYKy4u9vv9dr5SCnYH7Fe/+hVjLDU19YMPPtB1/dVXX2WMPf3008EFxo8fzxj7xz/+YRQsLS0tEAjouv73v//dKLOu68a+imDbtm0RnxEBi4XN9bp69aoRv+Li4s8//9yuV0nI1k6O2tradevWMcbeeOONBx54IOIyDoeDMebz+RISEhhjTqeTc84YM/5v6OvrY4xt2rTpkUceCTZOnDiRct3jkc31qq+vf/TRRy9durRq1aq9e/cmJiZKfj3Dwb5OjitXrixdurSvr2/r1q2PPfaY0Zifn88Y+/3vf9/d3c0YO3Xq1MWLFz0eT3Z29m0eatKkSYyxGzduzJ8/f/78+YmJiW1tbUalQRab63Xjxo2vfe1rly5devbZZ9944407I12M2djJ8fjjjzPGXC7XihUrVq1atWrVqu3btwcCgYceeogxNnHixMWLFycnJzPGdu3apX9x0Dxq1Cjj7h9++CH7Ypfj2rVraWlpmqatXLny8ccfdzgcI0eO/PTTTyM+L3YRrbG5Xm+++aaxQd53330PfOFWx2kKsS9gixYtErJdVFSk63pnZ+fGjRtzcnKSk5MnT568b98+Yyf+NgXTdf3cuXMLFixIS0vzer0lJSXGEUJECJg1NtfrxRdfNH/6//KXv7TvBdPgOq7JAUDmzh+LCDCMEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAYvXmm296xnkyJmWk35P+/e9/f7hXBwZhc72c1E9wx+vp6en5WnfPQ92shXV/0D3cqwODsLleCJgEnDHOGePDvR4QHTvrhV1EOawV68iRI3l5eSkp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ziWQlZWFXUQZNI4fmlUSW72Ea9OXlpaWlpYKywTnEsA2IQNOuFSLjfVCwGTAD81qwekqauGaxp1ObsvobIidnfVCwGQY2OXAm6kIG+uFbUIGDd30SrGxXtgmpMAxmFpwDKYW44dLnHCpChvrhYDJoOEYTCk21gvbRKxSU1Nfqqz8Lw8/vHL1arfbPdyrA4OwuV5c13Xq5wCIW3K5xVYAAAIhSURBVPgGAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAIIWAAhBAwAEIIGAAhBAyAEAIGQAgBAyCEgAEQQsAACCFgAIQQMABCCBgAIQQMgBACBkAIAQMghIABEELAAAghYACEEDAAQggYACEEDIAQAgZACAEDIISAARBCwAAI/X9DTXGU045cwwAAAABJRU5ErkJggg==" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" style="display: block; margin: auto;" /></p>
-
-<pre><code class="r"># create problem
-p3 &lt;- problem(pu3, zones(sim_features, sim_features * 0.5)) %&gt;%
-      add_min_set_objective() %&gt;%
-      add_relative_targets(t2) %&gt;%
-      add_binary_decisions()
-
-# print problem
-print(p3)
-</code></pre>
-
+<p>Real-world problems often have different costs for managing planning units under different zones. These problems also tend to have different expected amounts of each feature when planning units are managed differently. So let us consider a slightly more complex example. Similar to before we will have two management zones. But this time, the cost of managing each planning unit is different depending on which management zone it is assigned to in the solution. Furthermore, when we assign a planning unit to the second zone, we only expect to end up with half of the habitat we would get if we managed the unit in the first zone (e.g. because the second zone is a partial-take zone and the first zone is a no-take zone). We will use the same target data as in the previous example.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># create new planning unit and cost data</span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="kw">data</span>(sim_pu_zones_stack)</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">pu3 &lt;-<span class="st"> </span>sim_pu_zones_stack[[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]]</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="co"># plot cost data</span></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6"><span class="kw">plot</span>(pu3, <span class="dt">main =</span> <span class="kw">c</span>(<span class="st">&quot;zone 1&quot;</span>, <span class="st">&quot;zone 2&quot;</span>), <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYAAAAEgCAMAAACKBVRjAAAClFBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZrYApgADpwAFqAAJqQAMqgAOqwAQrAATrQAWrgAZrwAarwAcsAAdsAAisgAlswAotAAqtAArtQAttQAutgAwtgAztwA1uAA4uQA6AAA6ADo6AGY6Ojo6OmY6ZpA6ZrY6kNs7ugBAvABCvABDvQBFvQBHvgBIvgBMvwBOwABPwABRwQBTwQBUwgBWwgBYwwBawwBdxABfxQBhxQBlxgBmAABmADpmOgBmOjpmkLZmkNtmtttmtv9mxwBoxwBqyABsyABuyQB0ygB3ywB5zAB7zACBzgCDzgCFzwCHzwCJ0ACL0ACN0QCP0QCQOgCQZjqQ29uQ2/+R0gCT0gCV0wCZ1ACd1QCj1gCl1wCn1wCq2ACs2ACu2QCy2gC2ZgC2Zjq22wC229u22/+2/7a2//+52wC73AC93AC/3QDB3QDD3gDI3wDM4ADP4ADR4QDV4gDY4gDa4wDbkDrbkGbbtpDb///c4wDf5ADj5QDm2Q7m3Avm3Qnm3wfm4QXm4gTm5ALm5gDnySTnyiLnyyHnzxvn0hfn1BTovzbowTPowjHoxC3oxSvoxiroxyjpuEfpuUPpukLpuz7pu0DpvTrqs1jqs1rqtFbqtVDqtk3qt0vrsWXrsWfrsWzrsl3rsl/rsmHrsmPssXDssXTssXbssXjssXrssX7ssn/ssoHtsoPtsoXts4fttI3ttZHttpTutpbuuJruuJzuuZ7uuqLuu6Tuvajvvqrvvqzvv63vwK/vwbHvw7XvxLfvxbnvx7vwyb/wysHwy8Pwz8nw0s3x1tPx2NXx2dfx3drx3tzx4N7x4uDy5eTy6ejy6+ry7u7y8vL/tmb/25D/27b//7b//9v///8qQDMfAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAMo0lEQVR4nO2d958kRRmHe8/jzKKCKAZOVBbFnJVV1FMQA8ZTTCeKq54CKgYcWbxDBUwgZlFUzDnnnHOOc7e7/4xvdb3V0zvTVVvv3HS9b3/8Pj9AM2H51jw93W+/XT1dbQJVKu0A/+9AgDIQoAwEKAMBykCAMhCgDAQoAwHKQIAyEKAMBChTRMBqddRaif9PLxw+raqqO+/v688XELDx4mrAAsa7K8fS2T39/f4FXPzwasACNvZWO87ePLS7txHIBKyvVJP14WL6bl7vEWu0NKqWnkmr+c56LXEr/NJJa+EtI/qv/uILkedfP233rk23Ed3x8n4izS9g5BfdR8uL9cP8kp0h76ja+dK9FgVk5vdYEVCzWqf230qKvlwPYOd+Xqao+92Ty/zqN5y0tmFGQI0sf42ZTZBj5NcUXifqf9FDe+qUu9wKtFy/qLXG2BIgz19/K/b0FEcsgGK6MOFDHbnRjMKXd1f99HTZYErAHPkPr/RYRUgFUPDK7ZXqtMTYDac1gHFlW8Ac+Z2T/vJLBdAGtP5yJtagmS+rJQHy/P1+/lIB42bV2LoNbQYQ1qw2hgTI86/3uf3ZnKcM5fJgaxXRDIBGtPQot9VshbYjYI78qz0fRcoENFvIXVN19GQAXEe3D93tCJDnb3bKNo4D2gPwR5KPdA+3B7B5+BmU+S7t5pVNAXn5wzGaEQFg4UCAMhCgDAQoAwHKQIAyEKAMBCgDAcpAgDIQoAwEKAMBykCAMhCgDAQoAwHKQIAyEKAMBCgDAcpAgDIQoAwEKAMBykCAMhCgDAQoAwHKQIAyEKAMBCgDAcpAgDIQoAwEKAMBykCAMhCgDAQoAwHKQIAyEKAMBCgDAcpAgDIQoAwEKAMBykCAMhCgDAQoAwHKQIAyEKAMBCgDAcpAgDIQoAwEKAMBykCAMhCgzGAEuLvvNHe/ONH9mL+/1cLMDVOM0uSfDKS+n4o1Af5uCbOPb+ytb7ZTf9zrK/XdFA7dsa8bbB4B2+afDGRMC+MlcwJuQHSEOrTb3dxo5D75Md/OYtzXTS2OhG3zNwsbe93XYNWcgBsS0VD1SlMt+49+ZHHrs33+sMAmzAm4EVE1TD276ld6L2D1TpO9ghmy8tcLfgs6NifgxkQs1Jg/71rA+oq7M9CqMQNZ+esF/22wJ+CmRCTUOJQ8ra2/tR1BXv6wD7Yo4GZEd6hm/Wl/6n5Laoec/H7B6iboaKIz1GiyvW8LMFaLZuTnBas74VsQXaFGrZts1gL8AMxtgrbNHxaslqHHEJ11dGtvy1VQfbN3azvh7fJPBmL0QOxYoiPUqH2XX17tV6v+bnQ9L9vmbw1kZLIVcSvCWigB4vzWxlodR1gLJUCc39pYq+MJa6EERPPHurmZY70+cxvmKcwZnpszxzD8rnsy92Mu9CQHcDti8QL+xXyP+SRzlecdzOsYflcY5UOZW3rmyR/t5poTcAdiyAIi+aPdXHMCTiCGLCCZv6Oba07AycSQBdT5Bd1ccwLuSgxZQCp/VzfXnIBTiLwqwp9TzctfTkAs/2akm2tOgHt9XhXhD+XzDJQTEMm/GevmmhNwLyKriuBmVt55yXICIvmj3dxMAccxJzP3Z+7juQdzE+Z4T3j33ZjneJIDcH8uq4poKdme/zI/YD7BXOd5I/N65jxPePeDmWM9c+WPdXPNCXB/NRqqXUXwCQ1rAiL5o91ccwIeSMTKuC1VBJ/Sy9sJlBNQ5599PNrNNSfADTSrijAqIJG/+w15LysnwO3ssqoIo5ugWP5YGW1OwKlEVhVhdCccyR8to80JOJ3IqiJEZWg5AZH80TLanIDHEnlVhORArJyASH4OPltGZwrgA64z7s5MPR2OVB7D8HHZbZlwQHaKJzmAM4nMKmKU34r4O/NdZurpyxg+Urzw+Z4nMKczt/fMk9/TUUabE/A4YvHNuHIC6vyCMtqcADfgIQtI5O8so80JeCIxZAHx/N1ltDkBTyKGLCCaP1JGmxPwVGLIAmL5Y2W0OQFPJ4YsIJI/WkabE+AOFIYsIJI/WkZnjjV8sg9iHs+c5QlPP41hTfdmwmkcPi+THMBzicUL+BvzVeaDzIc8QcBrGR7GQ5j7MrxeLTS/OQHPI4YsQJrfnIB9RLqbGM7FSy7ULidAmt+cgHOIZDexaQFJLo4pJ0Ca35yAc4lUN3HSBJVcHFNOgDS/OQEvIlLdxElfV3KhdjkB0vzmBLyESE3tm5wIk1yoXU6ANH+mgFcxb2aezPDTz2JCUn740Uw4ejjfkxzABURqal9zKlh0ofavmTAvKJwP4Kffy1zA8MNhNTuB4clRC81vTsAriVQ3cepcfOaOoJwAaX5zAtyBaKqbOHUuPvNC7XICpPnNCXg1keomTp2Lz6xFywmQ5jcnwO0DU93EpowTXahdToA0vzkBFxHJbmJzICO5ULucAGl+cwIuIdLdxOZcvOBC7XICpPnNCThALL4ZV06ANH/may9iLmH4ozz/LZ7gh4/LzjrgCe9+J5OT53Ji8QK+z/ycCSI+7QnrFc8HOu8cT3j3A5gjyT/bjBNNTSwnwP25IQuI5O9oxonOiJUTcCkxZAGR/LPNONk54XICDhJDFpDM327GyWZFlBNwJTFkAcn87WacbF5QOQHudUMWUOdPTE1sekGymXHlBLiLFYcsIJF/azPOqoC3E5IyLi9/OQGx/DPNONkm6LIpXsG8wHMF8xqGT3fwVbhXheOcqz3JAbyVkJRxeQZ+wvyS+QLzUc+VzJuYfZ5wuHkqc7RnnvyzzTjZTricAPc6SRmXd16ynIBI/tlmnKwMLSfg3YSkjMvrhpYTEMnf0YwTHYiVE+BeICnjrAmI5O9qxkmmJpYT4F4vKePydgLlBNT5cyKFN+S9rJyADxOSMs6agET+7jfkvaycgGsISRlnbRMUzx+uzx7NMzXxXCZM/Hk2c9DzHuYa5lueXzDfYLj4Tg7gA4SkjMsT8EPmR8yXGP7VmrCGhBXphZ4w2jOZW3vmyx+uz16lT7/OLpqaWE7A+wlJGZdXhpYTEMsfrs9eX3GxR0etyaYmlhPwcUJSxuUdiJUTEMnfXJ892XWJpiaWE/AxQlLG5eUvJyCS37Hl6tQ9sqmJ5QS4feLim3HlBNT5u8voLRdH7pFNTSwn4FpiyAIS+cetnXCYzpHbjCsn4DPEkAUk8k9+KGvHyx7G287cmXHlBHyOGLKARP72jyWeOOfUxHAAFo5Y+ADmI8yXmXd5fsf8meHfjEkOwH0eixcQLk8Nq8L7mGs9vB4dDCcu+Fdr+HhsX7gKl3+UZ978LQFUhs43NbF/AZ8ihiwgkZ9/sTj0U+aamti/gM8TQxaQyO+/Aa4DMf/UxP4FfJEYsgBpfnMC3NuHLECa35yArxCSbmJeL6icgPz8ormh5QR8nZB0E/MoJyA/v+iUZDkB3yQk3cQ8ygnIzi87Kc+nUq7mn3m87m0MP/01JlyG+ytPePd/mN94kgNwB3CSbmIeP2PCiZjPMvz0gSl4dQvvDgL4sufF5JdNSykn4NtEqpk13U3My19OQHZ+2cSscgK+Q6Tq6OluYp6BcgKy88umJpYT4JpFkm5i3o6gnIDs/FYFuB8WlnQT8y7ULicgO7/VTZDrVUq6iXm1aDkB2fmt7oR/TEi6idY2Qdn5rd5R+6eEpJto7Y7a+fmN3lHbncCRdBMLZstBkt/mHbXdvDVroQSI81sba+V2EtZCCUjlnzTj6i+uaGpiMarfEtZCCUjk52bcqL6LhnRqYjGq3xPWQgmI529uHVPXDtJfTSxG9QfCWigB0fyhGTcRIJqaWIzqj4S1UAJS+cdbN0GiqYnFqP5EWAslwOdPdEObq2tlUxOLUf2FsBZKQCo/N+Pon6253tbGWv2VsBZKQCp/1w0Ac2fGFaP6B2EtlIBU/q57kNoT8E/CWigBqfzt+ziHS6zsbYL+TVgLJSCVf2ofIJqaWIzO37weEKn8rfs4L4eF3KmJoC8gQBkIUAYClIEAZSBAGQhQBgKUgQBlIEAZCFAGApSBAGUgQBkIUAYClIEAZSBAGQhQBgKUgQBlIEAZCFAGApSBAGUgQBkIUAYClIEAZSBAGQhQBgKUgQBlIEAZCFAGApSBAGUgQBkIUAYClIEAZSBAGQhQBgKUgQBlIEAZCFAGApSBAGUgQBkIUAYClIEAZSBAGQhQBgKUgQBlIEAZCFAGApSBAGUgQBkIUAYClIEAZSBAGQhQBgKUgQBlIEAZCFAGApSBAGUgQBkIUAYClIEAZSBAGQhQBgKUgQBlIEAZCFAGApSBAGUgQBkIUAYClIEAZSBAGQhQ5n+lVHMEkOUbpAAAAABJRU5ErkJggg==" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co"># create problem</span></a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">p3 &lt;-<span class="st"> </span><span class="kw">problem</span>(pu3, <span class="kw">zones</span>(sim_features, sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.5</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">      </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb22-4" data-line-number="4"><span class="st">      </span><span class="kw">add_relative_targets</span>(t2) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb22-5" data-line-number="5"><span class="st">      </span><span class="kw">add_binary_decisions</span>()</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co"># print problem</span></a>
+<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="kw">print</span>(p3)</a></code></pre></div>
 <pre><code>## Conservation Problem
 ##   zones:          1, 2 (2 zones)
 ##   planning units: RasterStack (90 units)
@@ -486,13 +531,9 @@ print(p3)
 ##   constraints:    &lt;none&gt;
 ##   penalties:      &lt;none&gt;
 ##   portfolio:      default
-##   solver:         default
-</code></pre>
-
-<pre><code class="r"># solve problem
-s3 &lt;- solve(p3)
-</code></pre>
-
+##   solver:         default</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># solve problem</span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2">s3 &lt;-<span class="st"> </span><span class="kw">solve</span>(p3)</a></code></pre></div>
 <pre><code>## Optimize a model with 100 rows, 180 columns and 1080 nonzeros
 ## Variable types: 0 continuous, 180 integer (180 binary)
 ## Coefficient statistics:
@@ -501,7 +542,7 @@ s3 &lt;- solve(p3)
 ##   Bounds range     [1e+00, 1e+00]
 ##   RHS range        [8e-01, 8e+00]
 ## Found heuristic solution: objective 3667.7708672
-## Presolve time: 0.00s
+## Presolve time: 0.02s
 ## Presolved: 100 rows, 180 columns, 1080 nonzeros
 ## Variable types: 0 continuous, 180 integer (180 binary)
 ## Presolved: 100 rows, 180 columns, 1080 nonzeros
@@ -515,20 +556,16 @@ s3 &lt;- solve(p3)
 ##      0     0 2884.87200    0    8 3667.77087 2884.87200  21.3%     -    0s
 ## H    0     0                    2958.1201508 2884.87200  2.48%     -    0s
 ## 
-## Explored 1 nodes (38 simplex iterations) in 0.00 seconds
+## Explored 1 nodes (38 simplex iterations) in 0.02 seconds
 ## Thread count was 1 (of 8 available processors)
 ## 
 ## Solution count 2: 2958.12 3667.77 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 2.958120150795e+03, best bound 2.884871999973e+03, gap 2.4762%
-</code></pre>
-
-<pre><code class="r"># calculate feature representation
-r3 &lt;- feature_representation(p3, s3)
-print(r3)
-</code></pre>
-
+## Best objective 2.958120150795e+03, best bound 2.884871999973e+03, gap 2.4762%</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co"># calculate feature representation</span></a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">r3 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p3, s3)</a>
+<a class="sourceLine" id="cb26-3" data-line-number="3"><span class="kw">print</span>(r3)</a></code></pre></div>
 <pre><code>## # A tibble: 10 x 4
 ##    feature zone  absolute_held relative_held
 ##    &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt;         &lt;dbl&gt;
@@ -541,64 +578,50 @@ print(r3)
 ##  7 2       2             0.794        0.0509
 ##  8 3       2             1.87         0.0519
 ##  9 4       2             1.08         0.0505
-## 10 5       2             1.44         0.0509
-</code></pre>
-
-<pre><code class="r"># plot solution
-plot(category_layer(s3), main = &quot;solution&quot;, axes = FALSE, box = FALSE)
-</code></pre>
-
-<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" /></p>
-
+## 10 5       2             1.44         0.0509</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co"># plot solution</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw">plot</span>(<span class="kw">category_layer</span>(s3), <span class="dt">main =</span> <span class="st">&quot;solution&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+</div>
+<div id="multiple-zones-with-complex-targets" class="section level3">
 <h3>Multiple zones with complex targets</h3>
-
-<p>So far, we have dealt with problems where each feature has a target that pertains to a single zone. But sometimes we have targets that pertain to multiple zones. For example, what if we were in charge of managing pest control in a set of areas and we had three different pest control methods we could implement in any given planning unit. We could (1) set up a few traps in a given planning unit and make 10 % of the habitat in the unit pest-free, (2) set up a lot of traps and make 50 % of the habitat in the unit pest-free, or (3) drop baits over a given planning unit and make 80 % of the planning unit pest-free. Each of these different actions has a different cost, with a few low intensity trapping costing $100 per planning unit, a high intensity trapping costing $300, and baiting costing $200 (please note these costs aren&#39;t meant to be realistic). After defining our management actions and costs, we require a solution that will yield 8 units of pest free habitat per feature. It&#39;s important to note that unlike the previous examples, here we don&#39;t have targets for each feature in each zone, but rather our targets are for each feature and across multiple zones. In other words, we don&#39;t really care which management actions we implement, we just want the set of actions that will meet our targets for minimum expenditure. We can formulate and solve this problem using the following code.</p>
-
-<pre><code class="r"># create planning unit data with costs
-pu4 &lt;- stack(Which(!is.na(sim_pu_raster)) * 100,
-             Which(!is.na(sim_pu_raster)) * 300,
-             Which(!is.na(sim_pu_raster)) * 200)
-names(pu4) &lt;- c(&quot;few.traps&quot;, &quot;many.traps&quot;, &quot;baiting&quot;)
-
-# plot planning unit data
-plot(pu4, nr = 1, axes = FALSE, box = FALSE)
-</code></pre>
-
-<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" /></p>
-
-<pre><code class="r"># create targets
-t4 &lt;- tibble::tibble(feature = names(sim_features),
-                     zone = list(names(pu4))[rep(1, 5)],
-                     target = rep(8, 5),
-                     type = rep(&quot;absolute&quot;, 5))
-
-# print targets
-print(t4)
-</code></pre>
-
+<p>So far, we have dealt with problems where each feature has a target that pertains to a single zone. But sometimes we have targets that pertain to multiple zones. For example, what if we were in charge of managing pest control in a set of areas and we had three different pest control methods we could implement in any given planning unit. We could (1) set up a few traps in a given planning unit and make 10 % of the habitat in the unit pest-free, (2) set up a lot of traps and make 50 % of the habitat in the unit pest-free, or (3) drop baits over a given planning unit and make 80 % of the planning unit pest-free. Each of these different actions has a different cost, with a few low intensity trapping costing $100 per planning unit, a high intensity trapping costing $300, and baiting costing $200 (please note these costs aren’t meant to be realistic). After defining our management actions and costs, we require a solution that will yield 8 units of pest free habitat per feature. It’s important to note that unlike the previous examples, here we don’t have targets for each feature in each zone, but rather our targets are for each feature and across multiple zones. In other words, we don’t really care which management actions we implement, we just want the set of actions that will meet our targets for minimum expenditure. We can formulate and solve this problem using the following code.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="co"># create planning unit data with costs</span></a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">pu4 &lt;-<span class="st"> </span><span class="kw">stack</span>(<span class="kw">Which</span>(<span class="op">!</span><span class="kw">is.na</span>(sim_pu_raster)) <span class="op">*</span><span class="st"> </span><span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb29-3" data-line-number="3">             <span class="kw">Which</span>(<span class="op">!</span><span class="kw">is.na</span>(sim_pu_raster)) <span class="op">*</span><span class="st"> </span><span class="dv">300</span>,</a>
+<a class="sourceLine" id="cb29-4" data-line-number="4">             <span class="kw">Which</span>(<span class="op">!</span><span class="kw">is.na</span>(sim_pu_raster)) <span class="op">*</span><span class="st"> </span><span class="dv">200</span>)</a>
+<a class="sourceLine" id="cb29-5" data-line-number="5"><span class="kw">names</span>(pu4) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;few.traps&quot;</span>, <span class="st">&quot;many.traps&quot;</span>, <span class="st">&quot;baiting&quot;</span>)</a>
+<a class="sourceLine" id="cb29-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb29-7" data-line-number="7"><span class="co"># plot planning unit data</span></a>
+<a class="sourceLine" id="cb29-8" data-line-number="8"><span class="kw">plot</span>(pu4, <span class="dt">nr =</span> <span class="dv">1</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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f3/1DfoV8dALu+8+WQ0C46EX9vjjds3uzDcwq+VxCxMPvbDHHrNq9pstl9V1yXgcw8RDL+zRR7OP96xu3dSadV7ijDwT6wrjoRf2yCPWnI6Wf0iccZpblTyuYeKhF/bww/ZUbV5hFo9zmHhKhRXeIyig21H0h0UFn346O1U7eFrE/ZBYN49zmHjohT31VMEo0X3QQcDjFiYeemFPPjnTsJ6Axy1MPPTCnnhCVoNyPI6fK83UH3phL7wgS5jNY82hKLu9Qt0femHPPy9LmM8zaQ5F2Q1M6v7QC3vuOVnCcjzZW/JlUwSo+zPl+7CiqhOQiwo++2yF73vq4JlOGHV/6IU984wsYTmewVSHROr+0At75RVZwnI82TkU083pqL8/9MJefVWWsBzPdMN66v7QC3vxRVnCwHjohb30kqwGgfHQC3v5ZVkNks5jPUdT+cMQpUCvvUb6MAQ6j/0cDb2w11+X1SCBPOkrL/ZzNPTC3nhDVoOE89jP0dALe/NNWQ2SzmM9R0Mv7K23ZDUIgCf9HA29sLffzp5Ut1S2XmIlPM4h4rGfo1kb7Azx3nknO6cjtU48NUsRD3dyPNZzNPTC3n3XXnac6SOuRzwcdceljIde2Hvv2TWTdeKpWcbwsKaMh17Y++/bF1tPY/3gbZunfIUOWh57OxVIUvCDD7I1U+vEU7MU8Tis0EHKk9tOBZIU/PDD7Mzf1Drx1Cwxz6QrCxw8E7dTgSQFP/ooUzOzTjxDbB6HFTpIeXLbqUCSgh9/LOskb/OUr9BBy2NvpwJJCn7yiSxhBTysbzNK+kMv7NNPZQmzeBxW6CDlyW2nAkkKfvaZLGE2T/kKHbQ89nYqkKTg55/LEgbGQy/siy9kNQiMh17Yl1/KahAYD72wr76S1SAwHnphX38tq0FgPPTCvvlGVoPAeOiFffutrAaB8dAL++47WQ0C46EX9v33shoExkMv7IcfZDUIjIde2I8/ymoQGA+9sJ9+ytZku2oXBo2HXtjPP2dq8l0XD4PGQy/sl1+yUwTY7jyFQeOhF5Yk/Jnv3i4mD/sJl7tBdqTzsAvjPgTZkc7DLoz7JG9HOg+7MO5hdC7CefiFaaaKCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgOLCgPL/wDb05wgqCVo/wAAAABJRU5ErkJggg==" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co"># create targets</span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">t4 &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tibble</span>(<span class="dt">feature =</span> <span class="kw">names</span>(sim_features),</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">                     <span class="dt">zone =</span> <span class="kw">list</span>(<span class="kw">names</span>(pu4))[<span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">5</span>)],</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">                     <span class="dt">target =</span> <span class="kw">rep</span>(<span class="dv">8</span>, <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb30-5" data-line-number="5">                     <span class="dt">type =</span> <span class="kw">rep</span>(<span class="st">&quot;absolute&quot;</span>, <span class="dv">5</span>))</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb30-7" data-line-number="7"><span class="co"># print targets</span></a>
+<a class="sourceLine" id="cb30-8" data-line-number="8"><span class="kw">print</span>(t4)</a></code></pre></div>
 <pre><code>## # A tibble: 5 x 4
 ##   feature zone      target type    
 ##   &lt;chr&gt;   &lt;list&gt;     &lt;dbl&gt; &lt;chr&gt;   
-## 1 layer.1 &lt;chr [3]&gt;     8. absolute
-## 2 layer.2 &lt;chr [3]&gt;     8. absolute
-## 3 layer.3 &lt;chr [3]&gt;     8. absolute
-## 4 layer.4 &lt;chr [3]&gt;     8. absolute
-## 5 layer.5 &lt;chr [3]&gt;     8. absolute
-</code></pre>
-
-<pre><code class="r"># create problem
-p4 &lt;- problem(pu4, zones(few.traps = sim_features * 0.1,
-                         many.traps = sim_features * 0.5,
-                         baiting = sim_features * 0.8,
-                         feature_names = names(sim_features))) %&gt;%
-      add_min_set_objective() %&gt;%
-      add_manual_targets(t4) %&gt;%
-      add_binary_decisions()
-
-# print problem
-print(p4)
-</code></pre>
-
+## 1 layer.1 &lt;chr [3]&gt;      8 absolute
+## 2 layer.2 &lt;chr [3]&gt;      8 absolute
+## 3 layer.3 &lt;chr [3]&gt;      8 absolute
+## 4 layer.4 &lt;chr [3]&gt;      8 absolute
+## 5 layer.5 &lt;chr [3]&gt;      8 absolute</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co"># create problem</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">p4 &lt;-<span class="st"> </span><span class="kw">problem</span>(pu4, <span class="kw">zones</span>(<span class="dt">few.traps =</span> sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.1</span>,</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">                         <span class="dt">many.traps =</span> sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb32-4" data-line-number="4">                         <span class="dt">baiting =</span> sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.8</span>,</a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">                         <span class="dt">feature_names =</span> <span class="kw">names</span>(sim_features))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-6" data-line-number="6"><span class="st">      </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-7" data-line-number="7"><span class="st">      </span><span class="kw">add_manual_targets</span>(t4) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb32-8" data-line-number="8"><span class="st">      </span><span class="kw">add_binary_decisions</span>()</a>
+<a class="sourceLine" id="cb32-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb32-10" data-line-number="10"><span class="co"># print problem</span></a>
+<a class="sourceLine" id="cb32-11" data-line-number="11"><span class="kw">print</span>(p4)</a></code></pre></div>
 <pre><code>## Conservation Problem
 ##   zones:          few.traps, many.traps, baiting (3 zones)
 ##   planning units: RasterStack (100 units)
@@ -610,13 +633,9 @@ print(p4)
 ##   constraints:    &lt;none&gt;
 ##   penalties:      &lt;none&gt;
 ##   portfolio:      default
-##   solver:         default
-</code></pre>
-
-<pre><code class="r"># solve problem
-s4 &lt;- solve(p4)
-</code></pre>
-
+##   solver:         default</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="co"># solve problem</span></a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">s4 &lt;-<span class="st"> </span><span class="kw">solve</span>(p4)</a></code></pre></div>
 <pre><code>## Optimize a model with 105 rows, 300 columns and 1800 nonzeros
 ## Variable types: 0 continuous, 300 integer (300 binary)
 ## Coefficient statistics:
@@ -641,82 +660,67 @@ s4 &lt;- solve(p4)
 ##      0     0 3663.23657    0    1 4700.00000 3663.23657  22.1%     -    0s
 ## H    0     0                    3800.0000000 3663.23657  3.60%     -    0s
 ## 
-## Explored 1 nodes (1 simplex iterations) in 0.00 seconds
+## Explored 1 nodes (1 simplex iterations) in 0.02 seconds
 ## Thread count was 1 (of 8 available processors)
 ## 
 ## Solution count 3: 3800 4700 4800 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 3.800000000000e+03, best bound 3.700000000000e+03, gap 2.6316%
-</code></pre>
-
-<pre><code class="r"># calculate feature representation
-r4 &lt;- feature_representation(p4, s4)
-print(r4)
-</code></pre>
-
+## Best objective 3.800000000000e+03, best bound 3.700000000000e+03, gap 2.6316%</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="co"># calculate feature representation</span></a>
+<a class="sourceLine" id="cb36-2" data-line-number="2">r4 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p4, s4)</a>
+<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="kw">print</span>(r4)</a></code></pre></div>
 <pre><code>## # A tibble: 15 x 4
 ##    feature zone       absolute_held relative_held
 ##    &lt;chr&gt;   &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;
-##  1 layer.1 few.traps           0.           0.   
-##  2 layer.2 few.traps           0.           0.   
-##  3 layer.3 few.traps           0.           0.   
-##  4 layer.4 few.traps           0.           0.   
-##  5 layer.5 few.traps           0.           0.   
-##  6 layer.1 many.traps          0.           0.   
-##  7 layer.2 many.traps          0.           0.   
-##  8 layer.3 many.traps          0.           0.   
-##  9 layer.4 many.traps          0.           0.   
-## 10 layer.5 many.traps          0.           0.   
+##  1 layer.1 few.traps           0            0    
+##  2 layer.2 few.traps           0            0    
+##  3 layer.3 few.traps           0            0    
+##  4 layer.4 few.traps           0            0    
+##  5 layer.5 few.traps           0            0    
+##  6 layer.1 many.traps          0            0    
+##  7 layer.2 many.traps          0            0    
+##  8 layer.3 many.traps          0            0    
+##  9 layer.4 many.traps          0            0    
+## 10 layer.5 many.traps          0            0    
 ## 11 layer.1 baiting            18.3          0.275
 ## 12 layer.2 baiting             8.19         0.328
 ## 13 layer.3 baiting            15.2          0.264
 ## 14 layer.4 baiting            11.6          0.340
-## 15 layer.5 baiting            12.7          0.281
-</code></pre>
-
-<pre><code class="r"># plot solution
-plot(category_layer(s4), main = &quot;solution&quot;, axes = FALSE, box = FALSE)
-</code></pre>
-
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAIAAAApSmgoAAAACXBIWXMAAAsSAAALEgHS3X78AAAbJklEQVR4nO3df2wT993A8e/Zhi4/fIn50ZFUUUNCW6omzUqSiQKJPIoyJEgQTEuLlEpeugxtpRKKqk2REpimNght2fNPRDW1U1eJKXTNaFKB0B6NdamAJnoWQloiwlAUFnAJpWmW2J2b4uSePywy+0zZGbt2/dn7pdOj484+f5enenN873zRDMNQAAC5bKkeAADgq0XoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhR9r4/PPPNU1zOByxvlHTNE3TgsHgVzEq4OuP0EOgiooKTdP6+/tTPRDgayHmkyMg7fh8PqWU3W5P9UCA1OCMHilz5syZ6upqXddXrlxZW1t74cKF0Hafz7dv376HHnooKyvrW9/61muvvWYYhum9Fy5c0DRtzZo1oT/29/drmlZRUaGUqqioGBwcVEo9+eSTR48e/fzzz51OZ25urqZpdzn45OSkpmkrVqx4++23S0pKnE5nbW3tjRs3kvbTAL5CBpAKN2/e1HVd07QdO3ZUV1crpfLz8z/77LOFhQW3262UKigo2LZtW0ZGhlLqV7/6lWEYgUBAKWW32w3D+PDDD5VSxcXFoaO9//77Sqny8nLDME6cOFFYWKiUOnDgwPj4ePi77nLw69evh162ZMmSxx57zGazKaV++MMfpuwHBCQOoUdqnDp1Sin10EMPTU5OGoaxb9++733ve5cvX3733XdDIZ6dnTUMo6+vTymVk5MzPz9vMfSGYZSXlyul3n//fSPyr4e7HDwUeqXUn//8Z8Mw3njjDaVUaWlpCn40QKIxdYPUKCsrW7Zs2eXLl/Py8tavX5+bm9vZ2blmzZpQwWtra51Op1Kqurr6gQcemJmZuXbtWvwf+h8PnpOTs3nzZqVUZWWlUupf//pX/B8KpByhR2osX758bGzsF7/4RVlZ2cDAwM9//vNHHnnk8uXL0a8MXUS9482Rxu25+1u3bt3bMEwHdzgcoan80P8FZCD0SI1jx47t27evsLBwaGjoypUrGzZsmJ2dPXnyZElJiVLq+PHjoVtlTp8+PTExoet6aNp9UWh6/R//+Mcnn3xiGMaxY8eiP2J+ft60xeLBAWG4vRKpkZub+8Ybb7z55ptvv/223W4/f/68UqqsrKy6urq6uvq9994rKSl5/PHH//KXvyilDhw4ELo6uujBBx+8//77P/744zVr1ixbtmxiYiJ8b1ZWllLq17/+dW5ubnFx8eJ2t9tt5eCANKm+SID/XkePHq2srNR1PTMz8/HHH3/99ddD22dmZl544YWioqLMzMyysrLf/va3CwsLRuRlVcMw3n333cceeywrK6uqqur1119XYRdjjx079s1vflMp1dXVZXrXlx08dDF2+fLloZddvHhRhV3sBdKaZkTdoQwAkIR/sQKAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACEfoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEcqR5AzObm5lI9hLT30ws/TfUQgKRa41zzwsMvpHoUKaMZhpHqMcTG5/OleghpTz+up3oIQFJVrax6b8t7qR5FyjB1AwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACEfoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCOVA8AKTC7fTZpn6Uf15P2WQDuiDN6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACEfoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhHOkegAA/nvNbp9NzgfZ7fbkfNDXE2f0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhB4Ak+d3vfrd69Wqn07lz585PPvnEtHdwcHDdunUul8vj8czNzSXwcwk9ACTD2NjYj3/84z/84Q8XLlzw+XwHDhwI3xsMBuvq6vbu3TsyMuL1etvb2xP40YQeAJLhzJkzFRUVlZWVDz74YFNT0wcffBC+t6+vLycnp7GxMT8/v7W1taurK4EfTegBIBkaGhr++te/LiwsXLp06U9/+tOTTz4ZvndsbKy0tDS0XlJSMj4+vrCwkKiP5umVAGDJq6+++umnn4ZvGRkZWbZsWV5enumVNTU1TzzxhGmjzWZTSr355pvPPPNMXl7e+fPnw/dOT087nc7Quq7rwWDQ7/frup6QkRN6ALCk9X9aP975cfgWxxnHMxue2b59u+mV999//5cd5Omnn96yZcurr75aU1MT3nqXy+Xz+ULrPp/PbrdnZ2cnauSEHgAsuS9rqb00Yov9f7WioqItW7ZYeftrr732xRdf/OQnP1m+fPmePXtaWlrm5ubuu+++0N6ioqLOzs7Q+ujoaGFhYehfAAnBHD0AWKVFLjFZsWLFyy+//Pe///2jjz5qb28vLy8PVb67u9vr9brd7qmpqd7e3kAg0NHR0dDQkMBhE3oAsErTIpaY7Nix4wc/+EF1dfUjjzzywQcfLN5X4/F4hoaGHA5HT0/P/v37CwoKdF1vaWlJ4LCZugEAq+yxnsaH0TTtpZdeeumll0zb/X5/aKWysnJ4ePjeP+DLEXoAsMrUeSM1o4gZoQcAS7SoM/r5FI0kVoQeAKyyEXoAkE276x+/tgg9AFgSPXUTTJPSE3oAsCrWWyq/Jgg9AFiVpt88IvQAYI1mnrpJl/N7Qg8AlmhRUzfpMpND6AHAKs7oAUC4dCm7CaEHAKts6XkjPaEHAEu0qNCnSecJPQBYli5lNyH0AGAVZ/QAIFn0IxAIPaCUUrPbZ5P2WfpxPWmflWTJ/DHiLvhmLACIFv3rA9PklJ7QA4Al0VM36XKCT+gBwKp0KbsJoQcAq9L0Ymya/v0EAMkW+sJU+BKr3t7etWvXZmVlfec737l48aJpb01NzTduq62tTcyglVKc0QOAdfFci52cnHz22We7urqqqqp++ctf1tfXf/jhh+EvuHTp0smTJ/Py8pRSWVlZcQ/23wg9AFhlj6P0/f39ZWVl27ZtU0q1tbW9/PLL09PTLpcrtPfWrVs3btyoqqpyOBKfZaZuAMAq09RNTGf0Tz311B//+MfQen9/f2FhYW5u7uLeiYmJjIyMXbt2FRcX7969+9q1awkcNmf0AGCJFnVqPP+ZcebMmUOHDpleuWXLlvLyctNGp9PpdDoNw3jnnXeef/75V155RQu7LX9ycnLVqlV79uwpLi4+ePBgfX392bNnEzVyQg8AVtkjS29bquXl5UU3/YEHHrjj26emppqamiYmJnp6eioqKsJ3bdy4cfHy7OHDh3Vdv3nz5sqVKxMybEIPAFaZzujtS1RRUdGWLVusvHdubq6mpmbr1q1vvfWW3W437R0YGAgEAm63Wym1dOlSu92+ZMmShIxZMUcPABZpmrJHLjH9ztienp75+fmmpqarV69euXLlypUr8/PzSqnu7m6v1xsIBHbu3Hn69OmZmZm2trZNmzaFz+DHiTN6ALDqHu6dX3Tu3Lnh4eHVq1cvbrl58+aKFSs8Hs/Ro0e3b9/e1tZWX1/v9/s3b9585MiRBAz3NkIPAFbFcx/9oUOHoi/bKqX8fn9opbm5ubm5+V6HdjeEHgAs0ZRypOcjEAg9AFgVz9RNChF6ALAqPTtP6AHAmjtM3aRJ+Ak9AFilMUcPALJxMRYAJIt+1g2hBwBZ7umXjXwdEHoAsMr8qwTTpPuEHgAsiZ66SReEHgCssnExFgBkY+oGACRj6gYA5OM+egCQTGOOHgDE4wtTACAcUzcAIJkW/Uti06T0hB4ArOKuGwAQjqkbAJCMu26A/y6z22dTPYSvin5cT9pnpd2PMc4z+t7e3p/97GdXr1799re/ffjw4UcffTR87+DgYFNT0/j4+I4dO37zm9/cd9998Q73tjSdcQKAFLBFLjGZnJx89tlnOzo6rl+/vmnTpvr6+vC9wWCwrq5u7969IyMjXq+3vb09scMGAPxnoamb8CWmZ9309/eXlZVt27ZN1/W2traRkZHp6enFvX19fTk5OY2Njfn5+a2trV1dXQkcOVM3AGCVaeompjPlp556asOGDaH1/v7+wsLC3Nzcxb1jY2OlpaWh9ZKSkvHx8YWFBZstMefihB4ALIl+qFnAZ5w6dWpubs70yrq6usWmL3I6nU6n0zCMd9555/nnn3/llVe0sH8RTE9PO53O0Lqu68Fg0O/363pirpcQegCwynTXzdIM7dFHH/3+979vetnq1avv+PapqammpqaJiYmenp6KiorwXS6Xy+fzhdZ9Pp/dbs/Ozk7UsAk9AFijmaduHA6Vn59fXl5u5d1zc3M1NTVbt25966237Ha7aW9RUVFnZ2dofXR0tLCwMFHzNoqLsQBgkRZ1101Mt1f29PTMz883NTVdvXr1ypUrV65cmZ+fV0p1d3d7vV632z01NdXb2xsIBDo6OhoaGhI4ckIPAFY5tIglprtuzp07Nzw8vDpM6K4bj8czNDTkcDh6enr2799fUFCg63pLS0sih53AYwGAYHF+M/bQoUOHDh2K3u73+0MrlZWVw8PD9zy8uyD0AGBVms6BEHoAsIqHmgGAZDzUDADk41cJAoBkWvTUTZqUntADgFX2NCm7CaEHAEu0qG/Gpkv2CT0AWMUcPQAIx103ACAZF2MBQD7TMyfTpPOEHgAss6VL2iMRegCw5A5TNykaSawIPQBYxV03ACAcUzcAIJmm1JLI0KdL9wk9AFjF8+gBQDJNizqjT9FIYkXoAcAq81wNUzcAIInGXTcAIN6S9LyPPl2mmAAgxUK/SjB8uQeGYaxfv350dDR6V01NzTduq62tjXe4YTijBwCr4py6OXXq1O9///uBgYE77r106dLJkyfz8vKUUllZWfc0wDsj9ABgyR3uo4/xCENDQ5mZmZmZmdG7bt26dePGjaqqKocj8Vlm6gYArDJP3cR4Sv/iiy92dna6XK7oXRMTExkZGbt27SouLt69e/e1a9cSM2KlFGf0AGCd3Yg4OZ75pzpx4sTk5KTpZQ0NDVVVVTEdeXJyctWqVXv27CkuLj548GB9ff3Zs2fjHe5thB5yzG6fTfUQJODH+OU0tRAR+uwsW/GaJ370ox+ZXvfwww/HeuiNGzdevHgxtH748GFd12/evLly5cp7Hms4Qg8AlhkRkzUOh8rPzy8vL4//wAMDA4FAwO12K6WWLl1qt9uXLFkS/2FDmKMHAGsMpYKOiGUhAXfSd3d3e73eQCCwc+fO06dPz8zMtLW1bdq0KTc3N/6DhxB6ALBIU4YtYknEV6Y8Hs/Q0JDb7W5ra6uvry8oKBgdHT1y5Ej8R17E1A0AWBY5R6+MhXs4humOGr/fH1ppbm5ubm6+15HdDaEHAGsMpeZNvx58PjUjiRGhBwCLNGWYzujT42k3hB4ALNGU0uZNzZxLzVBiROgBwDLTKTxn9AAgimH+wlS6PKiY0AOAZQuRzeSMHgCkMdLyu0eEHgAs0qK+CssZPQBIYii1YDdvSQeEHgCs0iKnbjTO6AFAFo2LsQAgXZqU3YTQA4BlPAIBACQzoqZumKMHAGnM99ETegAQJfrplSkaSIwIPQBYpZnuo+eMHgCkYeoGACSLvhjL1A0AiMMZPQDIlp5TN2n5yE0ASAVNGfaIJfbQG4axfv360dHR6F2Dg4Pr1q1zuVwej2duLpG/pJDQA4Blhi1yie3dp06deu655wYGBqJ3BYPBurq6vXv3joyMeL3e9vb2xAxYKUXoASAGptDHeEY/NDSUmZmZmZkZvauvry8nJ6exsTE/P7+1tbWrqytBI1aKOXoAsEzTjLgegfDiiy8qpXp6eqJ3jY2NlZaWhtZLSkrGx8cXFhZstsScixN6ALAuorz/9H1x4sSJyclJ04uefvrpzZs3x3Tc6elpp9MZWtd1PRgM+v1+XdfjGesiQg8AFmnKiPhmrJ659NH1G/bt22d63apVq2I9tMvl8vl8oXWfz2e327Ozs+95oCaEHgCsMcy3V9psNpfLVVRUFP+xi4qKOjs7Q+ujo6OFhYWJmrdRXIwFgFjYIpcE6O7u9nq9brd7amqqt7c3EAh0dHQ0NDQk5OAhhB4ALNKU4YhYEpFQj8czNDTkcDh6enr2799fUFCg63pLS0v8R17E1A0AWJeAsl+7di38j36/P7RSWVk5PDwc//GjEXp8tfTjibltwIrZ7bNJ+yz8d9LS5HcHmhB6ALBIi2pmenSf0AOAdWn5UDNCDwCWmZ9emR4IPQBYxNQNAMjH1A0ASKYpxS8HBwDRNM7oAUA6LsYCgGRcjAUA+Zi6AQDhmLoBAMmYugEA8TRT2Qk9AMiiRTYzPTJP6AHAMo2LsQAgnUboAUAyLsYCgHjmM/r0QOgBwDqmbgBAME1TmsO8JR2k5T9DACA1NC1iidHg4OC6detcLpfH45mbmzPtramp+cZttbW1CRqxUoQeAKzTNEf4EtPUTTAYrKur27t378jIiNfrbW9vN73g0qVLJ0+ePH/+/Pnz5w8fPpzAYRN6ALBIU5otYokl9H19fTk5OY2Njfn5+a2trV1dXeF7b926dePGjaqqqrVr165du7agoCCB4yb0AGCdLXKJIfRjY2OlpaWh9ZKSkvHx8YWFhcW9ExMTGRkZu3btKi4u3r1797Vr1xI4aC7GAoBFmrJFNPNTn7+7u/vixYum1z333HPf/e53TRunp6edTmdoXdf1YDDo9/t1XQ9tmZycXLVq1Z49e4qLiw8ePFhfX3/27NlEjZvQA4B1EbMgLqfTXfVUS0uL6UXZ2dnR73S5XD6fL7Tu8/nsdnv4yzZu3Lj4F8bhw4d1Xb958+bKlSsTMmhCDwCWRX5hStO0jIwMl8tl5a1FRUWdnZ2h9dHR0cLCQpvt30cbGBgIBAJut1sptXTpUrvdvmTJkkSNmjl6ALBG05TNEbHEcoel2+2emprq7e0NBAIdHR0NDQ2h7d3d3V6vNxAI7Ny58/Tp0zMzM21tbZs2bcrNzU3UwAk9AFiiKaVptvAlprc7HI6enp79+/cXFBTour444ePxeIaGhtxud1tbW319fUFBwejo6JEjRxI4cqZuAMAyzW76c0zvrqysHB4eNm30+/2hlebm5ubm5nsf25cj9ABgkcZjigFAOlPo0+RZN4QeACwy30fPGT0AyKLxPHoAEI+pG3n043rSPmt2+2zSPiuZpP7vSuZ/G0km9f9liaBp9rR8Hj2hBwDLmLoBAMk0Zb4Yyxk9AMiiKRv30QOAbHxhCgBE0xQXYwFAMu6jBwD5uI8eAEQz30evMUcPANKY7rpJj84TegCwSFPKHvk8eqZuAECW6Pvo0wOhBwDLuI8eACTTNOWIbKaN0AOAMJzRA4BsWnredZOWFxYAIAVCUzfhS4xflB0cHFy3bp3L5fJ4PHNzczHtjQehBwDLbLaIJRbBYLCurm7v3r0jIyNer7e9vd363nhHncBjAYBwdkfEEst99H19fTk5OY2Njfn5+a2trV1dXdb3xok5egCwRovrPvqxsbHS0tLQeklJyfj4+MLCgu32Ae++N06EHgAsuX79uqexMXzL//3tb96PPrp48aLplY2NjVu3bjVtnJ6edjqdoXVd14PBoN/v13Xdyt44EXoAsOTcuXO3bt0K3/LFF184HI7o8+7FZIdzuVw+ny+07vP57HZ7dna2xb1xIvQAYEmc5S0qKurs7Aytj46OFhYWhv8Ncfe9ceJiLAAkg9vtnpqa6u3tDQQCHR0dDQ0Noe3d3d1er/fL9iYEoQeAZHA4HD09Pfv37y8oKNB1vaWlJbTd4/EMDQ192d6E0AzDSODhkmBxGisJ9OOJuRJixez22aR9FuKXzP82kkzkf4p2uz0zMzPVo0gZzugBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMLx9Mq7EfldcMWjHdIQP0bEgzN6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACEfoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhNMMw0j1GGLj8/lSPQR8TenH9aR91uz22aR9FuJnt9szMzNTPYqU4YweAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACEfoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4TTDMFI9BgDAV4gzegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACEfoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACEfoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACEfoAUA4Qg8AwhF6ABCO0AOAcIQeAIQj9AAgHKEHAOEIPQAIR+gBQDhCDwDCEXoAEI7QA4BwhB4AhCP0ACAcoQcA4Qg9AAhH6AFAOEIPAMIRegAQjtADgHCEHgCEI/QAIByhBwDhCD0ACPf/Xa+Go3crrz4AAAAASUVORK5CYII=" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" /></p>
-
+## 15 layer.5 baiting            12.7          0.281</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="co"># plot solution</span></a>
+<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="kw">plot</span>(<span class="kw">category_layer</span>(s4), <span class="dt">main =</span> <span class="st">&quot;solution&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+</div>
+<div id="multiple-zones-with-extra-constraints" class="section level3">
 <h3>Multiple zones with extra constraints</h3>
-
-<p>So it looks like baiting is the way to go! Except that we might recall that we can&#39;t use baits in most of the planning units because they contain native species that are susceptible to baits. So now we need to specify that which of our planning units cannot be assigned to the third zone (baiting) to obtain a more useful solution.</p>
-
-<pre><code class="r"># create data.frame to specify that we cannot bait in the first 40 units
-l5 &lt;- data.frame(pu = seq(1, 80),
-                 zone = &quot;baiting&quot;,
-                 status = 0)
-
-# preview locked data
-head(l5)
-</code></pre>
-
+<p>So it looks like baiting is the way to go! Except that we might recall that we can’t use baits in most of the planning units because they contain native species that are susceptible to baits. So now we need to specify that which of our planning units cannot be assigned to the third zone (baiting) to obtain a more useful solution.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># create data.frame to specify that we cannot bait in the first 40 units</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2">l5 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">pu =</span> <span class="kw">seq</span>(<span class="dv">1</span>, <span class="dv">80</span>),</a>
+<a class="sourceLine" id="cb39-3" data-line-number="3">                 <span class="dt">zone =</span> <span class="st">&quot;baiting&quot;</span>,</a>
+<a class="sourceLine" id="cb39-4" data-line-number="4">                 <span class="dt">status =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb39-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb39-6" data-line-number="6"><span class="co"># preview locked data</span></a>
+<a class="sourceLine" id="cb39-7" data-line-number="7"><span class="kw">head</span>(l5)</a></code></pre></div>
 <pre><code>##   pu    zone status
 ## 1  1 baiting      0
 ## 2  2 baiting      0
 ## 3  3 baiting      0
 ## 4  4 baiting      0
 ## 5  5 baiting      0
-## 6  6 baiting      0
-</code></pre>
-
-<pre><code class="r"># create problem
-p5 &lt;- problem(pu4, zones(few.traps = sim_features * 0.1,
-                         many.traps = sim_features * 0.5,
-                         baiting = sim_features * 0.8,
-                         feature_names = names(sim_features))) %&gt;%
-      add_min_set_objective() %&gt;%
-      add_manual_targets(t4) %&gt;%
-      add_manual_locked_constraints(l5) %&gt;%
-      add_binary_decisions()
-
-# print problem
-print(p5)
-</code></pre>
-
+## 6  6 baiting      0</code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="co"># create problem</span></a>
+<a class="sourceLine" id="cb41-2" data-line-number="2">p5 &lt;-<span class="st"> </span><span class="kw">problem</span>(pu4, <span class="kw">zones</span>(<span class="dt">few.traps =</span> sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.1</span>,</a>
+<a class="sourceLine" id="cb41-3" data-line-number="3">                         <span class="dt">many.traps =</span> sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb41-4" data-line-number="4">                         <span class="dt">baiting =</span> sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.8</span>,</a>
+<a class="sourceLine" id="cb41-5" data-line-number="5">                         <span class="dt">feature_names =</span> <span class="kw">names</span>(sim_features))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-6" data-line-number="6"><span class="st">      </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-7" data-line-number="7"><span class="st">      </span><span class="kw">add_manual_targets</span>(t4) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-8" data-line-number="8"><span class="st">      </span><span class="kw">add_manual_locked_constraints</span>(l5) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb41-9" data-line-number="9"><span class="st">      </span><span class="kw">add_binary_decisions</span>()</a>
+<a class="sourceLine" id="cb41-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb41-11" data-line-number="11"><span class="co"># print problem</span></a>
+<a class="sourceLine" id="cb41-12" data-line-number="12"><span class="kw">print</span>(p5)</a></code></pre></div>
 <pre><code>## Conservation Problem
 ##   zones:          few.traps, many.traps, baiting (3 zones)
 ##   planning units: RasterStack (100 units)
@@ -728,13 +732,9 @@ print(p5)
 ##   constraints:    &lt;Manually locked planning units [80 locked units]&gt;
 ##   penalties:      &lt;none&gt;
 ##   portfolio:      default
-##   solver:         default
-</code></pre>
-
-<pre><code class="r"># solve problem
-s5 &lt;- solve(p5)
-</code></pre>
-
+##   solver:         default</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="co"># solve problem</span></a>
+<a class="sourceLine" id="cb43-2" data-line-number="2">s5 &lt;-<span class="st"> </span><span class="kw">solve</span>(p5)</a></code></pre></div>
 <pre><code>## Optimize a model with 105 rows, 300 columns and 1800 nonzeros
 ## Variable types: 0 continuous, 300 integer (300 binary)
 ## Coefficient statistics:
@@ -765,22 +765,18 @@ s5 &lt;- solve(p5)
 ## Solution count 3: 7000 9600 12100 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 7.000000000000e+03, best bound 7.000000000000e+03, gap 0.0000%
-</code></pre>
-
-<pre><code class="r"># calculate feature representation
-r5 &lt;- feature_representation(p5, s5)
-print(r5)
-</code></pre>
-
+## Best objective 7.000000000000e+03, best bound 7.000000000000e+03, gap 0.0000%</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="co"># calculate feature representation</span></a>
+<a class="sourceLine" id="cb45-2" data-line-number="2">r5 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p5, s5)</a>
+<a class="sourceLine" id="cb45-3" data-line-number="3"><span class="kw">print</span>(r5)</a></code></pre></div>
 <pre><code>## # A tibble: 15 x 4
 ##    feature zone       absolute_held relative_held
 ##    &lt;chr&gt;   &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;
-##  1 layer.1 few.traps           0.           0.   
-##  2 layer.2 few.traps           0.           0.   
-##  3 layer.3 few.traps           0.           0.   
-##  4 layer.4 few.traps           0.           0.   
-##  5 layer.5 few.traps           0.           0.   
+##  1 layer.1 few.traps           0            0    
+##  2 layer.2 few.traps           0            0    
+##  3 layer.3 few.traps           0            0    
+##  4 layer.4 few.traps           0            0    
+##  5 layer.5 few.traps           0            0    
 ##  6 layer.1 many.traps          7.40         0.178
 ##  7 layer.2 many.traps          3.42         0.219
 ##  8 layer.3 many.traps          6.00         0.167
@@ -790,52 +786,41 @@ print(r5)
 ## 12 layer.2 baiting             4.62         0.185
 ## 13 layer.3 baiting            11.7          0.203
 ## 14 layer.4 baiting             6.05         0.177
-## 15 layer.5 baiting             9.98         0.220
-</code></pre>
-
-<pre><code class="r"># plot solution
-plot(category_layer(s5), main = &quot;solution&quot;, axes = FALSE, box = FALSE)
-</code></pre>
-
-<p><img src="data:image/png;base64,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" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" /></p>
-
+## 15 layer.5 baiting             9.98         0.220</code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co"># plot solution</span></a>
+<a class="sourceLine" id="cb47-2" data-line-number="2"><span class="kw">plot</span>(<span class="kw">category_layer</span>(s5), <span class="dt">main =</span> <span class="st">&quot;solution&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAABoVBMVEUAAAAAAA0AABcAACEAACgAACoAADIAADoAAGYAKIEAOjoAOmYAOpAAOp0ASUkAZrYApgAFqAAMqgASrAAXAAAZrwAfsQAgAAAge9smswAqOgAttQAyUTE1uAA6AAA6ADo6AGY6KgA6OgA6Ojo6OmY6Zlg6ZpA6kLY6kNs7ugBDvQBJSQBMvwBRvP9TwQBYZjpcxABjxgBmAABmFwBmOgBmOjpmWABmgWZmkLZmkNtmtv9m2/9syAB0ygB82/99zQCBZgCB//+FzwCN0QCP0QCQOgCQZgCQkGaQnGaQtv+Q29uQ2/+Z1ACh1gCs2AC02gC2SQC2ZgC2Zjq2ZpC227a229u22/+2/9u2//+/3QDI3wDT4QDbeyDbkDHbkDLbkDrbkGbbtmbbtpDb///c4wDm1hLm3Avm5ALnyiLnzxvowTPoxSvpuUPpvDzqtFbqtk3rsWfrsW7rsl3ssXjssn/ts4nttZHuuJruu6Tvvqzvw7XwyL3wzsfw08/x29jx4uDy6+ry8vL/gSj/nDr/tmb/23v/25D/27b//7b//9v///9EFIjQAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAG8UlEQVR4nO3dh3vbRByHcVEKCRQIexOg0BIoM5TVAgWKWWGl0FKmKWHvvXeFG/uv5mT97NjJSa9aJHSyvu/z0KrBTx7f55FP56urRAOVW1T3Ewg9AUECggQECQgSECQgSECQgCABQQKCBAQJCBIQJCBIQJCAIAFBAoIEBAkIEhAkIEhAkIAgAUECggQECQgSECQgSEDQ/w7U70TnrG360ktHfV8OowCATuydF9BGWyVWIwcUbFUCvb0ziuZ2Hxkev3NPFJ19/9oIKEVZX46W3KFr/hVzGz9u0I3mnjkURTtWKnyGBaoQqBsNG54eduwM8oE2Hjc6jObqFaoOyI1+YW1wLHIGg95iMuZucrwFKD1OvzzxuOTXHUfsuMaqA3KD3XHYjm2aSX7LBZp4XEKzb/hdFip7ikWqDsgNOZqad4bTykoe0OTj0l+G52FlT7FIFc5BJ/amc8jT41HG7qSYBHKnxxTQ5ONaAOSIntw5nHGzzqDNQC07g4b1n0iGv2UOSkcfR7lz0IwDudHftJa8zqavTiMgd3iiY5crJ+G7is040ODQxDpm8zrISaQtDSX966BZBxocS2agGydW0g8Mxle0npvBd788vIr1k/Xy4cmVdPK4NgDNRAKCBAQJCBIQJCBIQJCAIAFBAoIEBAkIEhAkIEhAkIAgAUECggQECQgSECQgSECQgCABQQKCBAQJCBIQJCBIQJCAIAFBAoIEBAkIEhAkIEhAUNlAfxXr4ClX8vPFBAQJCBIQJCBIQJCAIAFBAoIEBAkIEhAkIEhAkIAgAUFtAupO3q0pLnjrphYBdeePDuIRSnIQFxFqD9D6cnKXh056H4d+J7mv1WqBmzq0B2jYCKi3uG+QnlNUTUC5aLmPyh+Np6kHdO1V1bs2+T1uH9AFln9Y8fiOcen0U2QSmjGgC62sYfU76V0uWwt0kZU5LDNp7UvsEitzWOns3N5J+lLLM6ze4vVuyt6VmvQ7FycT+Fk8oBkDusLyDKt/9+kPD96Kzk3/dPy024JeKFYFdJXlPYP2uHPmjuQ+fG4tFG8L+61GVUDXWDRJD7pF74w2Y0A3W1kLxcGqzcurN0TFbqMbEFCx8kdzi5U1rNhQ1peT9dBqAaEZA7rVyhhWPH3PwYatg8oAut3KeqsxfcrYoij/WxYfe6FqBrrT8g6ru3nSSdfT+c0Y0F2Wb1hvRhvzcm/xPneZf6p9L7EHLc+w/rnszOQezDYJvXjGinvFXc4DmjGghyzPsN5Ir/rb9icLxX7nSne8J9wdxaqADlj4br6Jb1bLAHrMyhyWLRQbtN1xMG8B7fmf+aN53MpaSY8u9A3aMCsX6FmLFoqtBXrOooVia19iz1u0UGzQJF0u0AuWb1jdaF/vOhNp0I5iuUCvWt4Ns6X15fEp05wdxXKBXrM8w+qOfkhDw3YUywV63fINy03RG7Nyc3YUywV618q6zI+BmrOjWC7QB1bGQnEM1NodxfctPIN8f/R/y+JjL1TNQO9ZxYBauKP4kVUQqH07ih9aBJSeOy18iX1iZQzr+PZH7Wj1PLcOurd9k/THln9Y68sJULpQLPoTSmcM6DPLO6w4Gv9M4OA/xFkV0KcWraQb9G6+XKAvLFooNmg/qFygzy26igW/o5j7BuM/AH1tCShjNF9auA4K/SVWFdBXVrGFYsCTdFVA31hZl/lt+9PD4LdcqwL61vJe5udW4u2jWSf0LdeqgL6zfJ9ydWvDeP6RhUEjtlyrAvre8m7aT047oW+5VgX0g+VZKE5fuELfcq0K6EfLM6yppU8IW64nbXBwaycN9JNFQPalWi/ztQD9bPnmoK1rw3q3XGsB+sXCSTr9Uq1brrUA/Wp5L/O7kk3E0b9Zrf9DnLUA/Wb5hvW3Wxsm/w0L4EOctQD9bnnPoKvTMyiUD3HWAvSHRXNQCG9WawH606KrWAjbHbUA5fy7+al1UAgbZnUA5RUI0PlVd8rPLJCXWMBAYUzS4QJN/V1hfX9xGC7Q9C2Dart/UMBAoztQpbfI6da0oxgy0CklIEhAkIAgAUECggQECQgSECQgSECQgCABQQKCygaauQQECQgSECQgSECQgCABQQKCBAQJCBIQJCBIQJCAIAFBAoIEBAkIEhAkIEhAkIAgAUECggQECQgSECQgSECQgCABQQKCBAQJCBIQJCBIQJCAIAFBAoIEBAkIEhAkIEhAkIAgAUECggQECQgSECQgSECQgCABQQKCBAQJCBIQJCBIQJCAIAFBAoIEBAkIEhAkIEhAkIAgAUECggQECQgSECQgSECQgCABQQKCBAQJCBIQJCBIQJCAIAFBAoIEBAkIEhAkIEhAkIAgAUECggQECQgSECQgSECQgCABQQKC/gXtu++fNEJFbQAAAABJRU5ErkJggg==" style="display: block; margin: auto;" /></p>
+</div>
+<div id="multiple-zones-with-fragmentation-penalties" class="section level3">
 <h3>Multiple zones with fragmentation penalties</h3>
-
 <p>So now the best strategy seems to be a combination of high intensity trapping and baiting. But we can also see that this solution is fairly fragmented, so we can add penalties to cluster managed planning units together. Here we will add penalties that will cluster the planning units allocated to the two trapping zones together, and penalties that will cluster the planning units allocated to the baiting zone together. We will also set an overall penalty factor to 640 to strongly penalize fragmented solutions.</p>
-
-<pre><code class="r"># create matrix that describe boundary penalties between planning units
-# allocated to different zones
-z6 &lt;- diag(3)
-z6[1, 2] &lt;- 1
-z6[2, 1] &lt;- 1
-colnames(z6) &lt;- c(&quot;few.traps&quot;, &quot;many.traps&quot;, &quot;baiting&quot;)
-rownames(z6) &lt;- colnames(z6)
-
-# print matrix
-print(z6)
-</code></pre>
-
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="co"># create matrix that describe boundary penalties between planning units</span></a>
+<a class="sourceLine" id="cb48-2" data-line-number="2"><span class="co"># allocated to different zones</span></a>
+<a class="sourceLine" id="cb48-3" data-line-number="3">z6 &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb48-4" data-line-number="4">z6[<span class="dv">1</span>, <span class="dv">2</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb48-5" data-line-number="5">z6[<span class="dv">2</span>, <span class="dv">1</span>] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb48-6" data-line-number="6"><span class="kw">colnames</span>(z6) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;few.traps&quot;</span>, <span class="st">&quot;many.traps&quot;</span>, <span class="st">&quot;baiting&quot;</span>)</a>
+<a class="sourceLine" id="cb48-7" data-line-number="7"><span class="kw">rownames</span>(z6) &lt;-<span class="st"> </span><span class="kw">colnames</span>(z6)</a>
+<a class="sourceLine" id="cb48-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb48-9" data-line-number="9"><span class="co"># print matrix</span></a>
+<a class="sourceLine" id="cb48-10" data-line-number="10"><span class="kw">print</span>(z6)</a></code></pre></div>
 <pre><code>##            few.traps many.traps baiting
 ## few.traps          1          1       0
 ## many.traps         1          1       0
-## baiting            0          0       1
-</code></pre>
-
-<pre><code class="r"># create problem
-p6 &lt;- problem(pu4, zones(&quot;few.traps&quot; = sim_features * 0.1,
-                         &quot;many.traps&quot; = sim_features * 0.5,
-                         &quot;baiting&quot; = sim_features * 0.8,
-                         feature_names = names(sim_features))) %&gt;%
-      add_min_set_objective() %&gt;%
-      add_manual_targets(t4) %&gt;%
-      add_manual_locked_constraints(l5) %&gt;%
-      add_boundary_penalties(penalty = 640, zones = z6) %&gt;%
-      add_binary_decisions()
-
-# print problem
-print(p6)
-</code></pre>
-
+## baiting            0          0       1</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="co"># create problem</span></a>
+<a class="sourceLine" id="cb50-2" data-line-number="2">p6 &lt;-<span class="st"> </span><span class="kw">problem</span>(pu4, <span class="kw">zones</span>(<span class="st">&quot;few.traps&quot;</span> =<span class="st"> </span>sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.1</span>,</a>
+<a class="sourceLine" id="cb50-3" data-line-number="3">                         <span class="st">&quot;many.traps&quot;</span> =<span class="st"> </span>sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb50-4" data-line-number="4">                         <span class="st">&quot;baiting&quot;</span> =<span class="st"> </span>sim_features <span class="op">*</span><span class="st"> </span><span class="fl">0.8</span>,</a>
+<a class="sourceLine" id="cb50-5" data-line-number="5">                         <span class="dt">feature_names =</span> <span class="kw">names</span>(sim_features))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-6" data-line-number="6"><span class="st">      </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-7" data-line-number="7"><span class="st">      </span><span class="kw">add_manual_targets</span>(t4) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-8" data-line-number="8"><span class="st">      </span><span class="kw">add_manual_locked_constraints</span>(l5) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-9" data-line-number="9"><span class="st">      </span><span class="kw">add_boundary_penalties</span>(<span class="dt">penalty =</span> <span class="dv">640</span>, <span class="dt">zones =</span> z6) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb50-10" data-line-number="10"><span class="st">      </span><span class="kw">add_binary_decisions</span>()</a>
+<a class="sourceLine" id="cb50-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb50-12" data-line-number="12"><span class="co"># print problem</span></a>
+<a class="sourceLine" id="cb50-13" data-line-number="13"><span class="kw">print</span>(p6)</a></code></pre></div>
 <pre><code>## Conservation Problem
 ##   zones:          few.traps, many.traps, baiting (3 zones)
 ##   planning units: RasterStack (100 units)
@@ -847,13 +832,9 @@ print(p6)
 ##   constraints:    &lt;Manually locked planning units [80 locked units]&gt;
 ##   penalties:      &lt;Boundary penalties [edge factor (min: 0.5, max: 0.5), penalty (640), zones]&gt;
 ##   portfolio:      default
-##   solver:         default
-</code></pre>
-
-<pre><code class="r"># solve problem
-s6 &lt;- solve(p6)
-</code></pre>
-
+##   solver:         default</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="co"># solve problem</span></a>
+<a class="sourceLine" id="cb52-2" data-line-number="2">s6 &lt;-<span class="st"> </span><span class="kw">solve</span>(p6)</a></code></pre></div>
 <pre><code>## Optimize a model with 1905 rows, 1200 columns and 5400 nonzeros
 ## Variable types: 0 continuous, 1200 integer (1200 binary)
 ## Coefficient statistics:
@@ -870,7 +851,7 @@ s6 &lt;- solve(p6)
 ## Presolved: 877 rows, 968 columns, 2712 nonzeros
 ## 
 ## 
-## Root relaxation: objective 1.005410e+04, 543 iterations, 0.01 seconds
+## Root relaxation: objective 1.005410e+04, 541 iterations, 0.02 seconds
 ## 
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
@@ -878,28 +859,24 @@ s6 &lt;- solve(p6)
 ##      0     0 10054.0986    0   57 20096.0000 10054.0986  50.0%     -    0s
 ## H    0     0                    10460.000000 10054.0986  3.88%     -    0s
 ## 
-## Explored 1 nodes (793 simplex iterations) in 0.03 seconds
+## Explored 1 nodes (801 simplex iterations) in 0.03 seconds
 ## Thread count was 1 (of 8 available processors)
 ## 
 ## Solution count 2: 10460 20096 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 1.046000000000e+04, best bound 1.005600000000e+04, gap 3.8623%
-</code></pre>
-
-<pre><code class="r"># calculate feature representation
-r6 &lt;- feature_representation(p6, s6)
-print(r6)
-</code></pre>
-
+## Best objective 1.046000000000e+04, best bound 1.005600000000e+04, gap 3.8623%</code></pre>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="co"># calculate feature representation</span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2">r6 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p6, s6)</a>
+<a class="sourceLine" id="cb54-3" data-line-number="3"><span class="kw">print</span>(r6)</a></code></pre></div>
 <pre><code>## # A tibble: 15 x 4
 ##    feature zone       absolute_held relative_held
 ##    &lt;chr&gt;   &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;
-##  1 layer.1 few.traps           0.           0.   
-##  2 layer.2 few.traps           0.           0.   
-##  3 layer.3 few.traps           0.           0.   
-##  4 layer.4 few.traps           0.           0.   
-##  5 layer.5 few.traps           0.           0.   
+##  1 layer.1 few.traps           0            0    
+##  2 layer.2 few.traps           0            0    
+##  3 layer.3 few.traps           0            0    
+##  4 layer.4 few.traps           0            0    
+##  5 layer.5 few.traps           0            0    
 ##  6 layer.1 many.traps          8.00         0.192
 ##  7 layer.2 many.traps          3.42         0.219
 ##  8 layer.3 many.traps          6.26         0.174
@@ -909,23 +886,55 @@ print(r6)
 ## 12 layer.2 baiting             4.62         0.185
 ## 13 layer.3 baiting            11.7          0.203
 ## 14 layer.4 baiting             6.05         0.177
-## 15 layer.5 baiting             9.98         0.220
-</code></pre>
-
-<pre><code class="r"># plot solution
-plot(category_layer(s6), main = &quot;solution&quot;, axes = FALSE, box = FALSE)
-</code></pre>
-
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAIAAAApSmgoAAAACXBIWXMAAAsSAAALEgHS3X78AAAam0lEQVR4nO3db2xV9eH48XN6L2y09NKqOKhpLK1OFots/En8Q0lVwkwUDC6rM8GkwzGyyRJCfEJCcVkUQzb2e0LwgS7OxG/Q2WkxM2S/jDkMKuT3xYJKKDMEhnSWIeOL7VYrbe/vwY1821t1p/TO6/3s9coJOZxz7+knPHhz+jnnnhtns9kIgHCVFXsAAPx7CT1A4IQeIHBCDxA4oQcInNADBE7oAQIn9ACBE3qAwAk9QOCEHiBwQg8QOKEHCJzQAwRO6AECJ/QAgRN6gMAJPUDghB4gcEIPEDihBwic0AMETugBAif0lIyPPvoojuN0Oj3eN8ZxHMfx4ODgv2NU8OUn9ARowYIFcRzv27ev2AOBL4VxnxxByent7Y2iKJVKFXsgUBzO6Cma1157bfHixZlMZvr06cuWLXvnnXdy23t7e9etW3fttddWVFR885vffPLJJ7PZbN5733nnnTiOr7nmmtxf9+3bF8fxggULoihasGDBgQMHoii66aabnn322Y8++qiysrKqqiqO4885eE9PTxzHV1xxxYsvvtjY2FhZWbls2bLTp09/Yf8a8G+UhWI4c+ZMJpOJ4/juu+9evHhxFEU1NTX/+Mc/hoeHm5uboyiqra298847p0yZEkXRL37xi2w229/fH0VRKpXKZrNvv/12FEUNDQ25o73xxhtRFM2fPz+bzb788st1dXVRFD388MPHjx8f+a7POfj777+fe9mkSZOuv/76srKyKIp+8IMfFO0fCApH6CmO3bt3R1F07bXX9vT0ZLPZdevWfec733n33XdfeeWVXIg//PDDbDa7Z8+eKIqmTZs2NDSUMPTZbHb+/PlRFL3xxhvZ0f89fM7Bc6GPougPf/hDNpt9+umnoyiaM2dOEf5poNBM3VAcc+fOveyyy959992ZM2feeOONVVVV27Ztu+aaa3IFX7ZsWWVlZRRFixcvvuqqq86fP3/q1KmJ/9B/efBp06bddtttURQtXLgwiqJ//vOfE/+hUHRCT3Fcfvnlx44d+9nPfjZ37tz9+/f/9Kc/ve666959992xr8xdRP3UmyOzn8zdX7hw4dKGkXfwdDqdm8rP/QlhEHqK44UXXli3bl1dXV1nZ+eJEyduvvnmDz/8cNeuXY2NjVEU/e53v8vdKrN3796TJ09mMpnctPtFuen1v/zlLx988EE2m33hhRfG/oihoaG8LQkPDoFxeyXFUVVV9fTTTz/33HMvvvhiKpU6ePBgFEVz585dvHjx4sWLX3311cbGxhtuuOGPf/xjFEUPP/xw7uroRVdfffWVV175t7/97ZprrrnssstOnjw5cm9FRUUURb/85S+rqqoaGhoubm9ubk5ycAhNsS8S8J/r2WefXbhwYSaTKS8vv+GGG5566qnc9vPnz//kJz+pr68vLy+fO3fur371q+Hh4ezoy6rZbPaVV165/vrrKyoqmpqannrqqWjExdgXXnjha1/7WhRFO3bsyHvXZx08dzH28ssvz73syJEj0YiLvVDS4uyYO5QBCInfWAECJ/QAgRN6gMAJPUDghB4gcEIPEDihBwic0AMETugBAif0AIETeoDACT1A4IQeIHBCDxA4oQcInNADBE7oAQIn9ACBE3qAwAk9QOCEHiBwQg8QOKEHCJzQAwRO6AECJ/QAgRN6gMAJPUDg0sUewLgNDAwUewhAiYnjePLkycUeRdGUXug//vjjYg8BKDGpVOo/OfSmbgACJ/QAgRN6gMAJPUDghB4gcEIPEDihBwic0AMETugBAif0AIETeoDACT1A4IQeIHBCDxA4oQcInNADBE7oAQIn9ACBE3qAwAk9QOCEHiBwQg8QOKEHCJzQAwRO6AECJ/QAgRN6gMAJPUDghB4gcEIPEDihBwic0AMETugBAif0AIETeoDApYs9ACiYJ45nij0EvqSuqmi6t+HVYo+iaJzRAwRO6AECJ/QAgRN6gMAJPUDghB4gcEIPEDihBwic0AMETugBAif0AIETeoDACT1A4IQeIHBCDxA4oQcInNADBE7oAQIn9ACBE3qAwAk9QOCEHiBwQg8QOKEHCJzQAwRO6AECJ/QAgRN6gMAJPUDghB4gcEIPEDihBwic0AMETugBAif0AIETeoDACT1A4IQeIHBCDxA4oQcInNADBE7oAQIn9ACBE3qAwAk9QOCEHuAL8utf/3rWrFmVlZUrVqz44IMP8vYeOHBg3rx51dXVra2tAwMDBfy5Qg/wRTh27NiPfvSj3/zmN++8805vb+/DDz88cu/g4ODy5cvXrl17+PDh7u7uzZs3F/BHCz3AF+G1115bsGDBwoULr776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" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" /></p>
-
+## 15 layer.5 baiting             9.98         0.220</code></pre>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1"><span class="co"># plot solution</span></a>
+<a class="sourceLine" id="cb56-2" data-line-number="2"><span class="kw">plot</span>(<span class="kw">category_layer</span>(s6), <span class="dt">main =</span> <span class="st">&quot;solution&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <p>Finally, it appears we might have a viable solution for this made-up conservation problem.</p>
-
+</div>
+</div>
+<div id="conclusion" class="section level2">
 <h2>Conclusion</h2>
-
-<p>Hopefully, this vignette has provided an informative introduction to building and solving problems with multiple zones using the <em>prioritizr R</em> package. Although we have examined only a few different functions here, almost every single function for modifying conservation planning problems is compatible with problems that contain zones. It&#39;s worth noting that working with multiple zones is a lot trickier than working with a single zone, so we would recommend playing around with the code in the Examples sections of the help pages to get a feel for what different functions do when they are applied to problems with multiple zones.</p>
-
+<p>Hopefully, this vignette has provided an informative introduction to building and solving problems with multiple zones using the <em>prioritizr R</em> package. Although we have examined only a few different functions here, almost every single function for modifying conservation planning problems is compatible with problems that contain zones. It’s worth noting that working with multiple zones is a lot trickier than working with a single zone, so we would recommend playing around with the code in the Examples sections of the help pages to get a feel for what different functions do when they are applied to problems with multiple zones.</p>
+</div>
+<div id="references" class="section level2 unnumbered">
 <h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-r25">
+<p>Cattarino, L., Hermoso, V., Carwardine, J., Adams, V.M., Kennard, M.J. &amp; Linke, S. (2018). Information uncertainty influences conservation outcomes when prioritizing multi-action management efforts. <em>Journal of Applied Ecology</em>, Available at: https://doi.org/10.1111/1365–2664.13147.</p>
+</div>
+<div id="ref-r27">
+<p>Klein, C.J., Tulloch, V.J., Halpern, B.S., Selkoe, K.A., Watts, M.E., Steinback, C., Scholz, A. &amp; Possingham, H.P. (2013). Tradeoffs in marine reserve design: Habitat condition, representation, and socioeconomic costs. <em>Conservation Letters</em>, <em>6</em>, 324–332.</p>
+</div>
+<div id="ref-r5">
+<p>Klein, C., Wilson, K., Watts, M., Stein, J., Berry, S., Carwardine, J., Smith, M.S., Mackey, B. &amp; Possingham, H. (2009). Incorporating ecological and evolutionary processes into continental-scale conservation planning. <em>Ecological Applications</em>, <em>19</em>, 206–217.</p>
+</div>
+<div id="ref-r4">
+<p>Margules, C.R. &amp; Pressey, R.L. (2000). Systematic conservation planning. <em>Nature</em>, <em>405</em>, 243–253.</p>
+</div>
+<div id="ref-r18">
+<p>Stigner, M.G., Beyer, H.L., Klein, C.J. &amp; Fuller, R.A. (2016). Reconciling recreational use and conservation values in a coastal protected area. <em>Journal of Applied Ecology</em>, <em>53</em>, 1206–1214.</p>
+</div>
+<div id="ref-r2">
+<p>Watts, M.E., Ball, I.R., Stewart, R.S., Klein, C.J., Wilson, K., Steinback, C., Lourival, R., Kircher, L. &amp; Possingham, H.P. (2009). Marxan with Zones: Software for optimal conservation based land- and sea-use zoning. <em>Environmental Modelling &amp; Software</em>, <em>24</em>, 1513–1521.</p>
+</div>
+<div id="ref-r26">
+<p>Wilson, K.A., Meijaard, E., Drummond, S., Grantham, H.S., Boitani, L., Catullo, G., Christie, L., Dennis, R., Dutton, I., Falcucci, A. &amp; others. (2010). Conserving biodiversity in production landscapes. <em>Ecological Applications</em>, <em>20</em>, 1721–1732.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
-
 </html>
