@@ -4,7 +4,7 @@ NULL
 #' Add a SYMPHONY solver with \pkg{lpsymphony}
 #'
 #' Specify that the \emph{SYMPHONY} software should be used to solve a
-#' conservation planning problem using the \pkg{lpsymhpony} package. This
+#' conservation planning problem using the \pkg{lpsymphony} package. This
 #' function can also be used to customize the behavior of the solver.
 #' It requires the \pkg{lpsymphony} package.
 #'
@@ -113,6 +113,8 @@ add_lpsymphony_solver <- function(x, gap = 0.1, time_limit = -1,
       if (is.null(s$solution) ||
           names(s$status) %in% c("TM_NO_SOLUTION", "PREP_NO_SOLUTION"))
         return(NULL)
+      if (any(s$solution > 1 | s$solution < 0))
+        stop("infeasible solution returned, try relaxing solver parameters")
       return(list(x = s$solution, objective = s$objval,
                   status = as.character(s$status),
                   runtime = as.double(end_time - start_time,

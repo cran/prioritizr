@@ -375,8 +375,7 @@ methods::setMethod("feature_representation",
       inherits(solution, "Raster"),
       number_of_zones(x) == raster::nlayers(solution),
       raster::compareCRS(x$data$cost@crs, solution@crs),
-      raster::compareRaster(x$data$cost, solution[[1]], res = TRUE,
-        tolerance = 1e-5, stopiffalse = FALSE),
+      is_comparable_raster(x$data$cost, solution[[1]]),
       min(raster::cellStats(solution, "min")) >= 0,
       max(raster::cellStats(solution, "max")) <= 1)
     # subset planning units with finite cost values
@@ -396,7 +395,8 @@ methods::setMethod("feature_representation",
                      x$data$rij_matrix[[i]] *
                      matrix(solution[, i], ncol = nrow(solution),
                             nrow = nrow(x$data$rij_matrix[[1]]),
-                            byrow = TRUE)),
+                            byrow = TRUE),
+                     na.rm = TRUE),
                      numeric(nrow(x$data$rij_matrix[[1]])))
     out <- tibble::tibble(feature = rep(x$feature_names(), x$number_of_zones()),
                           absolute_held = c(held),

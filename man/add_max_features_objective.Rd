@@ -2,7 +2,6 @@
 % Please edit documentation in R/add_max_features_objective.R
 \name{add_max_features_objective}
 \alias{add_max_features_objective}
-\alias{add_max_features_objective}
 \title{Add maximum feature representation objective}
 \usage{
 add_max_features_objective(x, budget)
@@ -77,7 +76,7 @@ data(sim_pu_raster, sim_pu_zones_stack, sim_features, sim_features_zones)
 
 # create problem with maximum features objective
 p1 <- problem(sim_pu_raster, sim_features) \%>\%
-      add_max_features_objective(1500) \%>\%
+      add_max_features_objective(1800) \%>\%
       add_relative_targets(0.1) \%>\%
       add_binary_decisions()
 \donttest{

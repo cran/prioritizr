@@ -5,8 +5,8 @@
 \alias{add_lpsymphony_solver}
 \title{Add a SYMPHONY solver with \pkg{lpsymphony}}
 \usage{
-add_lpsymphony_solver(x, gap = 0.1, time_limit = -1, first_feasible = 0,
-  verbose = TRUE)
+add_lpsymphony_solver(x, gap = 0.1, time_limit = -1,
+  first_feasible = 0, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{\link{ConservationProblem-class}} object.}
@@ -37,7 +37,7 @@ optimization problems? Defaults to \code{TRUE}.}
 }
 \description{
 Specify that the \emph{SYMPHONY} software should be used to solve a
-conservation planning problem using the \pkg{lpsymhpony} package. This
+conservation planning problem using the \pkg{lpsymphony} package. This
 function can also be used to customize the behavior of the solver.
 It requires the \pkg{lpsymphony} package.
 }
