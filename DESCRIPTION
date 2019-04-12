@@ -1,6 +1,6 @@
 Package: prioritizr
 Type: Package
-Version: 4.0.3
+Version: 4.0.4
 Title: Systematic Conservation Prioritization in R
 Description: Conservation prioritization using integer
     programming techniques. To solve large-scale problems, users
@@ -9,7 +9,7 @@ Description: Conservation prioritization using integer
 Authors@R: c(person(c('Jeffrey', 'O'), 'Hanson',
                email='jeffrey.hanson@uqconnect.edu.au', role = c('aut')),
              person(c('Richard'), 'Schuster',
-               email='mail@richard-schuster.com', role = c('aut', 'cre')),
+               email='richard.schuster@glel.carleton.ca', role = c('aut', 'cre')),
              person(c('Nina'), 'Morrell',
                email='nina.morrell@ubc.ca', role = c('aut')),
              person(c('Matthew'), 'Strimas-Mackey',
@@ -79,7 +79,7 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'rij_matrix.R' 'run_calculations.R' 'show.R' 'simulate.R'
         'solve.R' 'solvers.R' 'targets.R' 'zone_names.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2019-04-06 06:08:24 UTC; richard
+Packaged: 2019-04-11 22:25:34 UTC; richard
 Author: Jeffrey O Hanson [aut],
   Richard Schuster [aut, cre],
   Nina Morrell [aut],
@@ -88,6 +88,6 @@ Author: Jeffrey O Hanson [aut],
   Peter Arcese [aut],
   Joeseph Bennett [aut],
   Hugh P Possingham [aut]
-Maintainer: Richard Schuster <mail@richard-schuster.com>
+Maintainer: Richard Schuster <richard.schuster@glel.carleton.ca>
 Repository: CRAN
-Date/Publication: 2019-04-08 21:20:12 UTC
+Date/Publication: 2019-04-12 12:32:42 UTC
