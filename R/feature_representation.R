@@ -31,18 +31,28 @@ NULL
 #'   a different planning unit, and values correspond to the allocations
 #'   (e.g. values of zero or one).
 #'
-#'   Valid solutions should not have non-zero allocations for planning
-#'   units in zones that have \code{NA} cost values in the argument to
-#'   \code{x}. In other words, planning units that have \code{NA} cost values
-#'   in \code{x} should always have a value of zero in the argument to
-#'   \code{solution}. If an argument is supplied to \code{solution} where
-#'   this is not the case, then an error will be thrown. Additionally,
-#'   note that when calculating the proportion of each feature represented
-#'   in the solution, the denominator is calculated using all planning
-#'   units---\strong{including any planning units with \code{NA} cost values in
-#'   the argument to \code{x}}.
+#'   Solutions must have planning unit statuses set to missing (\code{NA})
+#'   values for planning units that have missing (\code{NA}) cost data. For
+#'   problems with multiple zones, this means that planning units must have
+#'   missing (\code{NA}) allocation values in zones where they have missing
+#'   (\code{NA}) cost data. In other words, planning units that have missing
+#'   (\code{NA}) cost values in \code{x} should always have a missing
+#'   (\code{NA}) value the argument to \code{solution}. If an argument is
+#'   supplied to
+#'   \code{solution} where this is not the case, then an error will be thrown.
+#'   Please note that earlier versions of the \pkg{prioritizr}
+#'   (prior to 4.0.4.1) required that such planning units always have zero
+#'   values, but this has been changed to make the handling of missing values
+#'   more consistent throughout the package.
 #'
-#' @return \code{\link[tibble]{tibble}} containing the amount
+#'   Additionally, note that when calculating the proportion of each feature
+#'   represented in the solution, the denominator is calculated using all
+#'   planning units---\strong{including any planning units with \code{NA} cost
+#'   values in the argument to \code{x}}. This is exactly the same equation
+#'   used when calculating relative targets for problems (e.g.
+#'   \code{add_relative_targets}).
+#'
+#' @return \code{\link[tibble]{tibble}} object containing the amount
 #'   (\code{"absolute_held"}) and proportion (\code{"relative_held"})
 #'   of the distribution of each feature held in the solution. Here, each
 #'   row contains data that pertain to a specific feature in a specific
@@ -89,23 +99,35 @@ NULL
 #'                  spp1 = runif(10), spp2 = c(rpois(9, 4), NA))
 #'
 #' # create problem
-#' p1 <- problem(pu, c("spp1", "spp2"), cost_column = "cost")
+#' p1 <- problem(pu, c("spp1", "spp2"), cost_column = "cost") %>%
+#'       add_min_set_objective() %>%
+#'       add_relative_targets(0.1) %>%
+#'       add_binary_decisions()
 #'
 #' # create a solution
-#' s1 <- data.frame(solution = rep(c(1, 0), 5))
+#' s1 <- data.frame(solution = c(1, NA, rep(c(1, 0), 4)))
+#' print(s1)
 #'
 #' # calculate feature representation
 #' r1 <- feature_representation(p1, s1)
-#'
-#' # print feature representation
 #' print(r1)
 #'
 #' # verify that feature representation calculations are correct
-#' all.equal(r1$absolute_held, c(sum(pu$spp1 * s1[[1]]),
+#' all.equal(r1$absolute_held, c(sum(pu$spp1 * s1[[1]], na.rm = TRUE),
 #'                               sum(pu$spp2 * s1[[1]], na.rm = TRUE)))
-#' all.equal(r1$relative_held, c(sum(pu$spp1 * s1[[1]]) / sum(pu$spp1),
+#' all.equal(r1$relative_held, c(sum(pu$spp1 * s1[[1]], na.rm = TRUE) /
+#'                               sum(pu$spp1),
 #'                               sum(pu$spp2 * s1[[1]], na.rm = TRUE) /
 #'                               sum(pu$spp2, na.rm = TRUE)))
+#'
+#' # solve the problem using an exact algorithm solver
+#' s1_2 <- solve(p1)
+#' print(s1_2)
+#'
+#' # calculate feature representation in this solution
+#' # note that we set missing values in the solution_1 explicitly to zero
+#' r1_2 <- feature_representation(p1, s1_2[, "solution_1", drop = FALSE])
+#' print(r1_2)
 #'
 #' # build minimal conservation problem with raster data
 #' p2 <- problem(sim_pu_raster, sim_features) %>%
@@ -224,9 +246,10 @@ methods::setMethod("feature_representation",
       max(solution, na.rm = TRUE) <= 1)
     # subset planning units with finite cost values
     pos <- x$planning_unit_indices()
-    if (any(solution[setdiff(seq_along(solution), pos)] > 0))
-     stop("planning units with NA cost data have non-zero allocations in the ",
-          "argument to solution")
+    pos2 <- which(!is.na(solution))
+    if (!setequal(pos, pos2))
+      stop("planning units with NA cost data must have NA allocations in the",
+           " solution")
     solution <- solution[pos]
     # calculate amount of each feature in each planning unit
     total <- x$feature_abundances_in_total_units()
@@ -255,20 +278,25 @@ methods::setMethod("feature_representation",
       max(solution, na.rm = TRUE) <= 1)
     # subset planning units with finite cost values
     pos <- x$planning_unit_indices()
-    if (any(solution[setdiff(seq_len(nrow(solution)), pos), ,
-                     drop = FALSE] > 0))
-      stop("planning units with NA cost data have non-zero allocations in the ",
-           "argument to solution")
+    pos2 <- which(rowSums(is.na(solution)) != ncol(solution))
+    if (!setequal(pos, pos2))
+      stop("planning units with NA cost data must have NA allocations in the",
+           " solution")
     solution <- solution[pos, , drop = FALSE]
+    if (!all(is.na(c(x$planning_unit_costs())) == is.na(c(solution))))
+     stop("planning units with NA cost data must have NA allocations in the",
+          " solution")
     # calculate amount of each feature in each planning unit
     total <- x$feature_abundances_in_total_units()
     held <- vapply(seq_len(x$number_of_zones()),
-                   function(i) rowSums(
-                     x$data$rij_matrix[[i]] *
-                     matrix(solution[, i], ncol = nrow(solution),
-                            nrow = nrow(x$data$rij_matrix[[1]]),
-                            byrow = TRUE)),
-                     numeric(nrow(x$data$rij_matrix[[1]])))
+                   FUN.VALUE = numeric(nrow(x$data$rij_matrix[[1]])),
+                   function(i) {
+      rowSums(x$data$rij_matrix[[i]] *
+              matrix(solution[, i], ncol = nrow(solution),
+                     nrow = nrow(x$data$rij_matrix[[1]]),
+                     byrow = TRUE),
+              na.rm = TRUE)
+    })
     out <- tibble::tibble(feature = rep(x$feature_names(), x$number_of_zones()),
                           absolute_held = c(held),
                           relative_held = c(held / total))
@@ -295,22 +323,27 @@ methods::setMethod("feature_representation",
       min(unlist(solution), na.rm = TRUE) >= 0,
       max(unlist(solution), na.rm = TRUE) <= 1)
     # subset planning units with finite cost values
-    pos <- x$planning_unit_indices()
     solution <- as.matrix(solution)
-    if (any(solution[setdiff(seq_len(nrow(solution)), pos), ,
-                     drop = FALSE] > 0))
-      stop("planning units with NA cost data have non-zero allocations in the ",
-           "argument to solution")
+    pos <- x$planning_unit_indices()
+    pos2 <- which(rowSums(is.na(solution)) != ncol(solution))
+    if (!setequal(pos, pos2))
+      stop("planning units with NA cost data must have NA allocations in the",
+           " solution")
     solution <- solution[pos, , drop = FALSE]
+    if (!all(is.na(c(x$planning_unit_costs())) == is.na(c(solution))))
+      stop("planning units with NA cost data must have NA allocations in the",
+           " solution")
     # calculate amount of each feature in each planning unit
     total <- x$feature_abundances_in_total_units()
     held <- vapply(seq_len(x$number_of_zones()),
-                   function(i) rowSums(
-                     x$data$rij_matrix[[i]] *
-                     matrix(solution[, i], ncol = nrow(solution),
-                            nrow = nrow(x$data$rij_matrix[[1]]),
-                            byrow = TRUE)),
-                     numeric(nrow(x$data$rij_matrix[[1]])))
+                   FUN.VALUE = numeric(nrow(x$data$rij_matrix[[1]])),
+                   function(i) {
+      rowSums(x$data$rij_matrix[[i]] *
+              matrix(solution[, i], ncol = nrow(solution),
+                     nrow = nrow(x$data$rij_matrix[[1]]),
+                     byrow = TRUE),
+              na.rm = TRUE)
+    })
     out <- tibble::tibble(feature = rep(x$feature_names(), x$number_of_zones()),
                           absolute_held = c(held),
                           relative_held = c(held / total))
@@ -338,22 +371,27 @@ methods::setMethod("feature_representation",
       min(unlist(solution@data), na.rm = TRUE) >= 0,
       max(unlist(solution@data), na.rm = TRUE) <= 1)
     # subset planning units with finite cost values
-    pos <- x$planning_unit_indices()
     solution <- as.matrix(solution@data)
-    if (any(solution[setdiff(seq_len(nrow(solution)), pos), ,
-                     drop = FALSE] > 0))
-      stop("planning units with NA cost data have non-zero allocations in the ",
-           "argument to solution")
+    pos <- x$planning_unit_indices()
+    pos2 <- which(rowSums(is.na(solution)) != ncol(solution))
+    if (!setequal(pos, pos2))
+      stop("planning units with NA cost data must have NA allocations in the",
+           " solution")
     solution <- solution[pos, , drop = FALSE]
+    if (!all(is.na(c(x$planning_unit_costs())) == is.na(c(solution))))
+      stop("planning units with NA cost data must have NA allocations in the",
+           " solution")
     # calculate amount of each feature in each planning unit
     total <- x$feature_abundances_in_total_units()
     held <- vapply(seq_len(x$number_of_zones()),
-                   function(i) rowSums(
-                     x$data$rij_matrix[[i]] *
-                     matrix(solution[, i], ncol = nrow(solution),
-                            nrow = nrow(x$data$rij_matrix[[1]]),
-                            byrow = TRUE)),
-                     numeric(nrow(x$data$rij_matrix[[1]])))
+                   FUN.VALUE = numeric(nrow(x$data$rij_matrix[[1]])),
+                   function(i) {
+      rowSums(x$data$rij_matrix[[i]] *
+              matrix(solution[, i], ncol = nrow(solution),
+                     nrow = nrow(x$data$rij_matrix[[1]]),
+                     byrow = TRUE),
+              na.rm = TRUE)
+    })
     out <- tibble::tibble(feature = rep(x$feature_names(), x$number_of_zones()),
                           absolute_held = c(held),
                           relative_held = c(held / total))
@@ -380,24 +418,31 @@ methods::setMethod("feature_representation",
       max(raster::cellStats(solution, "max")) <= 1)
     # subset planning units with finite cost values
     pos <- x$planning_unit_indices()
-    solution2 <- solution
-    solution2[pos] <- 0
-    if (any(raster::cellStats(solution2, "max") > 0))
-      stop("planning units with NA cost data have non-zero allocations in the ",
-           "argument to solution")
-    solution <- solution[pos]
+    if (raster::nlayers(solution) > 1) {
+      pos2 <- raster::Which(max(!is.na(solution)) == 1, cells = TRUE)
+    } else {
+      pos2 <- raster::Which(!is.na(solution), cells = TRUE)
+    }
+    if (!setequal(pos, pos2))
+      stop("planning units with NA cost data must have NA allocations in the",
+           " solution")
+    solution <- solution[pos2]
     if (!is.matrix(solution))
       solution <- matrix(solution, ncol = 1)
+    if (!all(is.na(c(x$planning_unit_costs())) == is.na(c(solution))))
+     stop("planning units with NA cost data must have NA allocations in the",
+          " solution")
     # calculate amount of each feature in each planning unit
     total <- x$feature_abundances_in_total_units()
     held <- vapply(seq_len(x$number_of_zones()),
-                   function(i) rowSums(
-                     x$data$rij_matrix[[i]] *
-                     matrix(solution[, i], ncol = nrow(solution),
-                            nrow = nrow(x$data$rij_matrix[[1]]),
-                            byrow = TRUE),
-                     na.rm = TRUE),
-                     numeric(nrow(x$data$rij_matrix[[1]])))
+                   FUN.VALUE = numeric(nrow(x$data$rij_matrix[[1]])),
+                   function(i) {
+      rowSums(x$data$rij_matrix[[i]] *
+              matrix(solution[, i], ncol = nrow(solution),
+                     nrow = nrow(x$data$rij_matrix[[1]]),
+                     byrow = TRUE),
+              na.rm = TRUE)
+    })
     out <- tibble::tibble(feature = rep(x$feature_names(), x$number_of_zones()),
                           absolute_held = c(held),
                           relative_held = c(held / total))

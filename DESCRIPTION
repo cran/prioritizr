@@ -1,6 +1,6 @@
 Package: prioritizr
 Type: Package
-Version: 4.0.4
+Version: 4.1.1
 Title: Systematic Conservation Prioritization in R
 Description: Conservation prioritization using integer
     programming techniques. To solve large-scale problems, users
@@ -31,6 +31,7 @@ Suggests: testthat, knitr, roxygen2, shiny, xtable, rhandsontable,
 Depends: R(>= 3.4.0), raster, sp, proto
 LinkingTo: Rcpp, RcppArmadillo, BH
 License: GPL-3
+Language: en-US
 LazyData: true
 SystemRequirements: C++11
 URL: https://prioritizr.net, https://github.com/prioritizr/prioritizr
@@ -62,24 +63,25 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'add_manual_targets.R' 'add_manual_locked_constraints.R'
         'add_max_cover_objective.R' 'add_max_features_objective.R'
         'add_max_phylo_objective.R' 'add_max_utility_objective.R'
-        'add_min_set_objective.R' 'add_neighbor_contraints.R'
-        'add_pool_portfolio.R' 'add_proportion_decisions.R'
-        'add_relative_targets.R' 'add_rsymphony_solver.R'
-        'add_semicontinuous_decisions.R' 'add_shuffle_portfolio.R'
-        'boundary_matrix.R' 'branch_matrix.R' 'compile.R'
-        'connected_matrix.R' 'connectivity_matrix.R' 'constraints.R'
-        'data.R' 'decisions.R' 'deprecated.R' 'parallel.R'
-        'fast_extract.R' 'feature_abundances.R' 'feature_names.R'
-        'feature_representation.R' 'magrittr-operators.R'
-        'marxan_problem.R' 'misc.R' 'new_optimization_problem.R'
-        'number_of_features.R' 'number_of_planning_units.R'
-        'number_of_total_units.R' 'number_of_zones.R' 'objectives.R'
-        'package.R' 'penalties.R' 'portfolios.R'
-        'predefined_optimization_problem.R' 'print.R' 'problem.R'
-        'rij_matrix.R' 'run_calculations.R' 'show.R' 'simulate.R'
-        'solve.R' 'solvers.R' 'targets.R' 'zone_names.R' 'zzz.R'
+        'add_min_set_objective.R' 'add_min_shortfall_objective.R'
+        'add_neighbor_contraints.R' 'add_pool_portfolio.R'
+        'add_proportion_decisions.R' 'add_relative_targets.R'
+        'add_rsymphony_solver.R' 'add_semicontinuous_decisions.R'
+        'add_shuffle_portfolio.R' 'boundary_matrix.R' 'branch_matrix.R'
+        'compile.R' 'connected_matrix.R' 'connectivity_matrix.R'
+        'constraints.R' 'data.R' 'decisions.R' 'deprecated.R'
+        'parallel.R' 'fast_extract.R' 'feature_abundances.R'
+        'feature_names.R' 'feature_representation.R'
+        'magrittr-operators.R' 'marxan_problem.R' 'misc.R'
+        'new_optimization_problem.R' 'number_of_features.R'
+        'number_of_planning_units.R' 'number_of_total_units.R'
+        'number_of_zones.R' 'objectives.R' 'package.R' 'penalties.R'
+        'portfolios.R' 'predefined_optimization_problem.R'
+        'presolve_check.R' 'print.R' 'problem.R' 'rij_matrix.R'
+        'run_calculations.R' 'show.R' 'simulate.R' 'solve.R'
+        'solvers.R' 'targets.R' 'zone_names.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2019-04-11 22:25:34 UTC; richard
+Packaged: 2019-06-06 14:35:29 UTC; richard
 Author: Jeffrey O Hanson [aut],
   Richard Schuster [aut, cre],
   Nina Morrell [aut],
@@ -90,4 +92,4 @@ Author: Jeffrey O Hanson [aut],
   Hugh P Possingham [aut]
 Maintainer: Richard Schuster <richard.schuster@glel.carleton.ca>
 Repository: CRAN
-Date/Publication: 2019-04-12 12:32:42 UTC
+Date/Publication: 2019-06-06 16:40:03 UTC
