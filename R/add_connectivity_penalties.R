@@ -134,6 +134,9 @@ NULL
 #' conservation, \emph{Conservation Letters}, 3: 359--368.
 #'
 #' @examples
+#' # set seed for reproducibility
+#' set.seed(600)
+#'
 #' # load Matrix package for visualizing matrices
 #' require(Matrix)
 #'
@@ -159,8 +162,9 @@ NULL
 #' b_matrix[] <- rescale(b_matrix[])
 #'
 #' # visualize connectivity matrix
+#' \donttest{
 #' image(b_matrix)
-#'
+#' }
 #' # create a symmetric connectivity matrix where the connectivity between
 #' # two planning units corresponds to their spatial proximity
 #' # i.e. planning units that are further apart share less connectivity
@@ -175,8 +179,9 @@ NULL
 #' d_matrix[d_matrix < 0.7] <- 0
 #'
 #' # visualize connectivity matrix
+#' \donttest{
 #' image(d_matrix)
-#'
+#' }
 #' # create a symmetric connectivity matrix where the connectivity
 #' # between adjacent two planning units corresponds to their combined
 #' # value in a field in the planning unit attribute data
@@ -190,8 +195,9 @@ NULL
 #' c_matrix[] <- rescale(c_matrix[])
 #'
 #' # visualize connectivity matrix
+#' \donttest{
 #' image(c_matrix)
-#'
+#' }
 #' # create an asymmetric connectivity matrix. Here, connectivity occurs between
 #' # adjacent planning units and, due to rivers flowing southwards
 #' # through the study area, connectivity from northern planning units to
@@ -222,8 +228,9 @@ NULL
 #' ac_matrix[] <- rescale(ac_matrix[])
 #'
 #' # visualize asymmetric connectivity matrix
+#' \donttest{
 #' image(ac_matrix)
-#'
+#' }
 #' # create penalties
 #' penalties <- c(10, 25)
 #'
@@ -268,8 +275,9 @@ NULL
 #' a_matrix <- connected_matrix(sim_pu_zones_stack)
 #'
 #' # visualize matrix
+#' \donttest{
 #' image(a_matrix)
-#'
+#' }
 #' # create a zone matrix where connectivities are only present between
 #' # planning units that are allocated to the same zone
 #' zm1 <- as(diag(3), "Matrix")
@@ -323,7 +331,7 @@ NULL
 #' print(zm5)
 #'
 #' # create vector of penalties to use creating problems
-#' penalties2 <- c(5, 30)
+#' penalties2 <- c(5, 15)
 #'
 #' # create multi-zone problems using the adjacent connectivity matrix and
 #' # different zone matrices
@@ -369,7 +377,7 @@ NULL
 #' # note that the zones argument is set to NULL because the connectivity
 #' # data is an array
 #' p5 <- list(p3,
-#'            p3 %>% add_connectivity_penalties(30, zones = NULL, c_array))
+#'            p3 %>% add_connectivity_penalties(15, zones = NULL, c_array))
 #'
 #'
 #' # assign names to the problems

@@ -250,20 +250,7 @@ no_extra_arguments <- function(...) {
 }
 
 assertthat::on_failure(no_extra_arguments) <- function(call, env) {
-  call_list <- as.list(call)[-1]
-  format_args <- function(i) {
-    if (names(call_list)[i] == "")
-     return(deparse(call_list[[i]]))
-    paste0(names(call_list)[i], "=", deparse(call_list[[i]]))
-  }
-  msg <- paste(vapply(seq_along(call_list), format_args, character(1)),
-               collapse = ", ")
-  if (length(call_list) > 1) {
-    msg <- paste0("unused arguments (", msg, ")")
-  } else {
-    msg <- paste0("unused argument (", msg, ")")
-  }
-  msg
+  "unused arguments"
 }
 
 #' Verify if assertion is met
@@ -309,5 +296,28 @@ is_comparable_raster <- function(x, y) {
 assertthat::on_failure(is_comparable_raster) <- function(call, env) {
   paste0(deparse(call$x), " and ", deparse(call$y),  " are not comparable: ",
          "they have different spatial resolutions, extents, ",
-         "coordinate reference systems, or dimensionality (rows / columns).")
+         "coordinate reference systems, or dimensionality (rows / columns)")
+}
+
+#' Rescale
+#'
+#' Linearly rescale values in a vector to range between two thresholds.
+#'
+#' @param x \code{numeric} vector.
+#'
+#' @param from \code{numeric} vector indicating the original range of the
+#'  the data.
+#'
+#' @param to \code{numeric} new data range. Defaults to zero and one.
+#'
+#' @details This function is based on the \code{rescale} function in the
+#'   \pkg{scales} package.
+#'
+#' @return \code{numeric} vector.
+#'
+#' @noRd
+rescale <- function(x, from = range(x), to = c(0, 1)) {
+  if ((abs(diff(from)) < 1e-10) || abs(diff(to)) < 1e-10)
+    return(mean(to))
+  (x - from[1]) / diff(from) * diff(to) + to[1]
 }

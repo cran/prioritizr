@@ -20,7 +20,8 @@ NULL
 #' @param locked_out Object that determines which planning units that should be
 #'   locked out. See the Details section for more information.
 #'
-#' @inherit add_connected_constraints return seealso
+#' @inherit add_contiguity_constraints return seealso
+#' @inherit add_locked_in_constraints details
 #'
 #' @examples
 #' # set seed for reproducibility
@@ -133,8 +134,9 @@ NULL
 #' locked_out_stack[[3]][3] <- 1
 #'
 #' # plot locked out stack
+#' \donttest{
 #' plot(locked_out_stack)
-#'
+#' }
 #' # add locked out raster units to problem
 #' p9 <- p9 %>% add_locked_out_constraints(locked_out_stack)
 #'
@@ -227,9 +229,12 @@ methods::setMethod("add_locked_out_constraints",
       is.character(locked_out), !anyNA(locked_out),
       inherits(x$data$cost, c("data.frame", "Spatial")),
       x$number_of_zones() == length(locked_out),
-      all(locked_out %in% names(x$data$cost)),
-      all(vapply(as.data.frame(x$data$cost)[, locked_out, drop = FALSE],
-                 inherits, logical(1), "logical")))
+      all(locked_out %in% names(x$data$cost)))
+      assertthat::assert_that(
+        all(vapply(as.data.frame(x$data$cost)[, locked_out, drop = FALSE],
+                   inherits, logical(1), "logical")),
+        msg = paste("argument to locked_out refers to a column with data",
+                    "that are not logical (i.e TRUE/FALSE)"))
     # add constraints
     add_locked_out_constraints(x,
       as.matrix(as.data.frame(x$data$cost)[, locked_out, drop = FALSE]))
@@ -260,7 +265,8 @@ methods::setMethod("add_locked_out_constraints",
       x$number_of_zones() == raster::nlayers(locked_out),
       all(max(raster::cellStats(locked_out, "sum")) > 0))
     if (raster::nlayers(locked_out) > 1)
-      assertthat::assert_that(raster::cellStats(sum(locked_out), "max") <= 1)
+      assertthat::assert_that(raster::cellStats(sum(locked_out, na.rm = TRUE),
+                                                "max") <= 1)
     # create matrix with statuses
     if (inherits(x$data$cost, "Raster") && x$number_of_zones() > 1) {
       status <- vapply(seq_len(x$number_of_zones()),

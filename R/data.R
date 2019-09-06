@@ -127,6 +127,7 @@ NULL
 #'      sim_features)
 #'
 #' # plot example planning unit data
+#' \donttest{
 #' par(mfrow = c(2, 3))
 #' plot(sim_pu_raster, main = "planning units (raster)")
 #' plot(sim_locked_in_raster, main = "locked in units (raster)")
@@ -147,12 +148,16 @@ NULL
 #' par(mfrow = c(1, 1))
 #' plot(sim_pu_zones_stack)
 #'
-#' # plot example feature data under different zones
-#' par(mfrow = c(5, 3))
-#' for (i in length(sim_features_zones))
-#'   for (j in raster::nlayers(sim_features_zones[[i]]))
-#'     plot(sim_features_zones[[i]][[j]],
-#'          main = paste0("Species ", i, "(zone ", j ))
+#' # plot example feature data for each management zone
+#' plot(do.call(stack, sim_features_zones),
+#'      main = paste0("Species ",
+#'                    rep(seq_len(number_of_zones(sim_features_zones)),
+#'                        number_of_features(sim_features_zones)),
+#'                    " (zone ",
+#'                    rep(seq_len(number_of_features(sim_features_zones)),
+#'                        each = number_of_zones(sim_features_zones)),
+#'                    ")"))
+#' }
 #' @name sim_data
 NULL
 

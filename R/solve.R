@@ -227,7 +227,7 @@ methods::setMethod(
     if (run_checks) {
       ch <- presolve_check(a)
       if (!isTRUE(force) && !isTRUE(ch))
-        stop(paste("problem failed presolve checks. For more information see",
+        stop(paste("problem failed presolve checks, for more information see",
                    "?presolve_check"))
     }
     # compile optimisation problem
@@ -236,7 +236,8 @@ methods::setMethod(
     sol <- a$portfolio$run(opt, a$solver)
     # check that solution is valid
     if (is.null(sol) || is.null(sol[[1]]$x)) {
-      stop("conservation problem is infeasible")
+      stop("no solution found (e.g. due to problem infeasibility or time ",
+           "limits)")
     }
     ## format solutions
     # format solutions into planning unit by zones matrix
@@ -289,7 +290,7 @@ methods::setMethod(
       pos <- which(rowSums(!is.na(as.matrix(
                as.data.frame(pu)[, a$data$cost_column, drop = FALSE]))) > 0)
       if (!identical(pos, seq_len(a$number_of_total_units()))) {
-        sol_status2 <- matrix(NA, nrow = a$number_of_total_units(),
+        sol_status2 <- matrix(NA_real_, nrow = a$number_of_total_units(),
                               ncol = ncol(sol_status))
         sol_status2[pos, ] <- sol_status
         dimnames(sol_status2) <- dimnames(sol_status)

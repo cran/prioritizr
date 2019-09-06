@@ -1,6 +1,6 @@
 Package: prioritizr
 Type: Package
-Version: 4.1.1
+Version: 4.1.3
 Title: Systematic Conservation Prioritization in R
 Description: Conservation prioritization using integer
     programming techniques. To solve large-scale problems, users
@@ -18,7 +18,7 @@ Authors@R: c(person(c('Jeffrey', 'O'), 'Hanson',
                email='m.watts@uq.edu.au', role = c('aut')),
              person(c('Peter'), 'Arcese',
                email='peter.arcese@ubc.ca', role = c('aut')),
-             person(c('Joeseph'), 'Bennett',
+             person(c('Joseph'), 'Bennett',
                email='joseph.bennett@carleton.ca', role = c('aut')),
              person(c('Hugh', 'P'), 'Possingham',
                email='hugh.possingham@tnc.org', role = c('aut')))
@@ -60,9 +60,10 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'loglinear_interpolation.R' 'add_loglinear_targets.R'
         'add_lpsymphony_solver.R'
         'add_mandatory_allocation_constraints.R' 'tbl_df.R'
-        'add_manual_targets.R' 'add_manual_locked_constraints.R'
-        'add_max_cover_objective.R' 'add_max_features_objective.R'
-        'add_max_phylo_objective.R' 'add_max_utility_objective.R'
+        'add_manual_targets.R' 'add_manual_bounded_constraints.R'
+        'add_manual_locked_constraints.R' 'add_max_cover_objective.R'
+        'add_max_features_objective.R' 'add_max_phylo_div_objective.R'
+        'add_max_phylo_end_objective.R' 'add_max_utility_objective.R'
         'add_min_set_objective.R' 'add_min_shortfall_objective.R'
         'add_neighbor_contraints.R' 'add_pool_portfolio.R'
         'add_proportion_decisions.R' 'add_relative_targets.R'
@@ -72,24 +73,25 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'constraints.R' 'data.R' 'decisions.R' 'deprecated.R'
         'parallel.R' 'fast_extract.R' 'feature_abundances.R'
         'feature_names.R' 'feature_representation.R'
-        'magrittr-operators.R' 'marxan_problem.R' 'misc.R'
-        'new_optimization_problem.R' 'number_of_features.R'
+        'irreplaceability.R' 'magrittr-operators.R' 'marxan_problem.R'
+        'misc.R' 'new_optimization_problem.R' 'number_of_features.R'
         'number_of_planning_units.R' 'number_of_total_units.R'
         'number_of_zones.R' 'objectives.R' 'package.R' 'penalties.R'
         'portfolios.R' 'predefined_optimization_problem.R'
-        'presolve_check.R' 'print.R' 'problem.R' 'rij_matrix.R'
-        'run_calculations.R' 'show.R' 'simulate.R' 'solve.R'
+        'presolve_check.R' 'print.R' 'problem.R'
+        'rarity_weighted_richness.R' 'solve.R' 'replacement_cost.R'
+        'rij_matrix.R' 'run_calculations.R' 'show.R' 'simulate.R'
         'solvers.R' 'targets.R' 'zone_names.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2019-06-06 14:35:29 UTC; richard
+Packaged: 2019-09-05 23:11:08 UTC; richard
 Author: Jeffrey O Hanson [aut],
   Richard Schuster [aut, cre],
   Nina Morrell [aut],
   Matthew Strimas-Mackey [aut],
   Matthew E Watts [aut],
   Peter Arcese [aut],
-  Joeseph Bennett [aut],
+  Joseph Bennett [aut],
   Hugh P Possingham [aut]
 Maintainer: Richard Schuster <richard.schuster@glel.carleton.ca>
 Repository: CRAN
-Date/Publication: 2019-06-06 16:40:03 UTC
+Date/Publication: 2019-09-06 22:40:02 UTC
