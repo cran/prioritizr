@@ -1,4 +1,4 @@
-80f488df8757e3bb5c8d345990ee602f *DESCRIPTION
+19e11c4f25e7d5123eb0b04472966d42 *DESCRIPTION
 e924bef6d415e634cb63de3edff18f4d *NAMESPACE
 8004816dc799b7c1d9811904f276868a *R/ArrayParameter-proto.R
 6bf0f8c4b77e7eb6b59d3927b476a699 *R/Collection-proto.R
@@ -33,7 +33,7 @@ fade89093d7f872e5ae72834551c0124 *R/add_default_targets.R
 e8f846b865cca5f19df4ad75f3a861a2 *R/add_feature_contiguity_constraints.R
 a1d48c44b41a74d731236e6e2f0f3a19 *R/add_feature_weights.R
 1d67a2fe93e53a040656b88894ee5cbd *R/add_gurobi_solver.R
-9fb8f2c85b30e99d648bffb32df831e3 *R/add_locked_in_constraints.R
+fda8e4b4c52446c0dc0ac4c47c9679ef *R/add_locked_in_constraints.R
 475fe83f0931e6b67ccaf173e98f35b2 *R/add_locked_out_constraints.R
 098395c9027036e4facbd6f085c0a39e *R/add_loglinear_targets.R
 59460db062dee5b898112768a2383a2e *R/add_lpsymphony_solver.R
@@ -67,7 +67,7 @@ d634b999560518c70a28451b0224f990 *R/connected_matrix.R
 ca7918f80cd4d3b22f89f800c9b4a5c0 *R/data.R
 851b9771ad4c1103526d143a5899fa3d *R/decisions.R
 6f0bced8b34c8527e49236075c4f1415 *R/deprecated.R
-b6963994bffada72a8a24d31e9f7b055 *R/fast_extract.R
+5c6f63a6dcdca69b363c9236455eb1f9 *R/fast_extract.R
 d9bad94940bde189d431dfbaff85921a *R/feature_abundances.R
 ca677e7f627a66f1b81893b5637cd40a *R/feature_names.R
 79632dad45893af4e38c67d377e7525e *R/feature_representation.R
@@ -97,7 +97,7 @@ b98e83ca563b98206c61602a88e0a067 *R/print.R
 fdb66de9120abdc9adc1de78225a9621 *R/problem.R
 7e8cdd0441910c6b459f7fa71afac166 *R/rarity_weighted_richness.R
 09c8e19f1324bc2d37b34399cdd834b8 *R/replacement_cost.R
-30ad3b9dc911914ed8ddd742496b6757 *R/rij_matrix.R
+af442bcad74675688241c1cad30c7efa *R/rij_matrix.R
 a5b222e94ab6f1564a1a3e68684c140e *R/run_calculations.R
 6601c5580c1287e8483dd2f32d361583 *R/show.R
 7d0d367521557aa9ac3d741af40b41f8 *R/simulate.R
@@ -109,7 +109,7 @@ eafd3b333009cde6a411b557fdbef283 *R/waiver.R
 2aeece51580964cb7b956727adf34459 *R/zone_names.R
 686dd9e05835eae8852a92a2eef6deef *R/zones.R
 a69d66cb40adeecab53b3e26837a271c *R/zzz.R
-9f2c72b9d6be25dd0d68405c805aac72 *README.md
+631eedb4272b36fafec9aecc059b4777 *README.md
 c6e7d49a0943285731354bd07cf656e6 *build/vignette.rds
 8dd7d4ea81bea8f71aeac7e0148689bd *data/sim_features.rda
 973021087b6a46cb4d279c2f4490da74 *data/sim_features_zones.rda
@@ -123,17 +123,17 @@ eb6a1d6edfafd75dc1f062c4293a70d0 *data/sim_locked_out_raster.rda
 d1eea4ae4d369e081ccf263f8c1f366e *data/sim_pu_zones_polygons.rda
 919c59c103c38f937a012acc5df6fd93 *data/sim_pu_zones_stack.rda
 844287d23d51226d1a4a32681f0c0ead *inst/doc/gurobi_installation.Rmd
-8edf7a423b5b52fbbc9ecbae1264811e *inst/doc/gurobi_installation.html
+d7a159201f0cde226b40e4b9fa3c5565 *inst/doc/gurobi_installation.html
 0daa6138a4d50a434333132b4238ea12 *inst/doc/prioritizr.Rmd
-8e917ac29cc084df7e0347efd91499b3 *inst/doc/prioritizr.html
-b863fa6f942f4044ca7b9182284a3946 *inst/doc/publication_record.Rmd
-8593f155ce3e67cd82625b087d7047b6 *inst/doc/publication_record.html
+0abff2cdef23e997782621af1e90fd2d *inst/doc/prioritizr.html
+ddc8bb7e0afc8305bfa3736ced245db2 *inst/doc/publication_record.Rmd
+debd14681bd8ba2277330223825762ec *inst/doc/publication_record.html
 9aa4fc8ed95e8e922d173b64364fe3b9 *inst/doc/saltspring.Rmd
-9413998d085de8b6716f0852c4ab2822 *inst/doc/saltspring.html
+9edd23e927160ad5f9c8fa70e4b9e612 *inst/doc/saltspring.html
 f951a04bf37f527c95cf07fef583cee4 *inst/doc/tasmania.Rmd
-386925946f434236161a0ee480ddeeac *inst/doc/tasmania.html
+dcefdb1bd8f4affe46e0f2d336070844 *inst/doc/tasmania.html
 e005a067e08fb30d5028588a84331e0e *inst/doc/zones.Rmd
-af9337ff6b83339f31abb3445da9f632 *inst/doc/zones.html
+fd42491338e6763a8a85efa2f68d5bd2 *inst/doc/zones.html
 10bd92eabc6a313c714d9cc6e5d33448 *inst/extdata/input.dat
 e8a7be9288ba290203ac531bd0e0a57e *inst/extdata/input/bound.dat
 e10f68d1b167fbf22cd822168443769f *inst/extdata/input/pu.dat
@@ -168,7 +168,7 @@ c53eb9dc57fda835e42204e73190abb0 *man/add_default_solver.Rd
 232efc3e87f75ef6069a32b4c8cd1d71 *man/add_feature_contiguity_constraints.Rd
 34e2fec67c8901ff527fafb1d4880ca0 *man/add_feature_weights.Rd
 a7e71712cc27f3c1d8dd08dcd94f7d95 *man/add_gurobi_solver.Rd
-c0ee150c43b6bc94a8df38db5c2eb3ad *man/add_locked_in_constraints.Rd
+1d5ba0732b45730ff6f872c340f89111 *man/add_locked_in_constraints.Rd
 246f33e7b0c9177c1804bb8b0781ef3f *man/add_locked_out_constraints.Rd
 6bd6e0905943d93349ff0bd9dbf83268 *man/add_loglinear_targets.Rd
 87090ae33b45a957a1c73010add2f343 *man/add_lsymphony_solver.Rd
@@ -204,7 +204,7 @@ fbdf5bc668d627ea01bee59a7fe10652 *man/compile.Rd
 cadf0a9c49a21d1959f203dc45d92110 *man/constraints.Rd
 76016d29c693934f203405cae076358d *man/decisions.Rd
 681ff4fb4a12f9c95f2cab347cf25658 *man/distribute_load.Rd
-613bdd7106db17c62eec293aa277cc1a *man/fast_extract.Rd
+82a373ebb2c05c4de5ad6d69b85451dd *man/fast_extract.Rd
 6732fca2583d39a96bed1dde982cb88b *man/feature_abundances.Rd
 43cbef56571df0109fe890cadae52865 *man/feature_names.Rd
 c81360548d4e4409974bfa088e4359ba *man/feature_representation.Rd
@@ -248,7 +248,7 @@ c6054e8a1592368e9e6b6aaded3cfb0d *man/presolve_check.Rd
 24c16ab3da5c2e1a838b346dd79c4546 *man/problem.Rd
 ad0bdd8477c1ff74b4709bfa6b1a64cb *man/rarity_weighted_richness.Rd
 f223e386c55062edd16d84851e6b5fbd *man/replacement_cost.Rd
-a99cd2029c1e3a92ff56526702733858 *man/rij_matrix.Rd
+d0901a8fb3a5105a11bf4d520f67dc13 *man/rij_matrix.Rd
 ed20553f38e6c3449afbea633a0ba494 *man/run_calculations.Rd
 932c6d8c59d6f5013c8f2fd936657b5d *man/scalar_parameters.Rd
 cdbc5158ba470425c1eb64def8d93c30 *man/show.Rd
@@ -346,7 +346,7 @@ bf76f7b35ac6147c7db3f646c8ebec11 *tests/testthat/test_pproto.R
 20506cc636137171db9d68af239c95f3 *tests/testthat/test_problem.R
 c4aea9cc4c2830875b2774796deb1008 *tests/testthat/test_problem_negative.R
 058f04146565b465b29cf9a8fc06d1e8 *tests/testthat/test_rarity_weighted_richness.R
-cd39c1d3fe098d7d2ea35b5303ba1914 *tests/testthat/test_replacement_cost.R
+70db90c801df869851a55a534dca5848 *tests/testthat/test_replacement_cost.R
 e400c0730bbf390c3111d07270cfd089 *tests/testthat/test_rij_matrix.R
 ce8fb8a35f6e196424fb2c950896cd68 *tests/testthat/test_simulate.R
 e0067ecbfeaa54e9f0f950cfad91319d *tests/testthat/test_solve.R
@@ -360,9 +360,9 @@ b813f50fbbe95054f8887063129c5e6c *vignettes/figures/free-academic-license-page.p
 3afa100a944c48ab01547f656c0dc173 *vignettes/figures/model-test.png
 844287d23d51226d1a4a32681f0c0ead *vignettes/gurobi_installation.Rmd
 0daa6138a4d50a434333132b4238ea12 *vignettes/prioritizr.Rmd
-b863fa6f942f4044ca7b9182284a3946 *vignettes/publication_record.Rmd
+ddc8bb7e0afc8305bfa3736ced245db2 *vignettes/publication_record.Rmd
 2ea68241a808c1daa8ac90528d362d3f *vignettes/reference-style.csl
-820342611539660324ff7ca1892e3e0a *vignettes/references.bib
+4fb875c93e422431745d1c20efebb522 *vignettes/references.bib
 9aa4fc8ed95e8e922d173b64364fe3b9 *vignettes/saltspring.Rmd
 f951a04bf37f527c95cf07fef583cee4 *vignettes/tasmania.Rmd
 e005a067e08fb30d5028588a84331e0e *vignettes/zones.Rmd
