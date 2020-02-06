@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Richard Schuster" />
 
-<meta name="date" content="2019-10-02" />
+<meta name="date" content="2020-02-05" />
 
 <title>Gurobi Installation Guide</title>
 
@@ -120,9 +119,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -291,7 +287,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -306,7 +303,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Gurobi Installation Guide</h1>
 <h4 class="author">Richard Schuster</h4>
-<h4 class="date">2019-10-02</h4>
+<h4 class="date">2020-02-05</h4>
 
 
 <div id="TOC">
@@ -327,7 +324,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p><em>Gurobi</em> is the most powerful and fastest solver that the <em>prioritizr R</em> package can use to solve conservation planning problems. This vignette will walk you through the process of setting up <em>Gurobi</em> on your computer so that you can use it to solve conservation planning problems. If you encounter any problems while following the instructions below, check out the <a href="http://www.gurobi.com/documentation/">official <em>Gurobi</em> documentation</a> or the <a href="https://groups.google.com/forum/#!forum/gurobi">official <em>Gurobi</em> emailing list</a>.</p>
+<p><em>Gurobi</em> is the most powerful and fastest solver that the <em>prioritizr R</em> package can use to solve conservation planning problems. This vignette will walk you through the process of setting up <em>Gurobi</em> on your computer so that you can use it to solve conservation planning problems. If you encounter any problems while following the instructions below, check out the <a href="http://www.gurobi.com/documentation/">official <em>Gurobi</em> documentation</a>.</p>
 </div>
 <div id="obtaining-a-license" class="section level2">
 <h2>Obtaining a license</h2>
@@ -351,7 +348,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="software-installation" class="section level2">
 <h2>Software installation</h2>
-<p>The installation process for the <em>Gurobi</em> software suite depends on the type of operating system you have installed on your computer. Fortunately, <em>Gurobi</em> provide platform-specific <a href="http://www.gurobi.com/documentation/">“Quick Start Guides”</a> for <a href="http://www.gurobi.com/documentation/8.0/quickstart_windows/software_installation_guid.html#section:Installation">Windows</a>, <a href="http://www.gurobi.com/documentation/8.0/quickstart_mac/software_installation_guid.html">Mac OSX</a>, and <a href="http://www.gurobi.com/documentation/8.0/quickstart_linux/software_installation_guid.html">Linux</a> systems that should help with this. Briefly, on Windows systems, you just need to double-click on the <em>Gurobi</em> installer, follow the prompts, and the installer will take care of rest. Whereas, on Linux systems, you will need to manually extract the downloaded file’s contents to a folder, move the extracted contents to a suitable location (typically <em>/opt/gurobi</em>), and update your system’s variables so that it knows where to find <em>Gurobi</em>. Additionally, if you are using <a href="https://www.rstudio.com/products/rstudio/"><em>RStudio</em></a> on a Linux system, you might need to add the following line to the file located at <em>/etc/rstudio/rserver.conf</em>:</p>
+<p>The installation process for the <em>Gurobi</em> software suite depends on the type of operating system you have installed on your computer. Fortunately, <em>Gurobi</em> provide platform-specific <a href="http://www.gurobi.com/documentation/">“Quick Start Guides”</a> for <a href="http://www.gurobi.com/documentation/8.1/quickstart_windows/software_installation_guid.html#section:Installation">Windows</a>, <a href="http://www.gurobi.com/documentation/8.1/quickstart_mac/software_installation_guid.html">Mac OSX</a>, and <a href="http://www.gurobi.com/documentation/8.1/quickstart_linux/software_installation_guid.html">Linux</a> systems that should help with this. Briefly, on Windows systems, you just need to double-click on the <em>Gurobi</em> installer, follow the prompts, and the installer will take care of rest. Whereas, on Linux systems, you will need to manually extract the downloaded file’s contents to a folder, move the extracted contents to a suitable location (typically <em>/opt/gurobi</em>), and update your system’s variables so that it knows where to find <em>Gurobi</em>. Additionally, if you are using <a href="https://www.rstudio.com/products/rstudio/"><em>RStudio</em></a> on a Linux system, you might need to add the following line to the file located at <em>/etc/rstudio/rserver.conf</em>:</p>
 <pre><code>rsession-ld-library-path=/opt/gurobi650/linux64/lib</code></pre>
 <p>After installing the <em>Gurobi</em> software suite on your computer, you will need to activate your license.</p>
 </div>
@@ -422,7 +419,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb13-10"><a href="#cb13-10"></a></span>
 <span id="cb13-11"><a href="#cb13-11"></a><span class="co"># solve the optimization problem using Gurobi</span></span>
 <span id="cb13-12"><a href="#cb13-12"></a>result &lt;-<span class="st"> </span><span class="kw">gurobi</span>(model, <span class="kw">list</span>())</span></code></pre></div>
-<pre><code>## Optimize a model with 2 rows, 3 columns and 5 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 2 rows, 3 columns and 5 nonzeros
+## Model fingerprint: 0x15e5f516
 ## Variable types: 0 continuous, 3 integer (3 binary)
 ## Coefficient statistics:
 ##   Matrix range     [1e+00, 3e+00]
@@ -435,9 +434,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## Presolve: All rows and columns removed
 ## 
 ## Explored 0 nodes (0 simplex iterations) in 0.00 seconds
-## Thread count was 1 (of 16 available processors)
+## Thread count was 1 (of 48 available processors)
 ## 
-## Solution count 2: 3 2 
+## Solution count 2: 3 
 ## 
 ## Optimal solution found (tolerance 1.00e-04)
 ## Best objective 3.000000000000e+00, best bound 3.000000000000e+00, gap 0.0000%</code></pre>
@@ -462,7 +461,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb19-8"><a href="#cb19-8"></a></span>
 <span id="cb19-9"><a href="#cb19-9"></a><span class="co"># solve the problem</span></span>
 <span id="cb19-10"><a href="#cb19-10"></a>s &lt;-<span class="st"> </span><span class="kw">solve</span>(p)</span></code></pre></div>
-<pre><code>## Optimize a model with 5 rows, 90 columns and 450 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 5 rows, 90 columns and 450 nonzeros
+## Model fingerprint: 0x6442bf6e
 ## Variable types: 0 continuous, 90 integer (90 binary)
 ## Coefficient statistics:
 ##   Matrix range     [2e-01, 9e-01]
@@ -476,25 +477,25 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## Presolved: 5 rows, 90 columns, 450 nonzeros
 ## 
 ## 
-## Root relaxation: objective 1.931582e+03, 12 iterations, 0.02 seconds
+## Root relaxation: objective 1.931582e+03, 12 iterations, 0.00 seconds
 ## 
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
 ## 
 ##      0     0 1931.58191    0    4 2337.96175 1931.58191  17.4%     -    0s
-## H    0     0                    1985.6818841 1931.58191  2.72%     -    0s
+## H    0     0                    1987.3985265 1931.58191  2.81%     -    0s
 ## 
-## Explored 1 nodes (12 simplex iterations) in 0.02 seconds
-## Thread count was 1 (of 16 available processors)
+## Explored 1 nodes (12 simplex iterations) in 0.00 seconds
+## Thread count was 1 (of 48 available processors)
 ## 
-## Solution count 2: 1985.68 2337.96 
+## Solution count 2: 1987.4 2337.96 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 1.985681884076e+03, best bound 1.931581908865e+03, gap 2.7245%</code></pre>
+## Best objective 1.987398526526e+03, best bound 1.931581908865e+03, gap 2.8085%</code></pre>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># plot solution</span></span>
 <span id="cb21-2"><a href="#cb21-2"></a><span class="kw">plot</span>(s, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;grey90&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>), <span class="dt">main =</span> <span class="st">&quot;Solution&quot;</span>,</span>
 <span id="cb21-3"><a href="#cb21-3"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>))</span></code></pre></div>
-<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <p>After running this code, hopefully, you should some information printed on-screen about the optimization process and <em>R</em> should produce a map displaying a solution. If this code does not produce any errors, then you have successfully installed everything and can begin using <em>Gurobi</em> and the <em>prioritizr R</em> package to solve your very own conservation planning problems.</p>
 </div>
 

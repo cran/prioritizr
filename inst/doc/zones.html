@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
 
@@ -118,9 +117,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -289,7 +285,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -362,7 +359,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># solve problem</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>s1 &lt;-<span class="st"> </span><span class="kw">solve</span>(p1)</span></code></pre></div>
-<pre><code>## Optimize a model with 5 rows, 90 columns and 450 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 5 rows, 90 columns and 450 nonzeros
+## Model fingerprint: 0x6442bf6e
 ## Variable types: 0 continuous, 90 integer (90 binary)
 ## Coefficient statistics:
 ##   Matrix range     [2e-01, 9e-01]
@@ -382,29 +381,29 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
 ## 
 ##      0     0 1931.58191    0    4 2337.96175 1931.58191  17.4%     -    0s
-## H    0     0                    1985.6818841 1931.58191  2.72%     -    0s
+## H    0     0                    1987.3985265 1931.58191  2.81%     -    0s
 ## 
 ## Explored 1 nodes (12 simplex iterations) in 0.00 seconds
-## Thread count was 1 (of 16 available processors)
+## Thread count was 1 (of 48 available processors)
 ## 
-## Solution count 2: 1985.68 2337.96 
+## Solution count 2: 1987.4 2337.96 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 1.985681884076e+03, best bound 1.931581908865e+03, gap 2.7245%</code></pre>
+## Best objective 1.987398526526e+03, best bound 1.931581908865e+03, gap 2.8085%</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># calculate feature representation</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>r1 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p1, s1)</span>
 <span id="cb5-3"><a href="#cb5-3"></a><span class="kw">print</span>(r1)</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   feature absolute_held relative_held
 ##   &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;
-## 1 layer.1          8.97         0.108
+## 1 layer.1          8.91         0.107
 ## 2 layer.2          3.13         0.100
-## 3 layer.3          7.43         0.103
-## 4 layer.4          4.29         0.101
-## 5 layer.5          6.02         0.106</code></pre>
+## 3 layer.3          7.34         0.102
+## 4 layer.4          4.35         0.102
+## 5 layer.5          6.01         0.106</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># plot solution</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="kw">plot</span>(s1, <span class="dt">main =</span> <span class="st">&quot;solution&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 </div>
 <div id="adding-management-zones" class="section level3">
 <h3>Adding management zones</h3>
@@ -474,7 +473,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># solve problem</span></span>
 <span id="cb16-2"><a href="#cb16-2"></a>s2 &lt;-<span class="st"> </span><span class="kw">solve</span>(p2)</span></code></pre></div>
-<pre><code>## Optimize a model with 100 rows, 180 columns and 1080 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 100 rows, 180 columns and 1080 nonzeros
+## Model fingerprint: 0xbdab1647
 ## Variable types: 0 continuous, 180 integer (180 binary)
 ## Coefficient statistics:
 ##   Matrix range     [2e-01, 1e+00]
@@ -488,7 +489,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## Presolved: 100 rows, 180 columns, 1080 nonzeros
 ## 
 ## 
-## Root relaxation: objective 2.911333e+03, 73 iterations, 0.02 seconds
+## Root relaxation: objective 2.911333e+03, 73 iterations, 0.00 seconds
 ## 
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
@@ -496,8 +497,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##      0     0 2911.33335    0    9 3568.49314 2911.33335  18.4%     -    0s
 ## H    0     0                    3174.6681958 2911.33335  8.29%     -    0s
 ## 
-## Explored 1 nodes (73 simplex iterations) in 0.02 seconds
-## Thread count was 1 (of 16 available processors)
+## Explored 1 nodes (73 simplex iterations) in 0.00 seconds
+## Thread count was 1 (of 48 available processors)
 ## 
 ## Solution count 2: 3174.67 3568.49 
 ## 
@@ -561,7 +562,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="co"># solve problem</span></span>
 <span id="cb24-2"><a href="#cb24-2"></a>s3 &lt;-<span class="st"> </span><span class="kw">solve</span>(p3)</span></code></pre></div>
-<pre><code>## Optimize a model with 100 rows, 180 columns and 1080 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 100 rows, 180 columns and 1080 nonzeros
+## Model fingerprint: 0x07455a48
 ## Variable types: 0 continuous, 180 integer (180 binary)
 ## Coefficient statistics:
 ##   Matrix range     [1e-01, 1e+00]
@@ -569,7 +572,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   Bounds range     [1e+00, 1e+00]
 ##   RHS range        [8e-01, 8e+00]
 ## Found heuristic solution: objective 3667.7708672
-## Presolve time: 0.02s
+## Presolve time: 0.00s
 ## Presolved: 100 rows, 180 columns, 1080 nonzeros
 ## Variable types: 0 continuous, 180 integer (180 binary)
 ## Presolved: 100 rows, 180 columns, 1080 nonzeros
@@ -583,8 +586,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##      0     0 2884.87200    0    8 3667.77087 2884.87200  21.3%     -    0s
 ## H    0     0                    2958.1201508 2884.87200  2.48%     -    0s
 ## 
-## Explored 1 nodes (38 simplex iterations) in 0.02 seconds
-## Thread count was 1 (of 16 available processors)
+## Explored 1 nodes (38 simplex iterations) in 0.00 seconds
+## Thread count was 1 (of 48 available processors)
 ## 
 ## Solution count 2: 2958.12 3667.77 
 ## 
@@ -663,7 +666,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="co"># solve problem</span></span>
 <span id="cb34-2"><a href="#cb34-2"></a>s4 &lt;-<span class="st"> </span><span class="kw">solve</span>(p4)</span></code></pre></div>
-<pre><code>## Optimize a model with 105 rows, 300 columns and 1800 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 105 rows, 300 columns and 1800 nonzeros
+## Model fingerprint: 0xd67e7fdc
 ## Variable types: 0 continuous, 300 integer (300 binary)
 ## Coefficient statistics:
 ##   Matrix range     [2e-02, 1e+00]
@@ -674,7 +679,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## Presolve removed 14 rows and 120 columns
 ## Presolve time: 0.00s
 ## Presolved: 91 rows, 180 columns, 360 nonzeros
-## Found heuristic solution: objective 4700.0000000
+## Found heuristic solution: objective 4800.0000000
 ## Variable types: 0 continuous, 180 integer (180 binary)
 ## Presolved: 91 rows, 180 columns, 360 nonzeros
 ## 
@@ -684,13 +689,13 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
 ## 
-##      0     0 3663.23657    0    1 4700.00000 3663.23657  22.1%     -    0s
+##      0     0 3663.23657    0    1 4800.00000 3663.23657  23.7%     -    0s
 ## H    0     0                    3800.0000000 3663.23657  3.60%     -    0s
 ## 
 ## Explored 1 nodes (1 simplex iterations) in 0.00 seconds
-## Thread count was 1 (of 16 available processors)
+## Thread count was 1 (of 48 available processors)
 ## 
-## Solution count 3: 3800 4700 4800 
+## Solution count 3: 3800 4800 9400 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
 ## Best objective 3.800000000000e+03, best bound 3.700000000000e+03, gap 2.6316%</code></pre>
@@ -762,7 +767,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="co"># solve problem</span></span>
 <span id="cb43-2"><a href="#cb43-2"></a>s5 &lt;-<span class="st"> </span><span class="kw">solve</span>(p5)</span></code></pre></div>
-<pre><code>## Optimize a model with 105 rows, 300 columns and 1800 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 105 rows, 300 columns and 1800 nonzeros
+## Model fingerprint: 0x4ad99e4b
 ## Variable types: 0 continuous, 300 integer (300 binary)
 ## Coefficient statistics:
 ##   Matrix range     [2e-02, 1e+00]
@@ -771,7 +778,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   RHS range        [1e+00, 8e+00]
 ## Found heuristic solution: objective 13600.000000
 ## Presolve removed 14 rows and 120 columns
-## Presolve time: 0.00s
+## Presolve time: 0.01s
 ## Presolved: 91 rows, 180 columns, 360 nonzeros
 ## Found heuristic solution: objective 9600.0000000
 ## Variable types: 0 continuous, 180 integer (180 binary)
@@ -785,11 +792,12 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 
 ##      0     0 6938.06818    0    1 9600.00000 6938.06818  27.7%     -    0s
 ## H    0     0                    7000.0000000 6938.06818  0.88%     -    0s
+##      0     0 6938.06818    0    1 7000.00000 6938.06818  0.88%     -    0s
 ## 
-## Explored 1 nodes (1 simplex iterations) in 0.00 seconds
-## Thread count was 1 (of 16 available processors)
+## Explored 1 nodes (1 simplex iterations) in 0.01 seconds
+## Thread count was 1 (of 48 available processors)
 ## 
-## Solution count 3: 7000 9600 12100 
+## Solution count 3: 7000 9600 13600 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
 ## Best objective 7.000000000000e+03, best bound 7.000000000000e+03, gap 0.0000%</code></pre>
@@ -862,7 +870,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a><span class="co"># solve problem</span></span>
 <span id="cb52-2"><a href="#cb52-2"></a>s6 &lt;-<span class="st"> </span><span class="kw">solve</span>(p6)</span></code></pre></div>
-<pre><code>## Optimize a model with 1905 rows, 1200 columns and 5400 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 1905 rows, 1200 columns and 5400 nonzeros
+## Model fingerprint: 0xb44cc86f
 ## Variable types: 0 continuous, 1200 integer (1200 binary)
 ## Coefficient statistics:
 ##   Matrix range     [2e-02, 1e+00]
@@ -871,28 +881,29 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   RHS range        [1e+00, 8e+00]
 ## Found heuristic solution: objective 20096.000000
 ## Presolve removed 308 rows and 232 columns
-## Presolve time: 0.02s
+## Presolve time: 0.01s
 ## Presolved: 1597 rows, 968 columns, 4872 nonzeros
 ## Variable types: 0 continuous, 968 integer (968 binary)
 ## Presolve removed 720 rows and 0 columns
 ## Presolved: 877 rows, 968 columns, 2712 nonzeros
 ## 
 ## 
-## Root relaxation: objective 1.005410e+04, 541 iterations, 0.00 seconds
+## Root relaxation: objective 1.005410e+04, 546 iterations, 0.01 seconds
 ## 
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
 ## 
 ##      0     0 10054.0986    0   57 20096.0000 10054.0986  50.0%     -    0s
-## H    0     0                    10460.000000 10054.0986  3.88%     -    0s
+## H    0     0                    11300.000000 10054.0986  11.0%     -    0s
+## H    0     0                    10264.000000 10054.0986  2.05%     -    0s
 ## 
-## Explored 1 nodes (801 simplex iterations) in 0.02 seconds
-## Thread count was 1 (of 16 available processors)
+## Explored 1 nodes (825 simplex iterations) in 0.04 seconds
+## Thread count was 1 (of 48 available processors)
 ## 
-## Solution count 2: 10460 20096 
+## Solution count 3: 10264 11300 20096 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
-## Best objective 1.046000000000e+04, best bound 1.005600000000e+04, gap 3.8623%</code></pre>
+## Best objective 1.026400000000e+04, best bound 1.005600000000e+04, gap 2.0265%</code></pre>
 <div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a><span class="co"># calculate feature representation</span></span>
 <span id="cb54-2"><a href="#cb54-2"></a>r6 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p6, s6)</span>
 <span id="cb54-3"><a href="#cb54-3"></a><span class="kw">print</span>(r6)</span></code></pre></div>
@@ -904,11 +915,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##  3 layer.3 few.traps           0            0    
 ##  4 layer.4 few.traps           0            0    
 ##  5 layer.5 few.traps           0            0    
-##  6 layer.1 many.traps          8.00         0.192
-##  7 layer.2 many.traps          3.42         0.219
-##  8 layer.3 many.traps          6.26         0.174
-##  9 layer.4 many.traps          5.52         0.259
-## 10 layer.5 many.traps          5.65         0.199
+##  6 layer.1 many.traps          7.51         0.180
+##  7 layer.2 many.traps          3.38         0.217
+##  8 layer.3 many.traps          5.75         0.160
+##  9 layer.4 many.traps          4.99         0.234
+## 10 layer.5 many.traps          5.46         0.192
 ## 11 layer.1 baiting            14.4          0.217
 ## 12 layer.2 baiting             4.62         0.185
 ## 13 layer.3 baiting            11.7          0.203
@@ -916,7 +927,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 15 layer.5 baiting             9.98         0.220</code></pre>
 <div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a><span class="co"># plot solution</span></span>
 <span id="cb56-2"><a href="#cb56-2"></a><span class="kw">plot</span>(<span class="kw">category_layer</span>(s6), <span class="dt">main =</span> <span class="st">&quot;solution&quot;</span>, <span class="dt">axes =</span> <span class="ot">FALSE</span>, <span class="dt">box =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <p>Finally, it appears we might have a viable solution for this made-up conservation problem.</p>
 </div>
 <div id="multiple-zones-with-fragmentation-penalties-and-mandatory-allocations" class="section level3">
@@ -952,7 +963,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a><span class="co"># solve problem</span></span>
 <span id="cb59-2"><a href="#cb59-2"></a>s7 &lt;-<span class="st"> </span><span class="kw">solve</span>(p7)</span></code></pre></div>
-<pre><code>## Optimize a model with 1905 rows, 1200 columns and 5400 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 1905 rows, 1200 columns and 5400 nonzeros
+## Model fingerprint: 0x89a9dafb
 ## Variable types: 0 continuous, 1200 integer (1200 binary)
 ## Coefficient statistics:
 ##   Matrix range     [2e-02, 1e+00]
@@ -968,7 +981,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## Presolved: 785 rows, 876 columns, 2448 nonzeros
 ## 
 ## 
-## Root relaxation: objective 1.323093e+04, 270 iterations, 0.00 seconds
+## Root relaxation: objective 1.323093e+04, 271 iterations, 0.01 seconds
 ## 
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
@@ -977,7 +990,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## H    0     0                    13260.000000 13230.9255  0.22%     -    0s
 ## 
 ## Explored 1 nodes (418 simplex iterations) in 0.02 seconds
-## Thread count was 1 (of 16 available processors)
+## Thread count was 1 (of 48 available processors)
 ## 
 ## Solution count 2: 13260 19600 
 ## 

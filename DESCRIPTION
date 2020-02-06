@@ -1,6 +1,6 @@
 Package: prioritizr
 Type: Package
-Version: 4.1.4
+Version: 4.1.5
 Title: Systematic Conservation Prioritization in R
 Description: Conservation prioritization using integer
     programming techniques. To solve large-scale problems, users
@@ -83,7 +83,7 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'rij_matrix.R' 'run_calculations.R' 'show.R' 'simulate.R'
         'solvers.R' 'targets.R' 'zone_names.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2019-10-03 03:39:00 UTC; richard
+Packaged: 2020-02-05 17:01:39 UTC; richard
 Author: Jeffrey O Hanson [aut],
   Richard Schuster [aut, cre],
   Nina Morrell [aut],
@@ -94,4 +94,4 @@ Author: Jeffrey O Hanson [aut],
   Hugh P Possingham [aut]
 Maintainer: Richard Schuster <richard.schuster@glel.carleton.ca>
 Repository: CRAN
-Date/Publication: 2019-10-03 09:10:05 UTC
+Date/Publication: 2020-02-06 01:00:02 UTC

@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
 
@@ -118,9 +117,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -289,7 +285,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -448,7 +445,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>Next, we can solve the problem. The <em>prioritizr</em> R package supports three different exact algorithm software packages: <em>gurobi</em>, <em>Rsymphony</em>, and <em>lpsymphony</em>. There are costs and benefits associated with each of these different solvers, but each software should return similar results. Note that you will need at least one of these package installed on your system to solve problems. We recommend using the <em>gurobi</em> solver if possible, and have used this solver when building this tutorial. After solving the problem, we will calculate some statistics to describe the solution. Note that the planning unit selections are stored in the “solution_1” column of the solution object.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># solve problem</span></span>
 <span id="cb18-2"><a href="#cb18-2"></a>s1 &lt;-<span class="st"> </span><span class="kw">solve</span>(p1)</span></code></pre></div>
-<pre><code>## Optimize a model with 6358 rows, 4278 columns and 14152 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 6358 rows, 4278 columns and 14152 nonzeros
+## Model fingerprint: 0xb253699d
 ## Variable types: 0 continuous, 4278 integer (4278 binary)
 ## Coefficient statistics:
 ##   Matrix range     [1e+00, 4e+01]
@@ -458,25 +457,24 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## Found heuristic solution: objective 30514.663295
 ## Found heuristic solution: objective 12367.087377
 ## Presolve removed 1798 rows and 1172 columns
-## Presolve time: 0.01s
+## Presolve time: 0.03s
 ## Presolved: 4560 rows, 3106 columns, 9965 nonzeros
-## Found heuristic solution: objective 12746.195965
 ## Found heuristic solution: objective 11481.838167
 ## Variable types: 0 continuous, 3106 integer (3106 binary)
 ## Presolved: 4560 rows, 3106 columns, 9965 nonzeros
 ## 
 ## 
-## Root relaxation: objective 1.075393e+04, 824 iterations, 0.05 seconds
+## Root relaxation: objective 1.075393e+04, 809 iterations, 0.03 seconds
 ## 
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
 ## 
 ##      0     0 10753.9264    0  107 11481.8382 10753.9264  6.34%     -    0s
 ## 
-## Explored 0 nodes (824 simplex iterations) in 0.07 seconds
-## Thread count was 1 (of 16 available processors)
+## Explored 0 nodes (809 simplex iterations) in 0.07 seconds
+## Thread count was 1 (of 48 available processors)
 ## 
-## Solution count 4: 11481.8 12363.8 12746.2 29785.4 
+## Solution count 3: 11481.8 12367.1 30514.7 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
 ## Best objective 1.148183816723e+04, best bound 1.075392643015e+04, gap 6.3397%</code></pre>
@@ -545,7 +543,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="co"># solve problem</span></span>
 <span id="cb31-2"><a href="#cb31-2"></a>s2 &lt;-<span class="st"> </span><span class="kw">solve</span>(p2)</span></code></pre></div>
-<pre><code>## Optimize a model with 6358 rows, 4278 columns and 14152 nonzeros
+<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+## Optimize a model with 6358 rows, 4278 columns and 14152 nonzeros
+## Model fingerprint: 0xb253699d
 ## Variable types: 0 continuous, 4278 integer (4278 binary)
 ## Coefficient statistics:
 ##   Matrix range     [1e+00, 4e+01]
@@ -557,23 +557,22 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## Presolve removed 1798 rows and 1172 columns
 ## Presolve time: 0.02s
 ## Presolved: 4560 rows, 3106 columns, 9965 nonzeros
-## Found heuristic solution: objective 12746.195965
 ## Found heuristic solution: objective 11481.838167
 ## Variable types: 0 continuous, 3106 integer (3106 binary)
 ## Presolved: 4560 rows, 3106 columns, 9965 nonzeros
 ## 
 ## 
-## Root relaxation: objective 1.075393e+04, 824 iterations, 0.03 seconds
+## Root relaxation: objective 1.075393e+04, 809 iterations, 0.03 seconds
 ## 
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
 ## 
 ##      0     0 10753.9264    0  107 11481.8382 10753.9264  6.34%     -    0s
 ## 
-## Explored 0 nodes (824 simplex iterations) in 0.07 seconds
-## Thread count was 1 (of 16 available processors)
+## Explored 0 nodes (809 simplex iterations) in 0.06 seconds
+## Thread count was 1 (of 48 available processors)
 ## 
-## Solution count 4: 11481.8 12363.8 12746.2 29785.4 
+## Solution count 3: 11481.8 12367.1 30514.7 
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
 ## Best objective 1.148183816723e+04, best bound 1.075392643015e+04, gap 6.3397%</code></pre>
