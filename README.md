@@ -10,26 +10,29 @@ The *prioritizr R* package uses integer linear programming (ILP) techniques to p
 Installation
 ------------
 
-The latest official version of the *prioritizr R* package can be installed using the following *R* code.
+The latest official version of the *prioritizr R* package can be installed from the [Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/) using the following *R* code.
 
 ``` r
 install.packages("prioritizr", repos = "https://cran.rstudio.com/")
 ```
 
-Alternatively, the latest development version can be installed using the following code. Please note that while developmental versions may contain additional features not present in the official version, they may also contain coding errors.
+Alternatively, the latest development version can be installed from [GitHub](https://github.com/prioritizr/prioritizr) using the following code. Please note that while developmental versions may contain additional features not present in the official version, they may also contain coding errors.
 
 ``` r
-if (!require(devtools))
-  install.packages("devtools")
-devtools::install_github("prioritizr/prioritizr")
+if (!require(remotes)) install.packages("remotes")
+remotes::install_github("prioritizr/prioritizr")
 ```
 
 Citation
 --------
 
-Please use the following citation to cite the *prioritizr R* package in publications:
+Please cite the *prioritizr R* package when using it in publications. To cite the latest official version, please use:
 
-Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 4.1.5. Available at <https://github.com/prioritizr/prioritizr>.
+> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 5.0.1. Available at <https://CRAN.R-project.org/package=prioritizr>.
+
+Alternatively, to cite the latest development version, please use:
+
+> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 5.0.1. Available at <https://github.com/prioritizr/prioritizr>.
 
 Additionally, we keep a [record of publications](https://prioritizr.net/articles/publication_record.html) that use the *prioritizr R* package. If you use this package in any reports or publications, please [file an issue on GitHub](https://github.com/prioritizr/prioritizr/issues/new) so we can add it to the record.
 
@@ -67,7 +70,7 @@ spplot(sim_pu_polygons, "cost", main = "Planning unit cost",
        xlim = c(-0.1, 1.1), ylim = c(-0.1, 1.1))
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="400" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-9-1.png" width="400" style="display: block; margin: auto;" />
 
 ``` r
 # plot the planning units and show which planning units are inside protected
@@ -76,7 +79,7 @@ spplot(sim_pu_polygons, "locked_in", main = "Planning units in protected areas",
        xlim = c(-0.1, 1.1), ylim = c(-0.1, 1.1))
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="400" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="400" style="display: block; margin: auto;" />
 
 Conservation features are represented using a stack of raster data (i.e. `RasterStack` objects). A `RasterStack` represents a collection of `RasterLayers` with the same spatial properties (i.e. spatial extent, coordinate system, dimensionality, and resolution). Each `RasterLayer` in the stack describes the distribution of a conservation feature.
 
@@ -91,7 +94,7 @@ plot(sim_features, main = paste("Feature", seq_len(nlayers(sim_features))),
      nr = 2)
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="800" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="800" style="display: block; margin: auto;" />
 
 Let's say that we want to develop a reserve network that will secure 15% of the distribution for each feature in the study area for minimal cost. In this planning scenario, we can either purchase all of the land inside a given planning unit, or none of the land inside a given planning unit. Thus we will create a new [`problem`](https://prioritizr.net/reference/problem.html) that will use a minimum set objective ([`add_min_set_objective`](https://prioritizr.net/reference/add_min_set_objective.html)), with relative targets of 15% ([`add_relative_targets`](https://prioritizr.net/reference/add_relative_targets.html)), binary decisions ([`add_binary_decisions`](https://prioritizr.net/reference/add_binary_decisions.html)), and specify that we want to want optimal solutions from the best solver installed on our system ([`add_default_solver`](https://prioritizr.net/reference/add_default_solver.html)).
 
@@ -112,7 +115,9 @@ After we have built a [`problem`](https://prioritizr.net/reference/problem.html)
 s1 <- solve(p1)
 ```
 
+    ## Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
     ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
+    ## Model fingerprint: 0x8f50132f
     ## Variable types: 0 continuous, 90 integer (90 binary)
     ## Coefficient statistics:
     ##   Matrix range     [2e-01, 9e-01]
@@ -132,36 +137,84 @@ s1 <- solve(p1)
     ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
     ## 
     ##      0     0 2611.17006    0    4 3139.88803 2611.17006  16.8%     -    0s
-    ## H    0     0                    2770.9863254 2611.17006  5.77%     -    0s
-    ## H    0     0                    2763.6685938 2611.17006  5.52%     -    0s
-    ##      0     0 2611.74321    0    5 2763.66859 2611.74321  5.50%     -    0s
-    ## H    0     0                    2757.1834439 2611.74321  5.27%     -    0s
-    ##      0     0 2611.83195    0    6 2757.18344 2611.83195  5.27%     -    0s
-    ##      0     0 2611.88195    0    7 2757.18344 2611.88195  5.27%     -    0s
-    ##      0     0 2611.94509    0    7 2757.18344 2611.94509  5.27%     -    0s
-    ##      0     0 2611.95916    0    8 2757.18344 2611.95916  5.27%     -    0s
-    ##      0     0 2612.11731    0    9 2757.18344 2612.11731  5.26%     -    0s
-    ##      0     0 2612.15193    0    9 2757.18344 2612.15193  5.26%     -    0s
-    ##      0     0 2612.32632    0    9 2757.18344 2612.32632  5.25%     -    0s
-    ##      0     0 2612.36536    0   10 2757.18344 2612.36536  5.25%     -    0s
-    ##      0     0 2612.43206    0   10 2757.18344 2612.43206  5.25%     -    0s
-    ##      0     0 2612.45076    0   10 2757.18344 2612.45076  5.25%     -    0s
-    ##      0     0 2612.51779    0    9 2757.18344 2612.51779  5.25%     -    0s
-    ##      0     2 2612.67761    0    9 2757.18344 2612.67761  5.24%     -    0s
-    ## H10326  6090                    2747.3774616 2619.58181  4.65%   1.7    0s
-    ##  96131 56622 2636.04873   50    3 2747.37746 2622.28190  4.55%   1.6    5s
-    ## H173128  8666                    2627.6389306 2623.36502  0.16%   1.6    9s
-    ##  176023  8819 2623.41708   42    3 2627.63893 2623.41708  0.16%   1.6   10s
+    ## H    0     0                    2780.0314635 2611.17006  6.07%     -    0s
+    ##      0     0 2611.74321    0    5 2780.03146 2611.74321  6.05%     -    0s
+    ## H    0     0                    2750.8323723 2611.74321  5.06%     -    0s
+    ##      0     0 2611.83195    0    6 2750.83237 2611.83195  5.05%     -    0s
+    ##      0     0 2611.88195    0    7 2750.83237 2611.88195  5.05%     -    0s
+    ## H    0     0                    2747.3774616 2611.88195  4.93%     -    0s
+    ##      0     0 2611.94509    0    7 2747.37746 2611.94509  4.93%     -    0s
+    ##      0     0 2611.95916    0    8 2747.37746 2611.95916  4.93%     -    0s
+    ##      0     0 2611.98750    0    8 2747.37746 2611.98750  4.93%     -    0s
+    ##      0     0 2612.13884    0    9 2747.37746 2612.13884  4.92%     -    0s
+    ##      0     0 2612.17380    0    9 2747.37746 2612.17380  4.92%     -    0s
+    ##      0     0 2612.35043    0   10 2747.37746 2612.35043  4.91%     -    0s
+    ##      0     0 2612.36452    0   10 2747.37746 2612.36452  4.91%     -    0s
+    ##      0     0 2612.42169    0    9 2747.37746 2612.42169  4.91%     -    0s
+    ##      0     0 2612.45702    0    9 2747.37746 2612.45702  4.91%     -    0s
+    ##      0     0 2612.47359    0   10 2747.37746 2612.47359  4.91%     -    0s
+    ##      0     0 2612.47538    0   11 2747.37746 2612.47538  4.91%     -    0s
+    ##      0     0 2612.48905    0    9 2747.37746 2612.48905  4.91%     -    0s
+    ##      0     0 2612.52192    0    9 2747.37746 2612.52192  4.91%     -    0s
+    ##      0     0 2612.52381    0   10 2747.37746 2612.52381  4.91%     -    0s
+    ##      0     0 2612.57002    0    9 2747.37746 2612.57002  4.91%     -    0s
+    ##      0     0 2612.57755    0   10 2747.37746 2612.57755  4.91%     -    0s
+    ##      0     0 2612.59388    0   10 2747.37746 2612.59388  4.91%     -    0s
+    ##      0     0 2612.63348    0    9 2747.37746 2612.63348  4.90%     -    0s
+    ##      0     0 2612.64156    0   10 2747.37746 2612.64156  4.90%     -    0s
+    ##      0     0 2612.66269    0   10 2747.37746 2612.66269  4.90%     -    0s
+    ##      0     0 2612.72195    0    9 2747.37746 2612.72195  4.90%     -    0s
+    ##      0     0 2612.78753    0   10 2747.37746 2612.78753  4.90%     -    0s
+    ##      0     0 2612.78891    0   11 2747.37746 2612.78891  4.90%     -    0s
+    ##      0     0 2613.13568    0    7 2747.37746 2613.13568  4.89%     -    0s
+    ##      0     0 2613.22338    0    8 2747.37746 2613.22338  4.88%     -    0s
+    ##      0     0 2613.34297    0    9 2747.37746 2613.34297  4.88%     -    0s
+    ##      0     0 2613.51894    0   10 2747.37746 2613.51894  4.87%     -    0s
+    ##      0     0 2613.52981    0   10 2747.37746 2613.52981  4.87%     -    0s
+    ##      0     0 2613.62584    0   11 2747.37746 2613.62584  4.87%     -    0s
+    ##      0     0 2613.62990    0   10 2747.37746 2613.62990  4.87%     -    0s
+    ##      0     0 2613.64411    0   11 2747.37746 2613.64411  4.87%     -    0s
+    ##      0     0 2613.70527    0   10 2747.37746 2613.70527  4.87%     -    0s
+    ##      0     0 2613.74931    0   10 2747.37746 2613.74931  4.86%     -    0s
+    ##      0     0 2613.75935    0   11 2747.37746 2613.75935  4.86%     -    0s
+    ##      0     0 2613.78321    0   10 2747.37746 2613.78321  4.86%     -    0s
+    ##      0     0 2613.85241    0   10 2747.37746 2613.85241  4.86%     -    0s
+    ##      0     0 2613.85382    0   11 2747.37746 2613.85382  4.86%     -    0s
+    ##      0     0 2613.85510    0   11 2747.37746 2613.85510  4.86%     -    0s
+    ##      0     0 2613.85824    0   12 2747.37746 2613.85824  4.86%     -    0s
+    ##      0     0 2613.86743    0   12 2747.37746 2613.86743  4.86%     -    0s
+    ##      0     0 2613.89542    0   12 2747.37746 2613.89542  4.86%     -    0s
+    ##      0     0 2613.90080    0   13 2747.37746 2613.90080  4.86%     -    0s
+    ##      0     0 2613.90780    0   14 2747.37746 2613.90780  4.86%     -    0s
+    ##      0     0 2613.91321    0   14 2747.37746 2613.91321  4.86%     -    0s
+    ##      0     0 2613.93526    0   12 2747.37746 2613.93526  4.86%     -    0s
+    ##      0     0 2613.93676    0   13 2747.37746 2613.93676  4.86%     -    0s
+    ##      0     0 2614.07265    0   12 2747.37746 2614.07265  4.85%     -    0s
+    ##      0     0 2614.12054    0   12 2747.37746 2614.12054  4.85%     -    0s
+    ##      0     0 2614.15681    0   12 2747.37746 2614.15681  4.85%     -    0s
+    ##      0     0 2614.15970    0   13 2747.37746 2614.15970  4.85%     -    0s
+    ##      0     0 2614.26936    0   12 2747.37746 2614.26936  4.84%     -    0s
+    ##      0     0 2614.28046    0   12 2747.37746 2614.28046  4.84%     -    0s
+    ##      0     0 2614.30152    0   11 2747.37746 2614.30152  4.84%     -    0s
+    ##      0     0 2614.30559    0   12 2747.37746 2614.30559  4.84%     -    0s
+    ##      0     0 2614.31022    0   13 2747.37746 2614.31022  4.84%     -    0s
+    ##      0     0 2614.32003    0   12 2747.37746 2614.32003  4.84%     -    0s
+    ##      0     0 2614.32230    0   13 2747.37746 2614.32230  4.84%     -    0s
+    ##      0     0 2614.32331    0   13 2747.37746 2614.32331  4.84%     -    0s
+    ##      0     2 2614.33358    0   13 2747.37746 2614.33358  4.84%     -    0s
+    ## H 7050   989                    2627.6389306 2618.95150  0.33%   1.8    0s
     ## 
     ## Cutting planes:
-    ##   Gomory: 2
-    ##   MIR: 7
+    ##   Gomory: 5
+    ##   Cover: 5
+    ##   MIR: 46
+    ##   StrongCG: 25
     ##   Flow cover: 2
     ## 
-    ## Explored 189518 nodes (316635 simplex iterations) in 10.46 seconds
+    ## Explored 31196 nodes (83170 simplex iterations) in 2.60 seconds
     ## Thread count was 1 (of 4 available processors)
     ## 
-    ## Solution count 6: 2627.64 2747.38 2757.18 ... 3139.89
+    ## Solution count 5: 2627.64 2747.38 2750.83 ... 3139.89
     ## 
     ## Optimal solution found (tolerance 0.00e+00)
     ## Best objective 2.627638930618e+03, best bound 2.627638930618e+03, gap 0.0000%
@@ -180,7 +233,7 @@ print(attr(s1, "runtime"))
 ```
 
     ## solution_1 
-    ##   10.46228
+    ##   2.599041
 
 ``` r
 # extract state message from the solver
@@ -210,7 +263,9 @@ p2 <- p1 %>%
 s2 <- solve(p2)
 ```
 
+    ## Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
     ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
+    ## Model fingerprint: 0xb2af8965
     ## Variable types: 0 continuous, 90 integer (90 binary)
     ## Coefficient statistics:
     ##   Matrix range     [2e-01, 9e-01]
@@ -232,43 +287,49 @@ s2 <- solve(p2)
     ## 
     ##      0     0 2754.43796    0    4 3027.69709 2754.43796  9.03%     -    0s
     ## H    0     0                    2839.1208991 2754.43796  2.98%     -    0s
-    ##      0     0 2754.44157    0    5 2839.12090 2754.44157  2.98%     -    0s
     ##      0     0 2835.61695    0    3 2839.12090 2835.61695  0.12%     -    0s
     ##      0     0 2835.66921    0    3 2839.12090 2835.66921  0.12%     -    0s
     ##      0     0 2835.66921    0    3 2839.12090 2835.66921  0.12%     -    0s
     ##      0     0 2835.66921    0    3 2839.12090 2835.66921  0.12%     -    0s
-    ##      0     0 2836.21899    0    4 2839.12090 2836.21899  0.10%     -    0s
+    ##      0     0 2835.93929    0    4 2839.12090 2835.93929  0.11%     -    0s
+    ##      0     0 2836.06802    0    4 2839.12090 2836.06802  0.11%     -    0s
     ##      0     0 2836.33448    0    5 2839.12090 2836.33448  0.10%     -    0s
     ##      0     0 2836.49814    0    5 2839.12090 2836.49814  0.09%     -    0s
     ##      0     0 2836.77716    0    6 2839.12090 2836.77716  0.08%     -    0s
     ##      0     0 2836.82966    0    7 2839.12090 2836.82966  0.08%     -    0s
     ##      0     0 2836.87897    0    7 2839.12090 2836.87897  0.08%     -    0s
     ##      0     0 2836.88941    0    7 2839.12090 2836.88941  0.08%     -    0s
-    ##      0     0 2836.89055    0    8 2839.12090 2836.89055  0.08%     -    0s
-    ##      0     0 2836.95465    0    8 2839.12090 2836.95465  0.08%     -    0s
-    ##      0     0 2836.95837    0    8 2839.12090 2836.95837  0.08%     -    0s
-    ##      0     0 2837.22974    0    8 2839.12090 2837.22974  0.07%     -    0s
-    ##      0     0 2837.24568    0    7 2839.12090 2837.24568  0.07%     -    0s
-    ##      0     0 2837.31532    0    9 2839.12090 2837.31532  0.06%     -    0s
-    ##      0     0 2837.36017    0   10 2839.12090 2837.36017  0.06%     -    0s
-    ##      0     0 2837.38138    0    8 2839.12090 2837.38138  0.06%     -    0s
-    ##      0     0 2837.39696    0   11 2839.12090 2837.39696  0.06%     -    0s
-    ##      0     0 2837.40036    0   12 2839.12090 2837.40036  0.06%     -    0s
-    ##      0     0 2837.47861    0    9 2839.12090 2837.47861  0.06%     -    0s
-    ## H    0     0                    2838.2640999 2837.47861  0.03%     -    0s
-    ##      0     0 2837.59896    0    9 2838.26410 2837.59896  0.02%     -    0s
-    ##      0     0 2837.64565    0    9 2838.26410 2837.64565  0.02%     -    0s
-    ##      0     0 2837.66216    0    9 2838.26410 2837.66216  0.02%     -    0s
-    ##      0     0 2837.66722    0   10 2838.26410 2837.66722  0.02%     -    0s
-    ##      0     0 2837.67791    0   10 2838.26410 2837.67791  0.02%     -    0s
-    ##      0     0 2837.91263    0    5 2838.26410 2837.91263  0.01%     -    0s
-    ##      0     0 infeasible    0      2838.26410 2838.26410  0.00%     -    0s
+    ##      0     0 2836.89042    0    8 2839.12090 2836.89042  0.08%     -    0s
+    ##      0     0 2836.99962    0    7 2839.12090 2836.99962  0.07%     -    0s
+    ##      0     0 2837.08985    0    7 2839.12090 2837.08985  0.07%     -    0s
+    ##      0     0 2837.24552    0    6 2839.12090 2837.24552  0.07%     -    0s
+    ##      0     0 2837.31750    0    9 2839.12090 2837.31750  0.06%     -    0s
+    ##      0     0 2837.36426    0   10 2839.12090 2837.36426  0.06%     -    0s
+    ##      0     0 2837.39901    0   11 2839.12090 2837.39901  0.06%     -    0s
+    ##      0     0 2837.50764    0   10 2839.12090 2837.50764  0.06%     -    0s
+    ##      0     0 2837.51431    0   10 2839.12090 2837.51431  0.06%     -    0s
+    ##      0     0 2837.53639    0    9 2839.12090 2837.53639  0.06%     -    0s
+    ##      0     0 2837.53849    0   10 2839.12090 2837.53849  0.06%     -    0s
+    ##      0     0 2837.72116    0    8 2839.12090 2837.72116  0.05%     -    0s
+    ##      0     0 2837.76058    0    8 2839.12090 2837.76058  0.05%     -    0s
+    ##      0     0 2837.76433    0    9 2839.12090 2837.76433  0.05%     -    0s
+    ##      0     0 2837.77226    0    9 2839.12090 2837.77226  0.05%     -    0s
+    ##      0     0 2837.78842    0   10 2839.12090 2837.78842  0.05%     -    0s
+    ##      0     0 2837.82220    0    9 2839.12090 2837.82220  0.05%     -    0s
+    ##      0     0 2837.82524    0   10 2839.12090 2837.82524  0.05%     -    0s
+    ##      0     0 2837.87512    0    9 2839.12090 2837.87512  0.04%     -    0s
+    ##      0     0 2837.88038    0   10 2839.12090 2837.88038  0.04%     -    0s
+    ##      0     0 2837.95407    0    9 2839.12090 2837.95407  0.04%     -    0s
+    ##      0     0 2837.96355    0    9 2839.12090 2837.96355  0.04%     -    0s
+    ##      0     0 2838.04745    0    7 2839.12090 2838.04745  0.04%     -    0s
+    ## H    0     0                    2838.2640999 2838.04745  0.01%     -    0s
+    ##      0     0 2838.12770    0    5 2838.26410 2838.12770  0.00%     -    0s
     ## 
     ## Cutting planes:
-    ##   MIR: 4
-    ##   StrongCG: 1
+    ##   MIR: 7
+    ##   StrongCG: 3
     ## 
-    ## Explored 1 nodes (82 simplex iterations) in 0.01 seconds
+    ## Explored 1 nodes (95 simplex iterations) in 0.02 seconds
     ## Thread count was 1 (of 4 available processors)
     ## 
     ## Solution count 3: 2838.26 2839.12 3027.7 
@@ -296,7 +357,9 @@ p3 <- p2 %>%
 s3 <- solve(p3)
 ```
 
+    ## Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
     ## Optimize a model with 293 rows, 234 columns and 1026 nonzeros
+    ## Model fingerprint: 0x517c913c
     ## Variable types: 0 continuous, 234 integer (234 binary)
     ## Coefficient statistics:
     ##   Matrix range     [2e-01, 1e+00]
@@ -318,38 +381,25 @@ s3 <- solve(p3)
     ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
     ## 
     ##      0     0 3862.92934    0   65 4347.69709 3862.92934  11.1%     -    0s
-    ## H    0     0                    3963.8685826 3862.92934  2.55%     -    0s
+    ## H    0     0                    4091.9945792 3862.92934  5.60%     -    0s
+    ## H    0     0                    4058.7498291 3862.92934  4.82%     -    0s
     ## H    0     0                    3951.7528370 3862.92934  2.25%     -    0s
-    ##      0     0 3885.08664    0   65 3951.75284 3885.08664  1.69%     -    0s
-    ## H    0     0                    3948.5328261 3885.08664  1.61%     -    0s
-    ##      0     0 3889.41281    0   41 3948.53283 3889.41281  1.50%     -    0s
-    ##      0     0 3895.26772    0   67 3948.53283 3895.26772  1.35%     -    0s
-    ##      0     0 3895.26772    0   33 3948.53283 3895.26772  1.35%     -    0s
-    ## H    0     0                    3946.8920000 3895.26772  1.31%     -    0s
-    ##      0     0 3895.26772    0   23 3946.89200 3895.26772  1.31%     -    0s
-    ##      0     0 3895.26772    0   34 3946.89200 3895.26772  1.31%     -    0s
-    ##      0     0 3900.67120    0   33 3946.89200 3900.67120  1.17%     -    0s
-    ##      0     0 3900.93350    0   28 3946.89200 3900.93350  1.16%     -    0s
-    ##      0     0 3912.18222    0   24 3946.89200 3912.18222  0.88%     -    0s
-    ##      0     0 3912.18222    0   23 3946.89200 3912.18222  0.88%     -    0s
-    ## H    0     0                    3939.6015361 3912.18222  0.70%     -    0s
-    ##      0     0 3912.18222    0    9 3939.60154 3912.18222  0.70%     -    0s
-    ##      0     0 3920.23973    0   10 3939.60154 3920.23973  0.49%     -    0s
-    ##      0     0 3921.61905    0   10 3939.60154 3921.61905  0.46%     -    0s
-    ##      0     0 3922.01353    0   10 3939.60154 3922.01353  0.45%     -    0s
-    ##      0     0 3922.15375    0   10 3939.60154 3922.15375  0.44%     -    0s
-    ##      0     0 3926.58057    0   11 3939.60154 3926.58057  0.33%     -    0s
-    ##      0     0 3931.06911    0    6 3939.60154 3931.06911  0.22%     -    0s
-    ##      0     0 3931.06911    0    6 3939.60154 3931.06911  0.22%     -    0s
+    ##      0     0 3889.41281    0   41 3951.75284 3889.41281  1.58%     -    0s
+    ## H    0     0                    3939.6015361 3889.41281  1.27%     -    0s
+    ##      0     0 3892.64817    0   63 3939.60154 3892.64817  1.19%     -    0s
+    ##      0     0 3896.53163    0   85 3939.60154 3896.53163  1.09%     -    0s
+    ##      0     0 3910.26013    0    8 3939.60154 3910.26013  0.74%     -    0s
+    ##      0     0 3910.58042    0    9 3939.60154 3910.58042  0.74%     -    0s
+    ##      0     0 3915.80407    0    6 3939.60154 3915.80407  0.60%     -    0s
+    ##      0     0 3934.87486    0    4 3939.60154 3934.87486  0.12%     -    0s
     ## 
     ## Cutting planes:
-    ##   Gomory: 1
-    ##   MIR: 1
+    ##   GUB cover: 2
     ## 
-    ## Explored 1 nodes (301 simplex iterations) in 0.05 seconds
+    ## Explored 1 nodes (217 simplex iterations) in 0.03 seconds
     ## Thread count was 1 (of 4 available processors)
     ## 
-    ## Solution count 7: 3939.6 3946.89 3948.53 ... 19567.2
+    ## Solution count 6: 3939.6 3951.75 4058.75 ... 19567.2
     ## 
     ## Optimal solution found (tolerance 0.00e+00)
     ## Best objective 3.939601536145e+03, best bound 3.939601536145e+03, gap 0.0000%
@@ -374,7 +424,9 @@ p4 <- p3 %>%
 s4 <- solve(p4)
 ```
 
+    ## Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
     ## Optimize a model with 654 rows, 506 columns and 2292 nonzeros
+    ## Model fingerprint: 0x1ced3129
     ## Variable types: 0 continuous, 506 integer (506 binary)
     ## Coefficient statistics:
     ##   Matrix range     [2e-01, 1e+00]
@@ -398,25 +450,23 @@ s4 <- solve(p4)
     ##      0     0 5489.15943    0   59 6070.20745 5489.15943  9.57%     -    0s
     ## H    0     0                    5859.8468810 5489.15943  6.33%     -    0s
     ## H    0     0                    5858.4184908 5489.15943  6.30%     -    0s
-    ##      0     0 5697.13650    0   46 5858.41849 5697.13650  2.75%     -    0s
-    ##      0     0 5697.13650    0   49 5858.41849 5697.13650  2.75%     -    0s
-    ##      0     0 5711.59091    0   35 5858.41849 5711.59091  2.51%     -    0s
-    ##      0     0 5731.33260    0   39 5858.41849 5731.33260  2.17%     -    0s
-    ##      0     0 5731.37109    0   40 5858.41849 5731.37109  2.17%     -    0s
-    ## *    0     0               0    5858.4183883 5858.41839  0.00%     -    0s
+    ##      0     0 5738.84421    0   49 5858.41849 5738.84421  2.04%     -    0s
+    ##      0     0 5738.84421    0   29 5858.41849 5738.84421  2.04%     -    0s
+    ##      0     0 5814.59442    0   22 5858.41849 5814.59442  0.75%     -    0s
+    ##      0     0     cutoff    0      5858.41849 5858.41849  0.00%     -    0s
     ## 
     ## Cutting planes:
-    ##   Gomory: 5
-    ##   Zero half: 6
+    ##   Gomory: 6
+    ##   Zero half: 8
+    ##   RLT: 6
     ## 
-    ## Explored 1 nodes (259 simplex iterations) in 0.03 seconds
+    ## Explored 1 nodes (241 simplex iterations) in 0.03 seconds
     ## Thread count was 1 (of 4 available processors)
     ## 
-    ## Solution count 5: 5858.42 5858.42 5859.85 ... 7270.12
-    ## No other solutions better than 5858.42
+    ## Solution count 4: 5858.42 5859.85 6070.21 7270.12 
     ## 
     ## Optimal solution found (tolerance 0.00e+00)
-    ## Best objective 5.858418387501e+03, best bound 5.858418387501e+03, gap 0.0000%
+    ## Best objective 5.858418490821e+03, best bound 5.858418490821e+03, gap 0.0000%
 
 ``` r
 # plot the solution
@@ -459,4 +509,4 @@ This short example demonstrates how the *prioritizr R* package can be used to bu
 Getting help
 ------------
 
-Please refer to the [package website](https://prioritizr.net/index.html) for more information on the *prioritizr R* package. This website contains [a comprehensive tutorial on systematic conservation planning using the package](https://prioritizr.net/articles/prioritizr.html), [instructions for installing the *Gurobi* software suite to solve large-scale and complex conservation planning problems](https://prioritizr.net/articles/gurobi_installation.html), [a tutorial on building and solving problems that contain multiple management zones](https://prioritizr.net/articles/zones.html), and two worked examples involving real-world data in [Tasmania, Australia](https://prioritizr.net/articles/tasmania.html) and [Salt Spring Island, Canada](https://prioritizr.net/articles/saltspring.html). Additionally, check out the [teaching repository](https://github.com/prioritizr/teaching) for seminar slides and workshop materials. If you have any questions about using the *prioritizr R* package or suggestions for improving it, please [file an issue at the package's online code repository](https://github.com/prioritizr/prioritizr/issues/new).
+Please refer to the [package website](https://prioritizr.net/index.html) for more information on the *prioritizr R* package. This website contains [a comprehensive tutorial on the package](https://prioritizr.net/articles/prioritizr.html), [instructions for installing the *Gurobi* software suite to solve large-scale and complex conservation planning problems](https://prioritizr.net/articles/gurobi_installation.html), and [a tutorial on solving problems with multiple management zones](https://prioritizr.net/articles/zones.html). It also provides two worked examples that involve real-world data from [Tasmania, Australia](https://prioritizr.net/articles/tasmania.html) and [Salt Spring Island, Canada](https://prioritizr.net/articles/saltspring.html). Additionally, slides for previous seminars about the package can be found in [teaching repository](https://github.com/prioritizr/teaching). Furthermore, materials accompanying previous workshops are also available online too (i.e. the [CIBIO 2019 workshop](https://prioritizr.github.io/cibio-workshop/) and the [PacMara 2019 workshop](https://prioritizr.github.io/PacMara_workshop/)). If you have any questions about using the *prioritizr R* package or suggestions for improving it, please [file an issue at the package's online code repository](https://github.com/prioritizr/prioritizr/issues/new).

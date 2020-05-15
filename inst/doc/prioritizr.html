@@ -14,23 +14,35 @@
 
 <title>prioritizr: Systematic Conservation Prioritization in R</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -50,7 +62,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -308,7 +320,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#package-overview">Package overview</a></li>
 <li><a href="#package-work-flow">Package work flow</a></li>
-<li><a href="#usage">Usage</a><ul>
+<li><a href="#usage">Usage</a>
+<ul>
 <li><a href="#data">Data</a></li>
 <li><a href="#initialize-a-problem">Initialize a problem</a></li>
 <li><a href="#add-an-objective">Add an objective</a></li>
@@ -409,7 +422,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># plot the planning units</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="kw">spplot</span>(sim_pu_polygons, <span class="dt">zcol =</span> <span class="st">&quot;cost&quot;</span>)</span></code></pre></div>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
-<p>Thirdly, we will load some planning unit data stored in tabular format (i.e. <code>data.frame</code> format). For those familiar with <em>Marxan</em> or dealing with very large conservation planning problems (&gt; 10 million planning units), it may be useful to work with data in this format because it does not contain any spatial information which will reduce computational burden. When using tabular data to initialize conservation planning problems, the data must follow the conventions used by <em>Marxan</em>. Specifically, each row in the planning unit table must correspond to a different planning unit. The table must also have an “id” column to provide a unique integer identifier for each planning unit, and it must also have a column that indicates the cost of each planning unit. For more information, please see the <a href="http://marxan.net/downloads/uq_marxan_web_2/module4.html">official <em>Marxan</em> documentation</a>.</p>
+<p>Thirdly, we will load some planning unit data stored in tabular format (i.e. <code>data.frame</code> format). For those familiar with <em>Marxan</em> or dealing with very large conservation planning problems (&gt; 10 million planning units), it may be useful to work with data in this format because it does not contain any spatial information which will reduce computational burden. When using tabular data to initialize conservation planning problems, the data must follow the conventions used by <em>Marxan</em>. Specifically, each row in the planning unit table must correspond to a different planning unit. The table must also have an “id” column to provide a unique integer identifier for each planning unit, and it must also have a column that indicates the cost of each planning unit. For more information, please see the <a href="https://marxansolutions.org/">official <em>Marxan</em> documentation</a>.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># specify file path for planning unit data</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a>pu_path &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/pu.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>)</span>
 <span id="cb8-3"><a href="#cb8-3"></a></span>
@@ -932,8 +945,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   objective:      Minimum set objective 
 ##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
 ##   decisions:      default
-##   constraints:    &lt;Locked in planning units [10 locked units]
-##                    Locked out planning units [10 locked units]&gt;
+##   constraints:    &lt;Locked out planning units [10 locked units]
+##                    Locked in planning units [10 locked units]&gt;
 ##   penalties:      &lt;none&gt;
 ##   portfolio:      default
 ##   solver:         default</code></pre>
@@ -1197,15 +1210,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Many conservation planning exercises require a portfolio of solutions. For example, real-world exercises can involve presenting decision makers with a range of near-optimal decisions. Additionally, the number of times that different planning units are selected in different solutions can provide insight into their relative importance.</p>
 <p>The following methods are available for generating a portfolio of solutions.</p>
 <ul>
-<li><strong>Cuts portfolio</strong>: Generate a portfolio of distinct solutions within a pre-specified optimality gap.</li>
+<li><strong>Extra portfolio</strong>: Generate a portfolio of solutions by storing feasible solutions found during the optimization process. Note that this method requires that the <em>Gurobi</em> optimization software is used to generate solutions.</li>
 </ul>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1"></a><span class="co"># create a problem and specify that a portfolio containing 10 solutions</span></span>
-<span id="cb82-2"><a href="#cb82-2"></a><span class="co"># should be created using using Bender&#39;s cuts</span></span>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1"></a><span class="co"># create a problem and specify that a portfolio should be created using</span></span>
+<span id="cb82-2"><a href="#cb82-2"></a><span class="co"># extra solutions found while solving the problem</span></span>
 <span id="cb82-3"><a href="#cb82-3"></a>p30 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
 <span id="cb82-4"><a href="#cb82-4"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
 <span id="cb82-5"><a href="#cb82-5"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
 <span id="cb82-6"><a href="#cb82-6"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>() <span class="op">%&gt;%</span></span>
-<span id="cb82-7"><a href="#cb82-7"></a><span class="st">       </span><span class="kw">add_cuts_portfolio</span>(<span class="dt">number_solutions =</span> <span class="dv">10</span>)</span>
+<span id="cb82-7"><a href="#cb82-7"></a><span class="st">       </span><span class="kw">add_extra_portfolio</span>()</span>
 <span id="cb82-8"><a href="#cb82-8"></a></span>
 <span id="cb82-9"><a href="#cb82-9"></a><span class="co"># print problem</span></span>
 <span id="cb82-10"><a href="#cb82-10"></a><span class="kw">print</span>(p30)</span></code></pre></div>
@@ -1218,18 +1231,18 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   decisions:      Binary decision 
 ##   constraints:    &lt;none&gt;
 ##   penalties:      &lt;none&gt;
-##   portfolio:      Cuts portfolio [number_solutions (10)]
+##   portfolio:      Extra portfolio
 ##   solver:         default</code></pre>
 <ul>
-<li><strong>Pool portfolio</strong>: Generate a portfolio of solutions by extracting feasible solutions from the solution pool. There are various methods for constructing the solution pool, but in most cases, setting the method argument to 2 is recommended because this will mean that the solution pool will contain a set number of solutions that are nearest to optimality (e.g. the top 10 solutions nearest to optimality). This method is the fastest for generating a portfolio of solutions, but it requires that the <em>Gurobi</em> optimization solver to be specified for solving problems.</li>
+<li><strong>Top portfolio</strong>: Generate a portfolio of solutions by finding a pre-specified number of solutions that are closest to optimality (i.e the top solutions). Note that this method requires that the <em>Gurobi</em> optimization software is used to generate solutions.</li>
 </ul>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1"></a><span class="co"># create a problem and specify that a portfolio should be created that</span></span>
-<span id="cb84-2"><a href="#cb84-2"></a><span class="co"># contains the 100 solutions nearest to optimality</span></span>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1"></a><span class="co"># create a problem and specify that a portfolio should be created using</span></span>
+<span id="cb84-2"><a href="#cb84-2"></a><span class="co"># the top five solutions</span></span>
 <span id="cb84-3"><a href="#cb84-3"></a>p31 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
 <span id="cb84-4"><a href="#cb84-4"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
 <span id="cb84-5"><a href="#cb84-5"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
 <span id="cb84-6"><a href="#cb84-6"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>() <span class="op">%&gt;%</span></span>
-<span id="cb84-7"><a href="#cb84-7"></a><span class="st">       </span><span class="kw">add_pool_portfolio</span>(<span class="dt">method =</span> <span class="dv">2</span>, <span class="dt">number_solutions =</span> <span class="dv">100</span>)</span>
+<span id="cb84-7"><a href="#cb84-7"></a><span class="st">       </span><span class="kw">add_top_portfolio</span>(<span class="dt">number_solutions =</span> <span class="dv">5</span>)</span>
 <span id="cb84-8"><a href="#cb84-8"></a></span>
 <span id="cb84-9"><a href="#cb84-9"></a><span class="co"># print problem</span></span>
 <span id="cb84-10"><a href="#cb84-10"></a><span class="kw">print</span>(p31)</span></code></pre></div>
@@ -1242,21 +1255,69 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   decisions:      Binary decision 
 ##   constraints:    &lt;none&gt;
 ##   penalties:      &lt;none&gt;
-##   portfolio:      Pool portfolio [method (2), number_solutions (100)]
+##   portfolio:      Top portfolio [number_solutions (5)]
 ##   solver:         default</code></pre>
 <ul>
-<li><strong>Shuffle portfolio</strong>: Generate a portfolio of solutions by randomly reordering the data prior to attempting to solve the problem. If the <em>Gurobi</em> optimization solver is not available, this method is the fastest method for generating a set number of solutions within a specified distance from optimality.</li>
+<li><strong>Gap portfolio</strong>: Generate a portfolio of solutions by finding a certain number of solutions that are all within a pre-specified optimality gap. This method is especially useful for generating multiple solutions that can used be to calculate selection frequencies (similar to <em>Marxan</em>). Note that this method requires that the <em>Gurobi</em> optimization software is used to generate solutions.</li>
 </ul>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1"></a><span class="co"># create a problem and specify a portfolio should be created that contains</span></span>
-<span id="cb86-2"><a href="#cb86-2"></a><span class="co"># 10 solutions and that any duplicate solutions should not be removed</span></span>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1"></a><span class="co"># create a problem and specify that a portfolio should be created by</span></span>
+<span id="cb86-2"><a href="#cb86-2"></a><span class="co"># finding five solutions within 10% of optimality</span></span>
 <span id="cb86-3"><a href="#cb86-3"></a>p32 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
 <span id="cb86-4"><a href="#cb86-4"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
 <span id="cb86-5"><a href="#cb86-5"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
 <span id="cb86-6"><a href="#cb86-6"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>() <span class="op">%&gt;%</span></span>
-<span id="cb86-7"><a href="#cb86-7"></a><span class="st">       </span><span class="kw">add_shuffle_portfolio</span>(<span class="dt">number_solutions =</span> <span class="dv">10</span>, <span class="dt">remove_duplicates =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb86-7"><a href="#cb86-7"></a><span class="st">       </span><span class="kw">add_gap_portfolio</span>(<span class="dt">number_solutions =</span> <span class="dv">5</span>, <span class="dt">pool_gap =</span> <span class="fl">0.2</span>)</span>
 <span id="cb86-8"><a href="#cb86-8"></a></span>
 <span id="cb86-9"><a href="#cb86-9"></a><span class="co"># print problem</span></span>
 <span id="cb86-10"><a href="#cb86-10"></a><span class="kw">print</span>(p32)</span></code></pre></div>
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      Gap portfolio [number_solutions (5), pool_gap (0.2)]
+##   solver:         default</code></pre>
+<ul>
+<li><strong>Cuts portfolio</strong>: Generate a portfolio of distinct solutions within a pre-specified optimality gap. This method is only recommended if the <em>Gurobi</em> optimization solver is not available.</li>
+</ul>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1"></a><span class="co"># create a problem and specify that a portfolio containing 10 solutions</span></span>
+<span id="cb88-2"><a href="#cb88-2"></a><span class="co"># should be created using using Bender&#39;s cuts</span></span>
+<span id="cb88-3"><a href="#cb88-3"></a>p33 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
+<span id="cb88-4"><a href="#cb88-4"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
+<span id="cb88-5"><a href="#cb88-5"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
+<span id="cb88-6"><a href="#cb88-6"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>() <span class="op">%&gt;%</span></span>
+<span id="cb88-7"><a href="#cb88-7"></a><span class="st">       </span><span class="kw">add_cuts_portfolio</span>(<span class="dt">number_solutions =</span> <span class="dv">10</span>)</span>
+<span id="cb88-8"><a href="#cb88-8"></a></span>
+<span id="cb88-9"><a href="#cb88-9"></a><span class="co"># print problem</span></span>
+<span id="cb88-10"><a href="#cb88-10"></a><span class="kw">print</span>(p33)</span></code></pre></div>
+<pre><code>## Conservation Problem
+##   planning units: RasterLayer (90 units)
+##   cost:           min: 190.13276, max: 215.86384
+##   features:       layer.1, layer.2, layer.3, ... (5 features)
+##   objective:      Minimum set objective 
+##   targets:        Relative targets [targets (min: 0.1, max: 0.1)]
+##   decisions:      Binary decision 
+##   constraints:    &lt;none&gt;
+##   penalties:      &lt;none&gt;
+##   portfolio:      Cuts portfolio [number_solutions (10)]
+##   solver:         default</code></pre>
+<ul>
+<li><strong>Shuffle portfolio</strong>: Generate a portfolio of solutions by randomly reordering the data prior to attempting to solve the problem. If the <em>Gurobi</em> optimization solver is not available, this method is the fastest method for generating a set number of solutions within a specified distance from optimality.</li>
+</ul>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1"></a><span class="co"># create a problem and specify a portfolio should be created that contains</span></span>
+<span id="cb90-2"><a href="#cb90-2"></a><span class="co"># 10 solutions and that any duplicate solutions should not be removed</span></span>
+<span id="cb90-3"><a href="#cb90-3"></a>p34 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
+<span id="cb90-4"><a href="#cb90-4"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
+<span id="cb90-5"><a href="#cb90-5"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
+<span id="cb90-6"><a href="#cb90-6"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>() <span class="op">%&gt;%</span></span>
+<span id="cb90-7"><a href="#cb90-7"></a><span class="st">       </span><span class="kw">add_shuffle_portfolio</span>(<span class="dt">number_solutions =</span> <span class="dv">10</span>, <span class="dt">remove_duplicates =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb90-8"><a href="#cb90-8"></a></span>
+<span id="cb90-9"><a href="#cb90-9"></a><span class="co"># print problem</span></span>
+<span id="cb90-10"><a href="#cb90-10"></a><span class="kw">print</span>(p34)</span></code></pre></div>
 <pre><code>## Conservation Problem
 ##   planning units: RasterLayer (90 units)
 ##   cost:           min: 190.13276, max: 215.86384
@@ -1272,16 +1333,16 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="solve-the-problem" class="section level3">
 <h3>Solve the problem</h3>
 <p>Finally, after formulating our conservation planning problem and specifying how the problem should be solved, we can use the <code>solve</code> function to obtain a solution. Note that the solver will typically print out some information describing the size of the problem and report its progress when searching for a suitable solution.</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1"></a><span class="co"># formulate the problem</span></span>
-<span id="cb88-2"><a href="#cb88-2"></a>p33 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
-<span id="cb88-3"><a href="#cb88-3"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
-<span id="cb88-4"><a href="#cb88-4"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
-<span id="cb88-5"><a href="#cb88-5"></a><span class="st">       </span><span class="kw">add_boundary_penalties</span>(<span class="dt">penalty =</span> <span class="dv">500</span>, <span class="dt">edge_factor =</span> <span class="fl">0.5</span>) <span class="op">%&gt;%</span></span>
-<span id="cb88-6"><a href="#cb88-6"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>()</span>
-<span id="cb88-7"><a href="#cb88-7"></a></span>
-<span id="cb88-8"><a href="#cb88-8"></a><span class="co"># solve the problem (using the default solver)</span></span>
-<span id="cb88-9"><a href="#cb88-9"></a>s33 &lt;-<span class="st"> </span><span class="kw">solve</span>(p33)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1"></a><span class="co"># formulate the problem</span></span>
+<span id="cb92-2"><a href="#cb92-2"></a>p35 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
+<span id="cb92-3"><a href="#cb92-3"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
+<span id="cb92-4"><a href="#cb92-4"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
+<span id="cb92-5"><a href="#cb92-5"></a><span class="st">       </span><span class="kw">add_boundary_penalties</span>(<span class="dt">penalty =</span> <span class="dv">500</span>, <span class="dt">edge_factor =</span> <span class="fl">0.5</span>) <span class="op">%&gt;%</span></span>
+<span id="cb92-6"><a href="#cb92-6"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>()</span>
+<span id="cb92-7"><a href="#cb92-7"></a></span>
+<span id="cb92-8"><a href="#cb92-8"></a><span class="co"># solve the problem (using the default solver)</span></span>
+<span id="cb92-9"><a href="#cb92-9"></a>s35 &lt;-<span class="st"> </span><span class="kw">solve</span>(p35)</span></code></pre></div>
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 293 rows, 234 columns and 1026 nonzeros
 ## Model fingerprint: 0xbd38144b
 ## Variable types: 0 continuous, 234 integer (234 binary)
@@ -1323,35 +1384,35 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
 ## Best objective 2.604742604847e+03, best bound 2.373847272018e+03, gap 8.8644%</code></pre>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1"></a><span class="co"># plot solution</span></span>
-<span id="cb90-2"><a href="#cb90-2"></a><span class="kw">plot</span>(s33, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;grey90&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>), <span class="dt">main =</span> <span class="st">&quot;Solution&quot;</span>,</span>
-<span id="cb90-3"><a href="#cb90-3"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1"></a><span class="co"># plot solution</span></span>
+<span id="cb94-2"><a href="#cb94-2"></a><span class="kw">plot</span>(s35, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;grey90&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>), <span class="dt">main =</span> <span class="st">&quot;Solution&quot;</span>,</span>
+<span id="cb94-3"><a href="#cb94-3"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>))</span></code></pre></div>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
 <p>We can plot this solution because the planning unit input data are spatially referenced in a raster format. The output format will always match the planning unit data used to initialize the problem. For example, the solution to a problem with planning units in a spatial vector (shapefile) format would also be in a spatial vector format. Similarly, if the planning units were in a tabular format (i.e. <code>data.frame</code>), the solution would also be returned in a tabular format.</p>
 <p>We can also extract attributes from the solution that describe the quality of the solution and the optimization process.</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1"></a><span class="co"># extract the objective (numerical value being minimized or maximized)</span></span>
-<span id="cb91-2"><a href="#cb91-2"></a><span class="kw">print</span>(<span class="kw">attr</span>(p33, <span class="st">&quot;objective&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1"></a><span class="co"># extract the objective (numerical value being minimized or maximized)</span></span>
+<span id="cb95-2"><a href="#cb95-2"></a><span class="kw">print</span>(<span class="kw">attr</span>(p35, <span class="st">&quot;objective&quot;</span>))</span></code></pre></div>
 <pre><code>## NULL</code></pre>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1"></a><span class="co"># extract time spent solving solution</span></span>
-<span id="cb93-2"><a href="#cb93-2"></a><span class="kw">print</span>(<span class="kw">attr</span>(p33, <span class="st">&quot;runtime&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1"></a><span class="co"># extract time spent solving solution</span></span>
+<span id="cb97-2"><a href="#cb97-2"></a><span class="kw">print</span>(<span class="kw">attr</span>(p35, <span class="st">&quot;runtime&quot;</span>))</span></code></pre></div>
 <pre><code>## NULL</code></pre>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1"></a><span class="co"># extract state message from the solver that describes why this specific</span></span>
-<span id="cb95-2"><a href="#cb95-2"></a><span class="co"># solution was returned</span></span>
-<span id="cb95-3"><a href="#cb95-3"></a><span class="kw">print</span>(<span class="kw">attr</span>(p33, <span class="st">&quot;status&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1"></a><span class="co"># extract state message from the solver that describes why this specific</span></span>
+<span id="cb99-2"><a href="#cb99-2"></a><span class="co"># solution was returned</span></span>
+<span id="cb99-3"><a href="#cb99-3"></a><span class="kw">print</span>(<span class="kw">attr</span>(p35, <span class="st">&quot;status&quot;</span>))</span></code></pre></div>
 <pre><code>## NULL</code></pre>
 </div>
 <div id="marxan-problems" class="section level3">
 <h3><em>Marxan</em> problems</h3>
 <p>Although users are encouraged to build and tailor conservation planning problems to suit their own needs using the <code>problem</code> function, sometimes it just simply easier to use a more familiar formulation. The <code>marxan_problem</code> function is provided as a convenient wrapper for building and solving <em>Marxan</em>-style conservation problems. If users already have their conservation planning data formatted for use with <em>Marxan</em>, this function can also read <em>Marxan</em> data files and solve the <em>Marxan</em>-style problems using exact algorithm solvers. <strong>Please note that problems built using the <code>marxan_problem</code> function are still solved the same way as a problem initialized using the <code>problem</code> function, and therefore still require the installation of one of the solver packages.</strong></p>
 <p>Here is a short example showing how the <code>marxan_problem</code> function can be used to read <em>Marxan</em> input files and the <code>solve</code> function can be used to solve the problem.</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1"></a><span class="co"># set file path for Marxan input file</span></span>
-<span id="cb97-2"><a href="#cb97-2"></a>minput &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>)</span>
-<span id="cb97-3"><a href="#cb97-3"></a></span>
-<span id="cb97-4"><a href="#cb97-4"></a><span class="co"># read Marxan input file</span></span>
-<span id="cb97-5"><a href="#cb97-5"></a>mp &lt;-<span class="st"> </span><span class="kw">marxan_problem</span>(minput)</span>
-<span id="cb97-6"><a href="#cb97-6"></a></span>
-<span id="cb97-7"><a href="#cb97-7"></a><span class="co"># print problem</span></span>
-<span id="cb97-8"><a href="#cb97-8"></a><span class="kw">print</span>(mp)</span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1"></a><span class="co"># set file path for Marxan input file</span></span>
+<span id="cb101-2"><a href="#cb101-2"></a>minput &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>)</span>
+<span id="cb101-3"><a href="#cb101-3"></a></span>
+<span id="cb101-4"><a href="#cb101-4"></a><span class="co"># read Marxan input file</span></span>
+<span id="cb101-5"><a href="#cb101-5"></a>mp &lt;-<span class="st"> </span><span class="kw">marxan_problem</span>(minput)</span>
+<span id="cb101-6"><a href="#cb101-6"></a></span>
+<span id="cb101-7"><a href="#cb101-7"></a><span class="co"># print problem</span></span>
+<span id="cb101-8"><a href="#cb101-8"></a><span class="kw">print</span>(mp)</span></code></pre></div>
 <pre><code>## Conservation Problem
 ##   planning units: data.frame (1751 units)
 ##   cost:           min: 0, max: 41569219.38232
@@ -1364,30 +1425,30 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   penalties:      &lt;Boundary penalties [edge factor (min: 1, max: 1), penalty (1), zones]&gt;
 ##   portfolio:      default
 ##   solver:         default</code></pre>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1"></a><span class="co"># solve the problem</span></span>
-<span id="cb99-2"><a href="#cb99-2"></a>ms &lt;-<span class="st"> </span><span class="kw">solve</span>(mp)</span>
-<span id="cb99-3"><a href="#cb99-3"></a></span>
-<span id="cb99-4"><a href="#cb99-4"></a><span class="co"># since the Marxan data was in a tabular format, the solution is also returned</span></span>
-<span id="cb99-5"><a href="#cb99-5"></a><span class="co"># in a tabular format, so we will print the first six rows of the table</span></span>
-<span id="cb99-6"><a href="#cb99-6"></a><span class="co"># containing the solution</span></span>
-<span id="cb99-7"><a href="#cb99-7"></a><span class="kw">head</span>(ms)</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1"></a><span class="co"># solve the problem</span></span>
+<span id="cb103-2"><a href="#cb103-2"></a>ms &lt;-<span class="st"> </span><span class="kw">solve</span>(mp)</span>
+<span id="cb103-3"><a href="#cb103-3"></a></span>
+<span id="cb103-4"><a href="#cb103-4"></a><span class="co"># since the Marxan data was in a tabular format, the solution is also returned</span></span>
+<span id="cb103-5"><a href="#cb103-5"></a><span class="co"># in a tabular format, so we will print the first six rows of the table</span></span>
+<span id="cb103-6"><a href="#cb103-6"></a><span class="co"># containing the solution</span></span>
+<span id="cb103-7"><a href="#cb103-7"></a><span class="kw">head</span>(ms)</span></code></pre></div>
 <p>Alternatively, rather then using a <em>Marxan</em> input file to construct the problem, we can manually read in the <em>Marxan</em> data files and input these to the <code>marxan_problem</code> function.</p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1"></a><span class="co"># load data</span></span>
-<span id="cb100-2"><a href="#cb100-2"></a>pu &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/pu.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb100-3"><a href="#cb100-3"></a><span class="st">      </span><span class="kw">read.table</span>(<span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb100-4"><a href="#cb100-4"></a>features &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/spec.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb100-5"><a href="#cb100-5"></a><span class="st">            </span><span class="kw">read.table</span>(<span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb100-6"><a href="#cb100-6"></a>bound &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/bound.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb100-7"><a href="#cb100-7"></a><span class="st">         </span><span class="kw">read.table</span>(<span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb100-8"><a href="#cb100-8"></a>rij &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/puvspr.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb100-9"><a href="#cb100-9"></a><span class="st">       </span><span class="kw">read.table</span>(<span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb100-10"><a href="#cb100-10"></a></span>
-<span id="cb100-11"><a href="#cb100-11"></a><span class="co"># build Marxan problem using data.frame objects</span></span>
-<span id="cb100-12"><a href="#cb100-12"></a>mp2 &lt;-<span class="st"> </span><span class="kw">marxan_problem</span>(<span class="dt">x =</span> pu, <span class="dt">spec =</span> features, <span class="dt">puvspr =</span> rij, <span class="dt">bound =</span> bound,</span>
-<span id="cb100-13"><a href="#cb100-13"></a>                      <span class="dt">blm =</span> <span class="dv">0</span>)</span>
-<span id="cb100-14"><a href="#cb100-14"></a></span>
-<span id="cb100-15"><a href="#cb100-15"></a><span class="co"># print problem</span></span>
-<span id="cb100-16"><a href="#cb100-16"></a><span class="kw">print</span>(mp2)</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1"></a><span class="co"># load data</span></span>
+<span id="cb104-2"><a href="#cb104-2"></a>pu &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/pu.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb104-3"><a href="#cb104-3"></a><span class="st">      </span><span class="kw">read.table</span>(<span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb104-4"><a href="#cb104-4"></a>features &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/spec.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb104-5"><a href="#cb104-5"></a><span class="st">            </span><span class="kw">read.table</span>(<span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb104-6"><a href="#cb104-6"></a>bound &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/bound.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb104-7"><a href="#cb104-7"></a><span class="st">         </span><span class="kw">read.table</span>(<span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb104-8"><a href="#cb104-8"></a>rij &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata/input/puvspr.dat&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;prioritizr&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb104-9"><a href="#cb104-9"></a><span class="st">       </span><span class="kw">read.table</span>(<span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb104-10"><a href="#cb104-10"></a></span>
+<span id="cb104-11"><a href="#cb104-11"></a><span class="co"># build Marxan problem using data.frame objects</span></span>
+<span id="cb104-12"><a href="#cb104-12"></a>mp2 &lt;-<span class="st"> </span><span class="kw">marxan_problem</span>(<span class="dt">x =</span> pu, <span class="dt">spec =</span> features, <span class="dt">puvspr =</span> rij, <span class="dt">bound =</span> bound,</span>
+<span id="cb104-13"><a href="#cb104-13"></a>                      <span class="dt">blm =</span> <span class="dv">0</span>)</span>
+<span id="cb104-14"><a href="#cb104-14"></a></span>
+<span id="cb104-15"><a href="#cb104-15"></a><span class="co"># print problem</span></span>
+<span id="cb104-16"><a href="#cb104-16"></a><span class="kw">print</span>(mp2)</span></code></pre></div>
 <pre><code>## Conservation Problem
 ##   planning units: data.frame (1751 units)
 ##   cost:           min: 0, max: 41569219.38232
@@ -1404,15 +1465,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="interpreting-the-solutions" class="section level3">
 <h3>Interpreting the solutions</h3>
 <p>After obtaining the solution to a conservation planning problem, it can be useful to calculate various summary statistics to describe its performance (such as solution cost). These statistics could be calculated using external software platforms such as <a href="https://www.arcgis.com/features/index.html">ArcGIS</a> or <a href="http://www.qgis.org/en/site/">QGIS</a>, but it is also possible to calculate these statistics within <em>R</em>. If you are dealing with raster planning unit data, and so your solutions are in raster format, the <code>cellStats</code>, <code>layerStats</code>, <code>extract</code>, and <code>zonal</code> functions from the <em>raster R</em> package can be useful for calculating summary statistics. Below we will create and solve a problem, and then calculate some statistics showcasing these functions.</p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1"></a><span class="co"># formulate the problem</span></span>
-<span id="cb102-2"><a href="#cb102-2"></a>p34 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
-<span id="cb102-3"><a href="#cb102-3"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
-<span id="cb102-4"><a href="#cb102-4"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
-<span id="cb102-5"><a href="#cb102-5"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>()</span>
-<span id="cb102-6"><a href="#cb102-6"></a></span>
-<span id="cb102-7"><a href="#cb102-7"></a><span class="co"># solve the problem</span></span>
-<span id="cb102-8"><a href="#cb102-8"></a>s34 &lt;-<span class="st"> </span><span class="kw">solve</span>(p34)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1"></a><span class="co"># formulate the problem</span></span>
+<span id="cb106-2"><a href="#cb106-2"></a>p36 &lt;-<span class="st"> </span><span class="kw">problem</span>(sim_pu_raster, sim_features) <span class="op">%&gt;%</span></span>
+<span id="cb106-3"><a href="#cb106-3"></a><span class="st">       </span><span class="kw">add_min_set_objective</span>() <span class="op">%&gt;%</span></span>
+<span id="cb106-4"><a href="#cb106-4"></a><span class="st">       </span><span class="kw">add_relative_targets</span>(<span class="fl">0.1</span>) <span class="op">%&gt;%</span></span>
+<span id="cb106-5"><a href="#cb106-5"></a><span class="st">       </span><span class="kw">add_binary_decisions</span>()</span>
+<span id="cb106-6"><a href="#cb106-6"></a></span>
+<span id="cb106-7"><a href="#cb106-7"></a><span class="co"># solve the problem</span></span>
+<span id="cb106-8"><a href="#cb106-8"></a>s36 &lt;-<span class="st"> </span><span class="kw">solve</span>(p36)</span></code></pre></div>
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
 ## Model fingerprint: 0x6442bf6e
 ## Variable types: 0 continuous, 90 integer (90 binary)
@@ -1443,19 +1504,19 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## 
 ## Optimal solution found (tolerance 1.00e-01)
 ## Best objective 1.987398526526e+03, best bound 1.931581908865e+03, gap 2.8085%</code></pre>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1"></a><span class="co"># plot solution</span></span>
-<span id="cb104-2"><a href="#cb104-2"></a><span class="kw">plot</span>(s34, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;grey90&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>), <span class="dt">main =</span> <span class="st">&quot;Solution&quot;</span>,</span>
-<span id="cb104-3"><a href="#cb104-3"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1"></a><span class="co"># plot solution</span></span>
+<span id="cb108-2"><a href="#cb108-2"></a><span class="kw">plot</span>(s36, <span class="dt">col =</span> <span class="kw">c</span>(<span class="st">&quot;grey90&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>), <span class="dt">main =</span> <span class="st">&quot;Solution&quot;</span>,</span>
+<span id="cb108-3"><a href="#cb108-3"></a>     <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.1</span>, <span class="fl">1.1</span>))</span></code></pre></div>
 <p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1"></a><span class="co"># calculate the number of selected planning units</span></span>
-<span id="cb105-2"><a href="#cb105-2"></a><span class="kw">cellStats</span>(s34, <span class="st">&quot;sum&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1"></a><span class="co"># calculate the number of selected planning units</span></span>
+<span id="cb109-2"><a href="#cb109-2"></a><span class="kw">cellStats</span>(s36, <span class="st">&quot;sum&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] 10</code></pre>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1"></a><span class="co"># calculate the cost of the solution</span></span>
-<span id="cb107-2"><a href="#cb107-2"></a><span class="kw">cellStats</span>(sim_pu_raster <span class="op">*</span><span class="st"> </span>s34, <span class="st">&quot;sum&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1"></a><span class="co"># calculate the cost of the solution</span></span>
+<span id="cb111-2"><a href="#cb111-2"></a><span class="kw">cellStats</span>(sim_pu_raster <span class="op">*</span><span class="st"> </span>s36, <span class="st">&quot;sum&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] 1987.399</code></pre>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1"></a><span class="co"># calculate how well features are represented in the solution</span></span>
-<span id="cb109-2"><a href="#cb109-2"></a>r34 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p34, s34)</span>
-<span id="cb109-3"><a href="#cb109-3"></a><span class="kw">print</span>(r34)</span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1"></a><span class="co"># calculate how well features are represented in the solution</span></span>
+<span id="cb113-2"><a href="#cb113-2"></a>r36 &lt;-<span class="st"> </span><span class="kw">feature_representation</span>(p36, s36)</span>
+<span id="cb113-3"><a href="#cb113-3"></a><span class="kw">print</span>(r36)</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 3
 ##   feature absolute_held relative_held
 ##   &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;
@@ -1468,20 +1529,30 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="irreplaceability" class="section level3">
 <h3>Irreplaceability</h3>
 <p>Conservation plans can take a long time to implement. Since funding availability and habitat quality can decline over time, it is critical that the most important places in a prioritization are scheduled for protection as early as possible. For instance, some planning units in a solution might contain many rare species which do not occur in any other planning units. Alternatively, some planning units might offer an especially high return on investment that reduces costs considerably. As a consequence, conservation planners often need information on which planning units selected in a prioritization are most important to the overall success of the prioritization. To achieve this, conservation planners can use irreplaceability scores to calculate the “importance” or “priority” of each planning unit selected in a solution.</p>
-<p>The <em>prioritizr R</em> package offers two methods for calculating irreplaceability scores: replacement cost <span class="citation">(<code>replacement_cost</code>; Cabeza &amp; Moilanen 2006)</span> and rarity weighted richness <span class="citation">(<code>rarity_weighted_richness</code>; Williams <em>et al.</em> 1996)</span>. The replacement cost scores are generally recommended because they can (i) account for the cost of different planning units, (ii) account for multiple management zones, and (iii) identify truly irreplaceable planning units (denoted with infinite values). Rarity weighted richness scores, on the other hand, cannot account for these three factors and consequently can provide misleading results about the importance of different planning units in a solution. The only advantage that rarity weighted richness scores have over replacement cost scores is that they are much, much faster to calculate (but see documentation for the replacement cost scores for information on reducing run times). As a general rule, we recommend using replacement cost scores for small and moderate sized problems (e.g. less than 30’000 planning units) and rarity weighted richness scores for large sized problems (e.g. more than 100’000 planning units). Below we will calculate irreplaceability scores using these two approaches.</p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1"></a><span class="co"># calculate replacement cost scores and make the solver quiet</span></span>
-<span id="cb111-2"><a href="#cb111-2"></a>rc34 &lt;-<span class="st"> </span>p34 <span class="op">%&gt;%</span></span>
-<span id="cb111-3"><a href="#cb111-3"></a><span class="st">        </span><span class="kw">add_default_solver</span>(<span class="dt">verbose =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb111-4"><a href="#cb111-4"></a><span class="st">        </span><span class="kw">replacement_cost</span>(s34)</span>
-<span id="cb111-5"><a href="#cb111-5"></a></span>
-<span id="cb111-6"><a href="#cb111-6"></a><span class="co"># calculate rarity weighted richness scores</span></span>
-<span id="cb111-7"><a href="#cb111-7"></a>rwr34 &lt;-<span class="st"> </span><span class="kw">rarity_weighted_richness</span>(p34, s34)</span>
-<span id="cb111-8"><a href="#cb111-8"></a></span>
-<span id="cb111-9"><a href="#cb111-9"></a><span class="co"># plot irreplaceability scores</span></span>
-<span id="cb111-10"><a href="#cb111-10"></a><span class="kw">plot</span>(<span class="kw">stack</span>(rc34, rwr34),</span>
-<span id="cb111-11"><a href="#cb111-11"></a>     <span class="dt">main =</span> <span class="kw">c</span>(<span class="st">&quot;replacement cost&quot;</span>, <span class="st">&quot;rarity weighted richness&quot;</span>))</span></code></pre></div>
-<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
-<p>Although rarity weighted richness scores can approximate replacement cost scores in certain conservation planning exercises, we can see that the rarity weighted richness scores provide completely difference results to the replacement cost scores in this case.</p>
+<p>The <em>prioritizr R</em> package offers three methods for calculating irreplaceability scores: replacement cost <span class="citation">(<code>replacement_cost</code>; Cabeza &amp; Moilanen 2006)</span>, Ferrier scores <span class="citation">(<code>ferrier_score</code>; Ferrier <em>et al.</em> 2000)</span>, and rarity weighted richness scores <span class="citation">(<code>rarity_weighted_richness</code>; Williams <em>et al.</em> 1996)</span>. The replacement cost scores quantify the change in the objective function (e.g. additional costs required to meet feature targets) of the optimal solution if a given planning unit in a solution cannot be acquired. They can (i) account for the cost of different planning units, (ii) account for multiple management zones, (iii) apply to any objective function, and (iv) identify truly irreplaceable planning units (denoted with infinite values). The Ferrier irreplaceability scores quantify the importance of planning units for meeting feature targets. They can only be applied to conservation problems with a minimum set objective and a single zone (i.e. the classic <em>Marxan</em>-type problem). Furthermore—unlike the replacement cost scores—the Ferrier irreplaceability scores provide a score for each feature within each planning unit, providing insight into why certain planning units are more important than other planning units. The rarity weighted richness scores are simply a measure of biological diversity. They do not account for planning costs, multiple management zones, objective functions, or feature targets (or weightings). They merely describe the spatial patterns of biodiversity, and do not account for many of the factors needed to quantify the importance of a planning unit for achieving conservation goals.</p>
+<p>We recommend using replacement cost scores for small and moderate sized problems (e.g. less than 30,000 planning units) when it is feasible to do so. It can take a very long time to compute replacement cost scores, and so it is simply not feasible to compute these scores for particularly large problems. For moderate and large sized problems (e.g. more than 30,000 planning units), we recommend using the Ferrier irreplaceability scores if possible. As mentioned earlier, the Ferrier irreplaceability scores can only be used for a specific type of conservation problem. For large sized problems (e.g. more than 100,000 planning units), we recommend using the rarity weighted richness scores simply because there is no other choice available. It has been known for decades that such static measures of biodiversity lead to poor conservation plans <span class="citation">(Kirkpatrick 1983)</span>.</p>
+<p>Below we will use these three approaches to calculate irreplaceability scores.</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1"></a><span class="co"># calculate replacement cost scores and make the solver quiet</span></span>
+<span id="cb115-2"><a href="#cb115-2"></a>rc36 &lt;-<span class="st"> </span>p36 <span class="op">%&gt;%</span></span>
+<span id="cb115-3"><a href="#cb115-3"></a><span class="st">        </span><span class="kw">add_default_solver</span>(<span class="dt">gap =</span> <span class="dv">0</span>, <span class="dt">verbose =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb115-4"><a href="#cb115-4"></a><span class="st">        </span><span class="kw">replacement_cost</span>(s36)</span>
+<span id="cb115-5"><a href="#cb115-5"></a></span>
+<span id="cb115-6"><a href="#cb115-6"></a><span class="co"># plot replacement cost scores</span></span>
+<span id="cb115-7"><a href="#cb115-7"></a><span class="kw">plot</span>(rc36, <span class="dt">main =</span> <span class="st">&quot;replacement cost&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVAAAAFQCAMAAADeNtbrAAABqlBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZpAAZrYApgAEpwAIqQAMqgAQrAAVrQAarwAfsQAjsgAotAAttQAztwA1uAA4uQA6AAA6ADo6OgA6OmY6ZpA6ZrY6kLY6kNs9ugBCvABHvgBOwABTwQBYwwBdxABjxgBmAABmOgBmOjpmkLZmkNtmtttmtv9oxwBwyQB1ywB7zACBzgCHzwCP0QCQOgCQZgCQZjqQkGaQkLaQtpCQttuQtv+Q29uQ2/+V0wCb1ACh1gCn1wCw2QC2ZgC2Zjq2ZpC2kGa22wC227a229u22/+2/9u2//+52wC93ADD3gDK3wDR4QDa4wDbkDrbkGbbtmbbtpDb27bb29vb///h5ADm2g3m3wfm5ALnySTnzR/n0Bnn1BTovzbowjHoxC3oxiroyCbpuEfpukLpvDzpvjjqs1rqtFTqtk3rsWXrsWvrsl/ssXLssXjssX7tsoPts4nttZHutpbuuJzuuqLuvajvv63vw7Xvx7vwysHwzsfw0s3x2NXx2dfx3drx4uDy5+by7Ozy8vL/tmb/25D/27b//7b//9v////KX41MAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAKvElEQVR4nO2d+WPkNhmGlW7ClLOcIdsSaEvJQjfcuwsUlmsKtKHQFrdbwlHu+z5b7kIpmRzzPyNZn2csj23Jnte2PHmfH7JjW/o8flaWZFvWqDmBoob+ApsGhYKhUDAUCoZCwVAoGAoFQ6FgKBQMhYKhUDAUCoZCwVAoGAoFQ6FgKBQMhYKhUDAUCoZCwVAoGAoFQ6FgKBQMhYKhUDAUCoZCwVAoGAoFQ6FgehJ6cUPtHCPjfeGJjhKvyziFnl27K9xRo8RrM06hU9XAUaPEawMTmqitT1xTdx3NLx5Vaus+Y08fyWPvVWr7aCH0zjWl1NXbaYZn95S6ct18WuQ4P1CTO3tq6/r8mV21fdvZZnbwKb1gVk91lKWlZaD5Hb27K+9L/+ee0Wu37j0qJu4coFDDzrGWYth+Qg5Fs3VbhM4Wy4uN+6lGySGflNrLJOSiJctojqNloCyJ+a+TjzrRiIXuHM2/borl0fx01xygPhT9+VmlJlao/vOqY9mm3b7j+OzAHnGWw+jbNxnUdRMvDbGIlqRlfbE6M5QLpNNpl2kKU9aPTaT9EZ/y6nCeFilbVmzZMKvMAS3q0Oe+uGcEy1Em9z6ez6E/6lT2b2Z4Ec3uQK+eOI6WgbK15h+dbPtxJ0VfIOtQcybrI8mdmemRmC1W6MUtu22Sb6RyOUy5sjXp3ArNR7M7sBuXjnKBso+yP5VVp+MWKtVkXqhedZid8mr7488dWKETyZjLsSI0H61SaBbIbrL7030lm++TYxeqPRxmq4ol1NaF5wcrJTTLUVZCD90dBJZQ/c/Zx/ZsAzVuoVkxMRTr0FlWCy5aitnVR/I5VoTmo5ULzQXK16F228VNafRGLFR/fd2NPDuwRcNt5dNW+OxG2ihpufeldcBhLseK0Hy0vNBsZ3MnUK6VT9t+c94vMvYFXKj0HLduL/uhuoAs6lBplBYbJ/kcq0Jz0fJCZ6v90Mnc6Yc+uuzy5hN3D1zo/OyWbprNJYo51758y35etvLbjyT28NILnIedHKtCc9HyQs31k7kAS1kGsldKDy/WqqsmjZO4c7q8lu+38ooECgVDoWAoFAwfgYChUDAUCoZCwVAoGAoFQ6FgKBQMhYKhUDAUCoZCwVAoGAoFQ6FgKBQMhYKhUDAUCoZCwVAoGAoFQ6FgKBQMhYKhUDAUCgYsVEUH9vgCDEQdbn0oFAyFgqFQMBQKhkLBjFTocL0UHyMVugx3EhkUCoZCwVAoGAoFQ6FgKBQMhYKhUDAUCoZCwVAoGAoFQ6FgKBQMha5Pl8cXYAAcbmibJxQKp8vjCzDQKPVUqUk64dphRQIKbbTDJJ0hMJ1Nbb8i3NA2T8Yk9OKGmTw5neIuqZhEnUKb7PD8QJ/pMztrbcUUVxTKEgqmXR2aqi0NN7TNk1EJZSvvh/1QMBQKpuUOE7byFaAHiw1t82QzhC7DDW2zCIWCiVxoNhN95VTAFNqsY6+kPz9TEXfsHeqPr4MXmxpfelpivvR08Ah9tYAryI1vjlhivjni4BH6GmEYoRtYQl8rDCNU16FSRDemDn2dMJDQxc8aVv5G59iEvl4YSqg/3NACi3iEvkGg0FA8Qu8RKDQUj9A3ChQaikfomwQKDcUj9M0ChYbiEfoWoTTZTOV+HjCpefDjhGwmzBtuaIFFPELfJpQlM893Z5nRxCyEGL3kQt8plCSz14XTiSxMlgv1IZtLqw03tMAiHqHvEkqSne6a8ijPeig0wyP0fqFM6NvT33qWu0A85QWP0AeEkvuhtvpcVKJOC1UXcg17ZeGGFljEI/RBoSSZK3SqS+rpbsUtISdkC2t14YYWWMQj9N2C75R3KtT6kG201YQbWmARj9CHBF+jVDj/60K20VYTbmiBRTxC3yP4uk3WbtVzCidkC2t14YYWWMQj9P2Ct2PPOlTwCP2AUJossQ279EGVqnpM4YZsYa0u3NACi3iEflDgzZFQPEI/JMQmNKrBYg4eoR8WYhO6DAcz4cYtbPyfw7wmrUfoRwQKBQn9qEChIKGfFigUJPQzAoWChH5WoFCQ0M8JFAoS+nlhmPGhIeFGJvRLAksoSOhXBQoFCX1SoFCQ0KcECgUJfVqgUJDQrwkUChL6DYFCQUK/LVwCoS4/dwnP6BH6LYFCQUK/KVAoSOj3BP/4UM208uWXfMgmugT7kLo83MiEflfwPkY2y9VvE+VD+pMsyN5SqnkfeWxCvyP4BjrYo4eXUHmBboNK6POCbyiO+bRzE3/Knx+YmBsk9EeCd3yoWeykDp3qSmWDhP5A8I4PNRVAN41SovY3SOj3Be/40HRStW5a+dPdK5sj9GeCd3yoWeiq23Rxo3qs+diE/lTwNUqJ1Af+QfaXvGP/EyGg29Rhx37e/8xiXQn9lRDSse9UaDFK14PFuhL6S8E/PnTeq9BluPbOCpHcjT92gQn9hbCJN0cKkfoR+lthKKFdzixWiNSP0F8LAwntdGaxQqR+hP5GGEZot/M2FSL1I/R3wjBCu51ZrBCpH6G/F1hCQUL/IAxWh3Y4s1ghUj9C/ygM1cp3ObNYIVI/Qv8ksB8KEvpnYRPHhxYi9SP0BYElFCT0RYFCQUL/IlAoSOhfBQoFCf2bMBqh7tYmfn/oULvTNYT+XaDQ0LAeof8QKDQ0rEfoPwUKDQ3rEfovgUJDw3qEviRQaGhYj9B/C/7xoZFM1eZujU/oy4L3MfLKM+XKkP4kTRib0P8KvoEOq6MeKkP6kzRhbEJfEXxDcaKZ+87dGp/Q7M2coMFiMUzV5m6NT2jN7yk5wxmjmUzQ3Rqd0DooFCx00FO+crCYm2xcQqNslGpxs37F5X6Hwm7+49CN0Di7TSMWGmfHfsxC3fGhSRyXnqMW2goKBUOhYCgUDIWCoVAwFAqGQsFQKBgKBUOhYCgUzJBCn3d4q4sb926X8H1QKIW64Si0UWrsy7MUCn559tILRb+aeOmFol+evfRCWUIDGPLlWQoFvzxLoQHhKBQcjkLbZYPMLEah1VFazSxGob2HWx8KBRO5UP/NkfW/EZa4hQbcHFn3+6CJWmjIpee63wdN1EJDbo6s+33QRC2UJRS9w4CbI9GxrqCmoG+OtN7XEBu7oM9+aHQbu4BCwVAoGAoFQ6FgKBQMhYKhUDDRXSuOHQoFQ6FgKBQMhYKhUDAUCoZCwVAoGAoFQ6FgKBQMhYLBCG01W3Fp4qAfI13NaX672P+7xX0AEdpuUrOyxLPqJ9R1OROzEIdRhNCW0+6VJD4/CBVa2OckfJ8dgxDacmLIksTJzs1AoU7OjRPaburS1cR6MbQOdXNu2CnfcnLdlcTmNA4VWthNo4awU2ISaob0tRM61SX1dLdiAFu/RHTKpwutTvlG9XbHRNQoJTIAMagqdHI2Ois6Jq5uU3gJdXJau4FnRcdE1rEPv1Jycm5YHdpytuLVnPMml55OzqmuKqLwyZsjaCgUDIWCoVAwFAqGQsFQKBgKBUOhYCgUDIWCoVAwFAqGQsFQKBgKBUOhYCgUDIWCoVAwFAqGQsFQKBgKBUOhYCgUDIWCoVAwFAqGQsFQKBgKBUOhYCgUDIWCoVAwFAqGQsFQKBgKBUOhYCgUDIWCoVAwFAqGQsFQKBgKBUOhYCgUDIWCoVAwFAqGQsFQKBgKBUOhYCgUDIWCoVAwFAqGQsFQKJj/A8N+Rjk8iAX6AAAAAElFTkSuQmCC" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1"></a><span class="co"># calculate Ferrier irreplaceability scores and extract total score</span></span>
+<span id="cb116-2"><a href="#cb116-2"></a>fs36 &lt;-<span class="st"> </span><span class="kw">ferrier_score</span>(p36, s36)[[<span class="st">&quot;total&quot;</span>]]</span>
+<span id="cb116-3"><a href="#cb116-3"></a></span>
+<span id="cb116-4"><a href="#cb116-4"></a><span class="co"># plot Ferrier scores</span></span>
+<span id="cb116-5"><a href="#cb116-5"></a><span class="kw">plot</span>(fs36, <span class="dt">main =</span> <span class="st">&quot;Ferrier scores&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1"></a><span class="co"># calculate rarity weighted richness scores</span></span>
+<span id="cb117-2"><a href="#cb117-2"></a>rwr36 &lt;-<span class="st"> </span><span class="kw">rarity_weighted_richness</span>(p36, s36)</span>
+<span id="cb117-3"><a href="#cb117-3"></a></span>
+<span id="cb117-4"><a href="#cb117-4"></a><span class="co"># plot replacement cost scores</span></span>
+<span id="cb117-5"><a href="#cb117-5"></a><span class="kw">plot</span>(rwr36, <span class="dt">main =</span> <span class="st">&quot;rarity weighted richness&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>Although rarity weighted richness scores can approximate scores derived from the other two methods in certain conservation planning exercises, we can see that the rarity weighted richness scores provide completely different results in this case.</p>
 </div>
 </div>
 <div id="conclusion" class="section level2">
@@ -1490,8 +1561,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Finally, if you have any questions about using the <em>prioritizr R</em> package or suggestions for improving the <em>prioritizr R</em> package (perhaps addressing some spelling mistakes found whilst reading this vignette?), please file an issue on the package’s online coding repository (<a href="https://github.com/prioritizr/prioritizr/issues" class="uri">https://github.com/prioritizr/prioritizr/issues</a>).</p>
 </div>
 <div id="references" class="section level2 unnumbered">
-<h2>References</h2>
-<div id="refs" class="references">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references hanging-indent">
 <div id="ref-r23">
 <p>Achterberg, T. &amp; Wunderling, R. (2013). Mixed Integer Programming: Analyzing 12 Years of Progress. <em>Facets of combinatorial optimization: Festschrift for martin grötschel</em> (eds M. Jünger &amp; G. Reinelt), pp. 449–481. Springer, Berlin, Heidelberg.</p>
 </div>
@@ -1524,6 +1595,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="ref-r13">
 <p>Faith, D.P. (1992). Conservation evaluation and phylogenetic diversity. <em>Biological Conservation</em>, <em>61</em>, 1–10.</p>
+</div>
+<div id="ref-r34">
+<p>Ferrier, S., Pressey, R.L. &amp; Barrett, T.W. (2000). A new predictor of the irreplaceability of areas for achieving a conservation goal, its application to real-world planning, and a research agenda for further refinement. <em>Biological Conservation</em>, <em>93</em>, 303–325.</p>
 </div>
 <div id="ref-r19">
 <p>Fuller, R.A., McDonald-Madden, E., Wilson, K.A., Carwardine, J., Grantham, H.S., Watson, J.E., Klein, C.J., Green, D.C. &amp; Possingham, H.P. (2010). Replacing underperforming protected areas achieves better conservation outcomes. <em>Nature</em>, <em>466</em>, 365.</p>

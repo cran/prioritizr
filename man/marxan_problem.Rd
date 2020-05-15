@@ -11,8 +11,7 @@ marxan_problem(x, ...)
 
 \method{marxan_problem}{default}(x, ...)
 
-\method{marxan_problem}{data.frame}(x, spec, puvspr, bound = NULL,
-  blm = 0, ...)
+\method{marxan_problem}{data.frame}(x, spec, puvspr, bound = NULL, blm = 0, ...)
 
 \method{marxan_problem}{character}(x, ...)
 }
@@ -119,10 +118,7 @@ This function is provided as a convenient wrapper for solving
   \pkg{prioritizr} package, this functionality is no longer available.
   Please see the \code{\link{add_connectivity_penalties}} function for
   adding asymmetric connectivity penalties to a conservation planning
-  problem. For more information on the correct formats
-  for \emph{Marxan} input data, see the
-  \href{http://marxan.net}{official \emph{Marxan} website} and Ball
-  \emph{et al.} (2009).
+  problem.
 }
 \examples{
 # create Marxan problem using Marxan input file
@@ -186,4 +182,10 @@ A, Wilson KA, and Possingham HP. Oxford University Press, Oxford, UK.
 Beyer HL, Dujardin Y, Watts ME, and Possingham HP (2016) Solving
 conservation planning problems with integer linear programming.
 \emph{Ecological Modelling}, 228: 14--22.
+}
+\seealso{
+For more information on the correct format for
+  for \emph{Marxan} input data, see the
+  \href{https://marxansolutions.org}{official \emph{Marxan} website} and Ball
+  \emph{et al.} (2009).
 }

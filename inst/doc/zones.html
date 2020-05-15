@@ -14,23 +14,35 @@
 
 <title>Management Zones</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -50,7 +62,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -305,7 +317,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="TOC">
 <ul>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#usage">Usage</a><ul>
+<li><a href="#usage">Usage</a>
+<ul>
 <li><a href="#simple-minimum-set-problem">Simple minimum set problem</a></li>
 <li><a href="#adding-management-zones">Adding management zones</a></li>
 <li><a href="#multiple-zones-with-varying-costs">Multiple zones with varying costs</a></li>
@@ -359,7 +372,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># solve problem</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>s1 &lt;-<span class="st"> </span><span class="kw">solve</span>(p1)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
 ## Model fingerprint: 0x6442bf6e
 ## Variable types: 0 continuous, 90 integer (90 binary)
@@ -473,7 +486,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># solve problem</span></span>
 <span id="cb16-2"><a href="#cb16-2"></a>s2 &lt;-<span class="st"> </span><span class="kw">solve</span>(p2)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 100 rows, 180 columns and 1080 nonzeros
 ## Model fingerprint: 0xbdab1647
 ## Variable types: 0 continuous, 180 integer (180 binary)
@@ -562,7 +575,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="co"># solve problem</span></span>
 <span id="cb24-2"><a href="#cb24-2"></a>s3 &lt;-<span class="st"> </span><span class="kw">solve</span>(p3)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 100 rows, 180 columns and 1080 nonzeros
 ## Model fingerprint: 0x07455a48
 ## Variable types: 0 continuous, 180 integer (180 binary)
@@ -666,7 +679,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="co"># solve problem</span></span>
 <span id="cb34-2"><a href="#cb34-2"></a>s4 &lt;-<span class="st"> </span><span class="kw">solve</span>(p4)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 105 rows, 300 columns and 1800 nonzeros
 ## Model fingerprint: 0xd67e7fdc
 ## Variable types: 0 continuous, 300 integer (300 binary)
@@ -767,7 +780,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="co"># solve problem</span></span>
 <span id="cb43-2"><a href="#cb43-2"></a>s5 &lt;-<span class="st"> </span><span class="kw">solve</span>(p5)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 105 rows, 300 columns and 1800 nonzeros
 ## Model fingerprint: 0x4ad99e4b
 ## Variable types: 0 continuous, 300 integer (300 binary)
@@ -778,7 +791,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   RHS range        [1e+00, 8e+00]
 ## Found heuristic solution: objective 13600.000000
 ## Presolve removed 14 rows and 120 columns
-## Presolve time: 0.01s
+## Presolve time: 0.00s
 ## Presolved: 91 rows, 180 columns, 360 nonzeros
 ## Found heuristic solution: objective 9600.0000000
 ## Variable types: 0 continuous, 180 integer (180 binary)
@@ -794,7 +807,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## H    0     0                    7000.0000000 6938.06818  0.88%     -    0s
 ##      0     0 6938.06818    0    1 7000.00000 6938.06818  0.88%     -    0s
 ## 
-## Explored 1 nodes (1 simplex iterations) in 0.01 seconds
+## Explored 1 nodes (1 simplex iterations) in 0.00 seconds
 ## Thread count was 1 (of 48 available processors)
 ## 
 ## Solution count 3: 7000 9600 13600 
@@ -870,7 +883,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a><span class="co"># solve problem</span></span>
 <span id="cb52-2"><a href="#cb52-2"></a>s6 &lt;-<span class="st"> </span><span class="kw">solve</span>(p6)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 1905 rows, 1200 columns and 5400 nonzeros
 ## Model fingerprint: 0xb44cc86f
 ## Variable types: 0 continuous, 1200 integer (1200 binary)
@@ -897,7 +910,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## H    0     0                    11300.000000 10054.0986  11.0%     -    0s
 ## H    0     0                    10264.000000 10054.0986  2.05%     -    0s
 ## 
-## Explored 1 nodes (825 simplex iterations) in 0.04 seconds
+## Explored 1 nodes (825 simplex iterations) in 0.05 seconds
 ## Thread count was 1 (of 48 available processors)
 ## 
 ## Solution count 3: 10264 11300 20096 
@@ -963,7 +976,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   solver:         default</code></pre>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a><span class="co"># solve problem</span></span>
 <span id="cb59-2"><a href="#cb59-2"></a>s7 &lt;-<span class="st"> </span><span class="kw">solve</span>(p7)</span></code></pre></div>
-<pre><code>## Gurobi Optimizer version 9.0.0 build v9.0.0rc2 (win64)
+<pre><code>## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (win64)
 ## Optimize a model with 1905 rows, 1200 columns and 5400 nonzeros
 ## Model fingerprint: 0x89a9dafb
 ## Variable types: 0 continuous, 1200 integer (1200 binary)
@@ -981,7 +994,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## Presolved: 785 rows, 876 columns, 2448 nonzeros
 ## 
 ## 
-## Root relaxation: objective 1.323093e+04, 271 iterations, 0.01 seconds
+## Root relaxation: objective 1.323093e+04, 271 iterations, 0.00 seconds
 ## 
 ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
 ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
@@ -1027,8 +1040,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Hopefully, this vignette has provided an informative introduction to building and solving problems with multiple zones using the <em>prioritizr R</em> package. Although we have examined only a few different functions here, almost every single function for modifying conservation planning problems is compatible with problems that contain zones. It’s worth noting that working with multiple zones is a lot trickier than working with a single zone, so we would recommend playing around with the code in the Examples sections of the help pages to get a feel for what different functions do when they are applied to problems with multiple zones.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
-<h2>References</h2>
-<div id="refs" class="references">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references hanging-indent">
 <div id="ref-r25">
 <p>Cattarino, L., Hermoso, V., Carwardine, J., Adams, V.M., Kennard, M.J. &amp; Linke, S. (2018). Information uncertainty influences conservation outcomes when prioritizing multi-action management efforts. <em>Journal of Applied Ecology</em>, Available at: https://doi.org/10.1111/1365–2664.13147.</p>
 </div>
