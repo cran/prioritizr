@@ -4,37 +4,42 @@
 \alias{penalties}
 \title{Conservation problem penalties}
 \description{
-A penalty can be applied to a conservation planning \code{\link{problem}} to
+A penalty can be applied to a conservation planning \code{\link[=problem]{problem()}} to
 penalize solutions according to a specific metric. Penalties---unlike
-\code{\link{constraints}}---act as an explicit trade-off with the objective
+\link{constraints}---act as an explicit trade-off with the objective
 being minimized or maximized (e.g. solution cost when used with
-\code{\link{add_min_set_objective}}).
+\code{\link[=add_min_set_objective]{add_min_set_objective()}}).
 }
 \details{
 Both penalties and constraints can be used to modify a problem and
-  identify solutions that exhibit specific characteristics. Constraints work
-  by invalidating solutions that do not exhibit specific characteristics.
-  On the other hand, penalties work by specifying trade-offs against the
-  main problem objective and are mediated by a penalty factor.
+identify solutions that exhibit specific characteristics. Constraints work
+by invalidating solutions that do not exhibit specific characteristics.
+On the other hand, penalties work by specifying trade-offs against the
+main problem objective and are mediated by a penalty factor.
 
-  The following penalties can be added to a conservation planning
-  \code{\link{problem}}:
+The following penalties can be added to a conservation planning
+\code{\link[=problem]{problem()}}:
 
-  \describe{
+\describe{
 
-  \item{\code{\link{add_boundary_penalties}}}{Add penalties to a
-    conservation problem to favor solutions that have
-    planning units clumped together into contiguous areas.}
+\item{\code{\link[=add_boundary_penalties]{add_boundary_penalties()}}}{Add penalties to a
+conservation problem to favor solutions that have
+planning units clumped together into contiguous areas.}
 
-  \item{\code{\link{add_connectivity_penalties}}}{Add penalties to a
-    conservation problem to favor solutions that select
-    planning units with high connectivity between them.}
+\item{\code{\link[=add_connectivity_penalties]{add_connectivity_penalties()}}}{Add penalties to a
+conservation problem to favor solutions that select
+planning units with high connectivity between them.}
 
-  }
+\item{\code{\link[=add_linear_penalties]{add_linear_penalties()}}}{Add penalties to a
+conservation problem to favor solutions that avoid selecting
+planning units based on a certain variable
+(e.g. anthropogenic pressure).}
+
+}
 }
 \examples{
 # load data
-data(sim_pu_points, sim_features)
+data(sim_pu_raster, sim_features)
 
 # create basic problem
 p1 <- problem(sim_pu_raster, sim_features) \%>\%
@@ -55,18 +60,31 @@ scm[scm < 0.85] <- 0
 
 # create problem with connectivity penalties
 p3 <- p1 \%>\% add_connectivity_penalties(25, data = scm)
-\donttest{
+
+# create problem with linear penalties,
+# here the penalties will be based on random numbers to keep it simple
+
+# simulate penalty data
+sim_penalty_raster <- simulate_cost(sim_pu_raster)
+
+# plot penalty data
+plot(sim_penalty_raster, main = "penalty data", axes = FALSE, box = FALSE)
+
+# create problem with linear penalties, with a penalty scaling factor of 100
+p4 <- p1 \%>\% add_linear_penalties(100, data = sim_penalty_raster)
+
+\dontrun{
 # solve problems
-s <- stack(solve(p1), solve(p2), solve(p3))
+s <- stack(solve(p1), solve(p2), solve(p3), solve(p4))
 
 # plot solutions
 plot(s, axes = FALSE, box = FALSE,
      main = c("basic solution", "boundary penalties",
-              "connectivity penalties"))
+              "connectivity penalties", "linear penalties"))
  }
 }
 \seealso{
-\code{\link{constraints}}, \code{\link{decisions}},
- \code{\link{objectives}} \code{\link{portfolios}}, \code{\link{problem}},
- \code{\link{solvers}}, \code{\link{targets}}.
+\link{constraints}, \link{decisions},
+\link{objectives} \link{portfolios}, \code{\link[=problem]{problem()}},
+\link{solvers}, \link{targets}.
 }

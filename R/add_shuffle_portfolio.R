@@ -4,21 +4,21 @@ NULL
 #' Add a shuffle portfolio
 #'
 #' Generate a portfolio of solutions for a conservation planning
-#' \code{\link{problem}} by randomly reordering the data prior to
+#' [problem()] by randomly reordering the data prior to
 #' solving the problem. This is recommended as a replacement for
-#' \code{\link{add_top_portfolio}} when the \emph{Gurobi} software is not
+#' [add_top_portfolio()] when the *Gurobi* software is not
 #' available.
 #'
-#' @param x \code{\link{ConservationProblem-class}} object.
+#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
 #'
-#' @param number_solutions \code{integer} number of attempts to generate
+#' @param number_solutions `integer` number of attempts to generate
 #'   different solutions. Defaults to 10.
 #'
-#' @param threads \code{integer} number of threads to use for the generating
+#' @param threads `integer` number of threads to use for the generating
 #'   the solution portfolio. Defaults to 1.
 #'
-#' @param remove_duplicates \code{logical} should duplicate solutions
-#'   be removed? Defaults to \code{TRUE}.
+#' @param remove_duplicates `logical` should duplicate solutions
+#'   be removed? Defaults to `TRUE`.
 #'
 #' @details This strategy for generating a portfolio of solutions often
 #'   results in different solutions, depending on optimality gap, but may
@@ -42,7 +42,7 @@ NULL
 #'       add_shuffle_portfolio(10, remove_duplicates = FALSE) %>%
 #'       add_default_solver(gap = 0.2, verbose = FALSE)
 #'
-#' \donttest{
+#' \dontrun{
 #' # solve problem and generate 10 solutions within 20 % of optimality
 #' s1 <- solve(p1)
 #'
@@ -58,7 +58,7 @@ NULL
 #'       add_shuffle_portfolio(10, remove_duplicates = FALSE) %>%
 #'       add_default_solver(gap = 0.2, verbose = FALSE)
 #'
-#' \donttest{
+#' \dontrun{
 #' # solve the problem
 #' s2 <- solve(p2)
 #'

@@ -5,56 +5,52 @@ NULL
 #'
 #' Calculate how well features are represented in a solution.
 #'
-#' @param x \code{\link{ConservationProblem-class}} object.
+#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
 #'
-#' @param solution \code{numeric}, \code{matrix}, \code{data.frame},
-#'   \code{\link[raster]{Raster-class}}, \code{\link[sp]{Spatial-class}},
-#'   or \code{\link[sf]{sf}} object. See the Details section for more
+#' @param solution `numeric`, `matrix`, `data.frame`,
+#'   [`Raster-class`], [`Spatial-class`],
+#'   or [sf::sf()] object. See the Details section for more
 #'   information.
 #'
-#' @details Note that all arguments to \code{solution} must correspond to the
-#'   planning unit data in the argument to \code{x} in terms of data
+#' @details Note that all arguments to `solution` must correspond to the
+#'   planning unit data in the argument to `x` in terms of data
 #'   representation, dimensionality, and spatial attributes (if applicable).
-#'   This means that if the planning unit data in \code{x} is a \code{numeric}
-#'   vector then the argument to \code{solution} must be a \code{numeric} vector
-#'   with the same number of elements, if the planning unit data in \code{x} is
-#'   a \code{\link[raster]{RasterLayer-class}} then the argument to
-#'   \code{solution} must also be a \code{\link[raster]{RasterLayer-class}} with
+#'   This means that if the planning unit data in `x` is a `numeric`
+#'   vector then the argument to `solution` must be a `numeric` vector
+#'   with the same number of elements, if the planning unit data in `x` is
+#'   a [`RasterLayer-class`] then the argument to
+#'   `solution` must also be a [`RasterLayer-class`] with
 #'   the same number of rows and columns and the same resolution, extent, and
-#'   coordinate reference system, if the planning unit data in \code{x} is a
-#'   \code{\link[sp]{Spatial-class}} or \code{\link[sf]{sf}} object then the
-#'   argument to \code{solution} must also be a \code{\link[sp]{Spatial-class}}
-#'   or \code{\link[sf]{sf}} object, respectively, and have the same number of
+#'   coordinate reference system, if the planning unit data in `x` is a
+#'   [`Spatial-class`] or [sf::sf()] object then the
+#'   argument to `solution` must also be a [`Spatial-class`]
+#'   or [sf::sf()] object, respectively, and have the same number of
 #'   spatial features (e.g. polygons) and have the same coordinate reference
-#'   system, if the planning units in \code{x} are a \code{data.frame} then the
-#'   argument to \code{solution} must also be a \code{data.frame} with each
+#'   system, if the planning units in `x` are a `data.frame` then the
+#'   argument to `solution` must also be a `data.frame` with each
 #'   column correspond to a different zone and each row correspond to a
 #'   different planning unit, and values correspond to the allocations (e.g.
 #'   values of zero or one).
 #'
-#'   Solutions must have planning unit statuses set to missing (\code{NA})
-#'   values for planning units that have missing (\code{NA}) cost data. For
+#'   Solutions must have planning unit statuses set to missing (`NA`)
+#'   values for planning units that have missing (`NA`) cost data. For
 #'   problems with multiple zones, this means that planning units must have
-#'   missing (\code{NA}) allocation values in zones where they have missing
-#'   (\code{NA}) cost data. In other words, planning units that have missing
-#'   (\code{NA}) cost values in \code{x} should always have a missing
-#'   (\code{NA}) value the argument to \code{solution}. If an argument is
+#'   missing (`NA`) allocation values in zones where they have missing
+#'   (`NA`) cost data. In other words, planning units that have missing
+#'   (`NA`) cost values in `x` should always have a missing
+#'   (`NA`) value the argument to `solution`. If an argument is
 #'   supplied to
-#'   \code{solution} where this is not the case, then an error will be thrown.
-#'   Please note that earlier versions of the \pkg{prioritizr}
-#'   (prior to 4.0.4.1) required that such planning units always have zero
-#'   values, but this has been changed to make the handling of missing values
-#'   more consistent throughout the package.
+#'   `solution` where this is not the case, then an error will be thrown.
 #'
 #'   Additionally, note that when calculating the proportion of each feature
 #'   represented in the solution, the denominator is calculated using all
-#'   planning units---\strong{including any planning units with \code{NA} cost
-#'   values in the argument to \code{x}}. This is exactly the same equation
+#'   planning units---**including any planning units with `NA` cost
+#'   values in the argument to `x`**. This is exactly the same equation
 #'   used when calculating relative targets for problems (e.g.
-#'   \code{add_relative_targets}).
+#'   `add_relative_targets`).
 #'
-#' @return \code{\link[tibble]{tibble}} object containing the amount
-#'   (\code{"absolute_held"}) and proportion (\code{"relative_held"})
+#' @return [tibble::tibble()] object containing the amount
+#'   (`"absolute_held"`) and proportion (`"relative_held"`)
 #'   of the distribution of each feature held in the solution. Here, each
 #'   row contains data that pertain to a specific feature in a specific
 #'   management zone (if multiple zones are present). This object
@@ -62,17 +58,17 @@ NULL
 #'
 #'   \describe{
 #'
-#'   \item{feature}{\code{character} name of the feature.}
+#'   \item{feature}{`character` name of the feature.}
 #'
-#'   \item{zone}{\code{character} name of the zone (not included when the
-#'     argument to \code{x} contains only one management zone).}
+#'   \item{zone}{`character` name of the zone (not included when the
+#'     argument to `x` contains only one management zone).}
 #'
-#'   \item{absolute_held}{\code{numeric} total amount of each feature secured in
+#'   \item{absolute_held}{`numeric` total amount of each feature secured in
 #'     the solution. If the problem contains multiple zones, then this
 #'     column shows how well each feature is represented in a each
 #'     zone.}
 #'
-#'   \item{relative_held}{\code{numeric} proportion of the feature's
+#'   \item{relative_held}{`numeric` proportion of the feature's
 #'     distribution held in the solution. If the problem contains
 #'     multiple zones, then this column shows how well each feature is
 #'     represented in each zone.}
@@ -83,7 +79,7 @@ NULL
 #'
 #' @aliases feature_representation,ConservationProblem,numeric-method feature_representation,ConservationProblem,matrix-method feature_representation,ConservationProblem,data.frame-method feature_representation,ConservationProblem,Spatial-method feature_representation,ConservationProblem,sf-method feature_representation,ConservationProblem,Raster-method
 #'
-#' @seealso \code{\link{problem}}, \code{\link{feature_abundances}}.
+#' @seealso [problem()], [feature_abundances()].
 #'
 #' @examples
 #' # set seed for reproducibility
@@ -120,7 +116,7 @@ NULL
 #'                               sum(pu$spp1),
 #'                               sum(pu$spp2 * s1[[1]], na.rm = TRUE) /
 #'                               sum(pu$spp2, na.rm = TRUE)))
-#' \donttest{
+#' \dontrun{
 #' # solve the problem using an exact algorithm solver
 #' s1_2 <- solve(p1)
 #' print(s1_2)
@@ -153,7 +149,7 @@ NULL
 #'       add_min_set_objective() %>%
 #'       add_relative_targets(0.1) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve the problem
 #' s3 <- solve(p3)
 #'
@@ -173,7 +169,7 @@ NULL
 #'       add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5,
 #'                                   ncol = 3)) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve the problem
 #' s4 <- solve(p4)
 #'
@@ -195,7 +191,7 @@ NULL
 #'       add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5,
 #'                                   ncol = 3)) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve the problem
 #' s5 <- solve(p5)
 #'
@@ -321,15 +317,15 @@ methods::setMethod("feature_representation",
     assertthat::assert_that(
       inherits(solution, "sf"),
       inherits(x$data$cost, "sf"))
-    solution <- sf::st_drop_geometry(solution)
     assertthat::assert_that(
       sf::st_crs(x$data$cost) == sf::st_crs(solution),
-      number_of_zones(x) == ncol(solution),
+      number_of_zones(x) == ncol(sf::st_drop_geometry(solution)),
       number_of_total_units(x) == nrow(solution),
-      is.numeric(unlist(solution)),
-      min(unlist(solution), na.rm = TRUE) >= 0,
-      max(unlist(solution), na.rm = TRUE) <= 1)
+      is.numeric(unlist(sf::st_drop_geometry(solution))),
+      min(unlist(sf::st_drop_geometry(solution)), na.rm = TRUE) >= 0,
+      max(unlist(sf::st_drop_geometry(solution)), na.rm = TRUE) <= 1)
     # perform calculations
+    solution <- sf::st_drop_geometry(solution)
     internal_feature_representation(x, as.matrix(solution))
 })
 

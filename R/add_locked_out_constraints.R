@@ -3,19 +3,19 @@ NULL
 
 #' Add locked out constraints
 #'
-#' Add constraints to a conservation planning \code{\link{problem}} to ensure
+#' Add constraints to a conservation planning [problem()] to ensure
 #' that specific planning units are not selected
 #' (or allocated to a specific zone) in the solution. For example, it may be
 #' useful to lock out planning units that have been degraded and are not
 #' suitable for conserving species. If specific planning units should be locked
-#' in to the solution, use \code{\link{add_locked_out_constraints}}. For
+#' in to the solution, use [add_locked_out_constraints()]. For
 #' problems with non-binary planning unit allocations (e.g. proportions), the
-#' \code{\link{add_manual_locked_constraints}} function can be used to lock
+#' [add_manual_locked_constraints()] function can be used to lock
 #' planning unit allocations to a specific value.
 #'
 #' @usage add_locked_out_constraints(x, locked_out)
 #'
-#' @param x \code{\link{ConservationProblem-class}} object.
+#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
 #'
 #' @param locked_out Object that determines which planning units that should be
 #'   locked out. See the Details section for more information.
@@ -48,7 +48,7 @@ NULL
 #' # create problem with added locked out constraints using spatial polygon data
 #' locked_out <- sim_pu_polygons[sim_pu_polygons$locked_out == 1, ]
 #' p5 <- p1 %>% add_locked_out_constraints(locked_out)
-#' \donttest{
+#' \dontrun{
 #' # solve problems
 #' s1 <- solve(p1)
 #' s2 <- solve(p2)
@@ -87,7 +87,7 @@ NULL
 #' locked_matrix <- as.matrix(locked_matrix)
 #'
 #' p7 <- p6 %>% add_locked_out_constraints(locked_matrix)
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s6 <- solve(p6)
 #'
@@ -104,7 +104,7 @@ NULL
 #' # create multi-zone problem with locked out constraints using field names
 #' p8 <- p6 %>% add_locked_out_constraints(c("locked_1", "locked_2",
 #'                                           "locked_3"))
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s8 <- solve(p8)
 #'
@@ -134,13 +134,13 @@ NULL
 #' locked_out_stack[[3]][3] <- 1
 #'
 #' # plot locked out stack
-#' \donttest{
+#' \dontrun{
 #' plot(locked_out_stack)
 #' }
 #' # add locked out raster units to problem
 #' p9 <- p9 %>% add_locked_out_constraints(locked_out_stack)
 #'
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s9 <- solve(p9)
 #'

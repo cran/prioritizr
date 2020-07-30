@@ -37,13 +37,13 @@ intersecting_units(x, y)
 \S4method{intersecting_units}{data.frame,ANY}(x, y)
 }
 \arguments{
-\item{x}{\code{\link{Spatial-class}} or \code{\link{Raster-class}} object.}
+\item{x}{\code{\linkS4class{Spatial}} or \code{\linkS4class{Raster}} object.}
 
-\item{y}{\code{\link{Spatial-class}} or \code{\link{Raster-class}} object.}
+\item{y}{\code{\linkS4class{Spatial}} or \code{\linkS4class{Raster}} object.}
 }
 \value{
 \code{integer} indices of the units in \code{x} that intersect with
-  \code{y}.
+\code{y}.
 }
 \description{
 Find which of the units in a spatial data object intersect
@@ -58,7 +58,7 @@ ply <- rasterToPolygons(r)
 ply_with_holes <- st_as_sf(rasterToPolygons(r_with_holes))
 
 # intersect raster with raster
-\donttest{
+\dontrun{
 par(mfrow = c(1, 2))
 plot(r, main = "x=Raster")
 plot(r_with_holes, main = "y=Raster")
@@ -66,7 +66,7 @@ plot(r_with_holes, main = "y=Raster")
 print(intersecting_units(r, r_with_holes))
 
 # intersect raster with polygons (sf)
-\donttest{
+\dontrun{
 par(mfrow = c(1, 2))
 plot(r, main = "x=Raster")
 plot(ply_with_holes, main = "y=sf", key.pos = NULL, reset = FALSE)
@@ -74,7 +74,7 @@ plot(ply_with_holes, main = "y=sf", key.pos = NULL, reset = FALSE)
 print(intersecting_units(r, ply_with_holes))
 
 # intersect polygons (Spatial) with raster
-\donttest{
+\dontrun{
 par(mfrow = c(1, 2))
 plot(ply, main = "x=Spatial")
 plot(r_with_holes, main = "y=Raster")
@@ -82,7 +82,7 @@ plot(r_with_holes, main = "y=Raster")
 print(intersecting_units(ply, r_with_holes))
 
 # intersect polygons (Spatial) with polygons (sf)
-\donttest{
+\dontrun{
 par(mfrow = c(1, 2))
 plot(ply, main = "x=Spatial")
 plot(ply_with_holes, main = "y=sf", key.pos = NULL, reset = FALSE)
@@ -91,5 +91,5 @@ print(intersecting_units(ply, ply_with_holes))
 
 }
 \seealso{
-\code{\link{fast_extract}}.
+\code{\link[=fast_extract]{fast_extract()}}.
 }

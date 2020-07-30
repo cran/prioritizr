@@ -12,7 +12,7 @@
 
 <meta name="author" content="Richard Schuster" />
 
-<meta name="date" content="2020-05-13" />
+<meta name="date" content="2020-07-29" />
 
 <title>Gurobi Installation Guide</title>
 
@@ -26,6 +26,22 @@ document.addEventListener('DOMContentLoaded', function(e) {
     if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
     a = h.attributes;
     while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
   }
 });
 </script>
@@ -315,7 +331,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Gurobi Installation Guide</h1>
 <h4 class="author">Richard Schuster</h4>
-<h4 class="date">2020-05-13</h4>
+<h4 class="date">2020-07-29</h4>
 
 
 <div id="TOC">
@@ -443,10 +459,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##   RHS range        [1e+00, 4e+00]
 ## Found heuristic solution: objective 2.0000000
 ## Presolve removed 2 rows and 3 columns
-## Presolve time: 0.00s
+## Presolve time: 0.01s
 ## Presolve: All rows and columns removed
 ## 
-## Explored 0 nodes (0 simplex iterations) in 0.00 seconds
+## Explored 0 nodes (0 simplex iterations) in 0.01 seconds
 ## Thread count was 1 (of 48 available processors)
 ## 
 ## Solution count 2: 3 
@@ -498,7 +514,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ##      0     0 1931.58191    0    4 2337.96175 1931.58191  17.4%     -    0s
 ## H    0     0                    1987.3985265 1931.58191  2.81%     -    0s
 ## 
-## Explored 1 nodes (12 simplex iterations) in 0.00 seconds
+## Explored 1 nodes (12 simplex iterations) in 0.01 seconds
 ## Thread count was 1 (of 48 available processors)
 ## 
 ## Solution count 2: 1987.4 2337.96 

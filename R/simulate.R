@@ -5,28 +5,28 @@ NULL
 #'
 #' Simulate spatially auto-correlated data.
 #'
-#' @param x \code{\link[raster]{RasterLayer-class}} object to use as
-#    a template.
+#' @param x [`RasterLayer-class`] object to use as
+#'    a template.
 #'
-#' @param n \code{integer} number of species to simulate.
+#' @param n `integer` number of species to simulate.
 #'
-#' @param model \code{\link[RandomFields]{RP}} model object
+#' @param model [RandomFields::RP()] model object
 #'   to use for simulating data.
 #'
-#' @param transform \code{function} to transform values output
+#' @param transform `function` to transform values output
 #'   from the random fields simulation.
 #'
 #' @param ... additional arguments passed to
-#'   \code{\link[RandomFields]{RFsimulate}}.
+#'   [RandomFields::RFsimulate()].
 #'
-#' @return \code{\link[raster]{RasterStack-class}} object with a
+#' @return [`RasterStack-class`] object with a
 #'   layer for each species.
 #'
-#' @seealso \code{\link[RandomFields]{RFsimulate}},
-#'   \code{\link{simulate_cost}}, \code{\link{simulate_species}}.
+#' @seealso [RandomFields::RFsimulate()],
+#'   [simulate_cost()], [simulate_species()].
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # create raster
 #' r <- raster(ncol=10, nrow=10, xmn=0, xmx=1, ymn=0, ymx=1)
 #' values(r) <- 1
@@ -73,12 +73,12 @@ simulate_data <- function(x, n, model, transform = identity, ...) {
 #'
 #' @inheritParams simulate_data
 #'
-#' @return \code{\link[raster]{RasterStack-class}} object.
+#' @return [`RasterStack-class`] object.
 #'
-#' @seealso \code{\link{simulate_data}}.
+#' @seealso [simulate_data()].
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # create raster
 #' r <- raster(ncol=10, nrow=10, xmn=0, xmx=1, ymn=0, ymx=1)
 #' values(r) <- 1
@@ -99,16 +99,16 @@ simulate_species <- function(x, n=1, model=RandomFields::RMgauss(),
 #' Simulate cost data
 #'
 #' This function generates cost layers using random field models. By default,
-#' it returns spatially autocorrelated integer values.
+#' it returns spatially auto-correlated integer values.
 #'
 #' @inheritParams simulate_data
 #'
-#' @return \code{\link[raster]{RasterStack-class}} object.
+#' @return [`RasterStack-class`] object.
 #'
-#' @seealso \code{\link{simulate_data}}.
+#' @seealso [simulate_data()].
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # create raster
 #' r <- raster(ncol=10, nrow=10, xmn=0, xmx=1, ymn=0, ymx=1)
 #' values(r) <- 1

@@ -1,6 +1,6 @@
 Package: prioritizr
 Type: Package
-Version: 5.0.1
+Version: 5.0.2
 Title: Systematic Conservation Prioritization in R
 Description: Conservation prioritization using integer
     programming techniques. To solve large-scale problems, users
@@ -33,19 +33,20 @@ Imports: utils, methods, assertthat (>= 0.2.0), data.table, uuid,
         Matrix, igraph, ape, rgeos, plyr, parallel, doParallel,
         magrittr, exactextractr (>= 0.2.0), fasterize (>= 1.0.2),
         tibble (>= 2.0.0)
-Suggests: testthat, knitr, roxygen2, shiny, xtable, rhandsontable,
-        RandomFields, maptools, PBSmapping, gurobi, lpsymphony,
-        Rsymphony, rmarkdown, prioritizrdata
+Suggests: testthat, knitr, roxygen2, shiny, scales, xtable,
+        rhandsontable, RandomFields, maptools, PBSmapping, gurobi,
+        lpsymphony, Rsymphony, rmarkdown, prioritizrdata
 Depends: R (>= 3.5.0), raster, sp, sf (>= 0.8-0), proto
 LinkingTo: Rcpp, RcppArmadillo, BH
 License: GPL-3
 Language: en-US
+Encoding: UTF-8
 LazyData: true
 SystemRequirements: C++11
 URL: https://prioritizr.net, https://github.com/prioritizr/prioritizr
 BugReports: https://github.com/prioritizr/prioritizr/issues
 VignetteBuilder: knitr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'ArrayParameter-proto.R' 'MiscParameter-proto.R'
         'Parameters-proto.R' 'ScalarParameter-proto.R' 'parameters.R'
@@ -64,10 +65,10 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'add_default_solver.R' 'add_default_targets.R'
         'add_extra_portfolio.R' 'add_feature_contiguity_constraints.R'
         'add_feature_weights.R' 'add_gap_portfolio.R'
-        'add_gurobi_solver.R' 'intersecting_units.R'
-        'add_locked_in_constraints.R' 'add_locked_out_constraints.R'
-        'loglinear_interpolation.R' 'add_loglinear_targets.R'
-        'add_lpsymphony_solver.R'
+        'add_gurobi_solver.R' 'add_linear_penalties.R'
+        'intersecting_units.R' 'add_locked_in_constraints.R'
+        'add_locked_out_constraints.R' 'loglinear_interpolation.R'
+        'add_loglinear_targets.R' 'add_lpsymphony_solver.R'
         'add_mandatory_allocation_constraints.R' 'tbl_df.R'
         'add_manual_targets.R' 'add_manual_bounded_constraints.R'
         'add_manual_locked_constraints.R' 'add_max_cover_objective.R'
@@ -92,7 +93,7 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'rij_matrix.R' 'run_calculations.R' 'sf.R' 'show.R'
         'simulate.R' 'solvers.R' 'targets.R' 'zone_names.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2020-05-14 03:11:22 UTC; richard
+Packaged: 2020-07-29 23:25:49 UTC; richard
 Author: Jeffrey O Hanson [aut] (<https://orcid.org/0000-0002-4716-6134>),
   Richard Schuster [aut, cre] (<https://orcid.org/0000-0003-3191-7869>),
   Nina Morrell [aut],
@@ -103,4 +104,4 @@ Author: Jeffrey O Hanson [aut] (<https://orcid.org/0000-0002-4716-6134>),
   Hugh P Possingham [aut] (<https://orcid.org/0000-0001-7755-996X>)
 Maintainer: Richard Schuster <richard.schuster@glel.carleton.ca>
 Repository: CRAN
-Date/Publication: 2020-05-15 09:50:02 UTC
+Date/Publication: 2020-07-30 12:40:02 UTC

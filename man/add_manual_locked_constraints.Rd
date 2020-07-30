@@ -13,44 +13,44 @@ add_manual_locked_constraints(x, data)
 \S4method{add_manual_locked_constraints}{ConservationProblem,tbl_df}(x, data)
 }
 \arguments{
-\item{x}{\code{\link{ConservationProblem-class}} object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
 
-\item{data}{\code{data.frame} or \code{\link[tibble]{tibble}} object. See
+\item{data}{\code{data.frame} or \code{\link[tibble:tibble]{tibble::tibble()}} object. See
 the Details section for more information.}
 }
 \value{
-\code{\link{ConservationProblem-class}} object with the constraints
-  added to it.
+Object (i.e. \code{\linkS4class{ConservationProblem}}) with the constraints
+added to it.
 }
 \description{
-Add constraints to a conservation planning \code{\link{problem}} to ensure
+Add constraints to a conservation planning \code{\link[=problem]{problem()}} to ensure
 that solutions allocate (or do not allocate) specific planning units to
 specific management zones. This function offers more fine-grained control
-than the \code{\link{add_locked_in_constraints}} and
-\code{\link{add_locked_out_constraints}} functions.
+than the \code{\link[=add_locked_in_constraints]{add_locked_in_constraints()}} and
+\code{\link[=add_locked_out_constraints]{add_locked_out_constraints()}} functions.
 }
 \details{
 The argument to \code{data} must contain the following fields
-  (columns):
+(columns):
 
-  \describe{
+\describe{
 
-  \item{\code{"pu"}}{\code{integer} planning unit identifier.}
+\item{\code{"pu"}}{\code{integer} planning unit identifier.}
 
-  \item{\code{"zone"}}{\code{character} names of zones. Note that this
-    argument is optional for arguments to \code{x} that contain a single
-    zone.}
+\item{\code{"zone"}}{\code{character} names of zones. Note that this
+argument is optional for arguments to \code{x} that contain a single
+zone.}
 
-  \item{\code{"status"}}{\code{numeric} values indicating how much
-    of each planning unit should be allocated to each zone in the solution.
-    For example, the \code{numeric} values could be binary values (i.e. zero
-    or one) for problems containing binary-type decision variables
-    (using the \code{\link{add_binary_decisions}} function). Alternatively,
-    the \code{numeric} values could be proportions (e.g. 0.5) for problems
-    containing proportion-type decision variables (using the
-    \code{\link{add_proportion_decisions}}).}
+\item{\code{"status"}}{\code{numeric} values indicating how much
+of each planning unit should be allocated to each zone in the solution.
+For example, the \code{numeric} values could be binary values (i.e. zero
+or one) for problems containing binary-type decision variables
+(using the \code{\link[=add_binary_decisions]{add_binary_decisions()}} function). Alternatively,
+the \code{numeric} values could be proportions (e.g. 0.5) for problems
+containing proportion-type decision variables (using the
+\code{\link[=add_proportion_decisions]{add_proportion_decisions()}}).}
 
-  }
+}
 }
 \examples{
 # set seed for reproducibility
@@ -74,7 +74,7 @@ locked_data <- data.frame(pu = which(sim_pu_polygons$locked_in),
                           status = 1)
 
 p3 <- p1 \%>\% add_manual_locked_constraints(locked_data)
-\donttest{
+\dontrun{
 # solve problems
 s1 <- solve(p1)
 s2 <- solve(p2)
@@ -113,7 +113,7 @@ print(locked_data2)
 
 # create problem with added constraints
 p5 <- p4 \%>\% add_manual_locked_constraints(locked_data2)
-\donttest{
+\dontrun{
 # solve problem
 s4 <- solve(p4)
 s5 <- solve(p5)
@@ -136,5 +136,5 @@ spplot(s4, zcol = c("solution", "solution_locked"), axes = FALSE,
 }
 }
 \seealso{
-\code{\link{constraints}}.
+\link{constraints}.
 }

@@ -28,6 +28,25 @@ test_that("x=RasterLayer, y=RasterStack", {
   })
 })
 
+test_that("x=RasterLayer, y=RasterStack (data size > raster maxmemory)", {
+  # create data
+  raster::rasterOptions(todisk = TRUE)
+  data(sim_pu_raster, sim_features)
+  m <- rij_matrix(sim_pu_raster, sim_features)
+  # run tests
+  expect_true(inherits(m, "dgCMatrix"))
+  expect_false(raster::canProcessInMemory(sim_features))
+  expect_equal(m, {
+    included <- raster::Which(!is.na(sim_pu_raster), cells = TRUE)
+    m <- sim_features[included]
+    m[is.na(m)] <- 0
+    m <- Matrix::t(as(m, "dgCMatrix"))
+    m
+  })
+  raster::rasterOptions(default = TRUE)
+})
+
+
 test_that("x=RasterStack, y=RasterStack", {
   # create data
   costs <- raster::stack(
@@ -111,7 +130,7 @@ test_that("x=sf, y=RasterStack (mean)", {
 test_that("x=sf, y=RasterStack (sum)", {
   # create data
   data(sim_pu_sf, sim_features)
-  m <- rij_matrix(sim_pu_sf, sim_features, fun = "sum")
+  m <- rij_matrix(sim_pu_sf, sim_features)
   # calculate correct result
   suppressWarnings({
     m2 <- exactextractr::exact_extract(sim_features, sim_pu_sf, fun = "sum",
@@ -141,23 +160,11 @@ test_that("x=sf, y=RasterStack (complex example, mean)", {
   })
   m2 <- as(as.matrix(m2), "dgCMatrix")
   m2 <- Matrix::t(m2)
-  # calculate correct result using R
-  suppressWarnings({
-    m3 <- exactextractr::exact_extract(tas_features, tas_pu, fun = NULL,
-                                       progress = FALSE)
-  })
-  m3 <- sapply(m3, function(x) {
-    v <- x[, seq_len(ncol(x) - 1), drop = FALSE]
-    p <- x[, ncol(x), drop = TRUE]
-    colSums(sweep(v, 1, p, "*")) / sum(p)
-  })
-  m3 <- as(as.matrix(m3), "dgCMatrix")
   # run tests
   # note that exactextractr uses floats and not doubles, so it has reduced
   # precision than our summary Rcpp and R summary functions which uses doubles
   expect_true(inherits(m, "dgCMatrix"))
   expect_lte(max(abs(m - m2)), 1e-6)
-  expect_lte(max(abs(m - m3)), 1e-10)
 })
 
 test_that("x=sf, y=RasterStack (complex example, sum)", {
@@ -185,7 +192,7 @@ test_that("x=sf, y=RasterStack (complex example, sum)", {
   m3 <- sapply(m3, function(x) {
     v <- x[, seq_len(ncol(x) - 1), drop = FALSE]
     p <- x[, ncol(x), drop = TRUE]
-    colSums(sweep(v, 1, p, "*"))
+    colSums(sweep(v, 1, p, "*"), na.rm = TRUE)
   })
   m3 <- as(as.matrix(m3), "dgCMatrix")
   # run tests

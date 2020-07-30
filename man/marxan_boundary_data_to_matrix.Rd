@@ -7,8 +7,8 @@
 marxan_boundary_data_to_matrix(x, data)
 }
 \arguments{
-\item{x}{\code{\link{ConservationProblem-class}} object that contains
-planning unit and zone data to ensure that the argument to
+\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object that
+contains planning unit and zone data to ensure that the argument to
 \code{data} is converted correctly. This argument can be set to
 \code{NULL} if checks are not required (not recommended).}
 
@@ -17,14 +17,14 @@ planning unit and zone data to ensure that the argument to
 \code{"zone2"} can also be provided to indicate zone data.}
 }
 \value{
-\code{array} or sparse matrix (\code{\link{dgCMatrix-class}}) object.
+\code{array} or \code{\linkS4class{dgCMatrix}} sparse matrix object.
 }
 \description{
 Convert a \code{data.frame} object that follows the \emph{Marxan} format
 to a matrix format. This function is useful for converting
 \code{data.frame} objects to \code{matrix} or \code{array} objects that
-are used by the various \code{\link{penalties}} and
-\code{\link{constraints}} functions. If the boundary data contains data for
+are used by the various \link{penalties} and
+\link{constraints} functions. If the boundary data contains data for
 a single zone, then a matrix object is returned. Otherwise if the boundary
 data contains data for multiple zones, then an array is returned.
 }
@@ -38,7 +38,7 @@ bldf1$boundary[bldf1$id1 == bldf1$id2] <- 0.5
 m1 <- marxan_boundary_data_to_matrix(NULL, bldf1)
 
 # visualize matrix
-\donttest{
+\dontrun{
 image(m1)
 }
 # create marxan boundary with three planning units and two zones

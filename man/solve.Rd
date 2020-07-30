@@ -11,17 +11,17 @@
 \S4method{solve}{ConservationProblem,missing}(a, b, ..., run_checks = TRUE, force = FALSE)
 }
 \arguments{
-\item{a}{\code{\link{ConservationProblem-class}} or an
-\code{\link{OptimizationProblem-class}} object.}
+\item{a}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) or
+\code{\linkS4class{OptimizationProblem}} object.}
 
-\item{b}{\code{\link{Solver-class}} object. Not used if \code{a} is an
-\code{\link{ConservationProblem-class}} object.}
+\item{b}{\code{\linkS4class{Solver}} object. Not used if \code{a} is an
+\code{\linkS4class{ConservationProblem}} object.}
 
-\item{...}{arguments passed to \code{\link{compile}}.}
+\item{...}{arguments passed to \code{\link[=compile]{compile()}}.}
 
 \item{run_checks}{\code{logical} flag indicating whether presolve checks
 should be run prior solving the problem. These checks are performed using
-the \code{\link{presolve_check}} function. Defaults to \code{TRUE}.
+the \code{\link[=presolve_check]{presolve_check()}} function. Defaults to \code{TRUE}.
 Skipping these checks may reduce run time for large problems.}
 
 \item{force}{\code{logical} flag indicating if an attempt to should be
@@ -30,67 +30,87 @@ the presolve checks. Defaults to \code{FALSE}.}
 }
 \value{
 A \code{numeric}, \code{matrix},
-  \code{\link[raster]{RasterLayer-class}}, \code{\link[sp]{Spatial-class}},
-  or \code{\link[sf]{sf}} object containing the solution to the problem.
-  Additionally, the returned object will have the following additional
-  attributes: \code{"objective"} containing the solution's objective,
-  \code{"runtime"} denoting the number of seconds that elapsed while solving
-  the problem, and \code{"status"} describing the status of the solution
-  (e.g. \code{"OPTIMAL"} indicates that the optimal solution was found).
+\code{\linkS4class{RasterLayer}}, \code{\linkS4class{Spatial}},
+or \code{\link[sf:sf]{sf::sf()}} object containing the solution to the problem.
+Additionally, the returned object will have the following additional
+attributes: \code{"objective"} containing the solution's objective,
+\code{"runtime"} denoting the number of seconds that elapsed while solving
+the problem, and \code{"status"} describing the status of the solution
+(e.g. \code{"OPTIMAL"} indicates that the optimal solution was found).
+In most cases, the first solution (e.g. \code{"solution_001"})
+will contain the best solution found by the solver (note that this
+may not be an optimal solution depending on the gap used to solve
+the problem and noting that the default gap is 0.1).
 }
 \description{
-Solve a conservation planning \code{\link{problem}}.
+Solve a conservation planning \code{\link[=problem]{problem()}}.
 }
 \details{
+After formulating a conservation planning \code{\link[=problem]{problem()}},
+it can be solved using an exact algorithm solver (see \link{solvers}
+for available solvers). If no solver has been explicitly specified,
+then the best available exact algorithm solver will be used by default
+(see \code{\link[=add_default_solver]{add_default_solver()}}. Although these exact algorithm
+solvers will often display a lot of information that isn't really that
+helpful (e.g. nodes, cutting planes), they do display information
+about the progress they are making on solving the problem (e.g. the
+performance of the best solution found at a given point in time). If
+potential issues were detected during the
+presolve checks (see \code{\link[=presolve_check]{presolve_check()}})
+and the problem is being forcibly solved (i.e. with \code{force = TRUE}),
+then it is also worth checking for any warnings displayed by the solver
+to see if these potential issues are actually causing issues
+(e.g. \emph{Gurobi} can display warnings that include
+\code{"Warning: Model contains large matrix coefficient range"} and
+\code{"Warning: Model contains large rhs"}).
+
 The object returned from this function depends on the argument to
-  \code{a}. If the argument to \code{a} is an
-  \code{\link{OptimizationProblem-class}} object, then the
-  solution is returned as a \code{logical} \code{vector} showing the status
-  of each planning unit in each zone. On the other hand, if the argument
-  to \code{a} is an \code{\link{ConservationProblem-class}} object,
-  then the type of object returned depends on the number of solutions
-  generated and the type data used to represent planning unit costs in the
-  argument to \code{a}.
+\code{a}. If the argument to \code{a} is an
+\code{\linkS4class{OptimizationProblem}} object, then the
+solution is returned as a \code{logical} \code{vector} showing the status
+of each planning unit in each zone. However, in most cases, the argument
+to \code{a} is an \code{\linkS4class{ConservationProblem}} object, and so
+the type of object returned depends on the number of solutions
+generated and the type data used to represent the planning units:
 
-  \describe{
+\describe{
 
-  \item{\code{numeric}}{\code{vector} containing the solution. Here,
-    Each element corresponds to a different planning unit. If
-    multiple solutions are generated, then the solution is returned as
-    a \code{list} of \code{numeric} \code{vectors}.}
+\item{\code{numeric}}{\code{vector} containing the solution. Here,
+Each element corresponds to a different planning unit. If
+multiple solutions are generated, then the solution is returned as
+a \code{list} of \code{numeric} \code{vectors}.}
 
-  \item{\code{matrix}}{containing \code{numeric} values for the solution.
-    Here, rows correspond to different planning units,
-    and fields (columns) correspond to different  management zones. If
-    multiple solutions are generated, then the solution is returned as
-    a \code{list} of \code{matrix} objects.}
+\item{\code{matrix}}{containing \code{numeric} values for the solution.
+Here, rows correspond to different planning units,
+and fields (columns) correspond to different  management zones. If
+multiple solutions are generated, then the solution is returned as
+a \code{list} of \code{matrix} objects.}
 
-  \item{\code{\link[raster]{Raster-class}}}{object containing the solution
-    in pixel values. If the argument to \code{x} contains a single
-    management zone, then a \code{RasterLayer} object will be returned.
-    Otherwise, if the argument to \code{x} contains multiple zones, then a
-    \code{\link[raster]{RasterStack-class}} object
-    will be returned containing a different layer for each management zone.
-    If multiple solutions are generated, then the solution is returned as
-    a \code{list} of \code{Raster} objects.}
+\item{\code{\linkS4class{Raster}}}{object containing the solution
+in pixel values. If the argument to \code{x} contains a single
+management zone, then a \code{RasterLayer} object will be returned.
+Otherwise, if the argument to \code{x} contains multiple zones, then a
+\code{\linkS4class{RasterStack}} object
+will be returned containing a different layer for each management zone.
+If multiple solutions are generated, then the solution is returned as
+a \code{list} of \code{Raster} objects.}
 
-  \item{\code{\link[sp]{Spatial-class}}, \code{\link[sf]{sf}}, or 
-    \code{data.frame}}{
-    containing the solution in fields (columns). Here, each row
-    corresponds to a different planning unit. If the argument to \code{x}
-    contains a single zone, the fields containing solutions are named
-    \code{"solution_XXX"} where \code{"XXX"} corresponds to the solution
-    number. If the argument to \code{x} contains multiple zones, the fields
-    containing solutions are named \code{"solution_XXX_YYY"} where
-    \code{"XXX"} corresponds to the solution and \code{"YYY"} is the name
-    of the management zone.}
+\item{\code{\linkS4class{Spatial}}, \code{\link[sf:sf]{sf::sf()}}, or
+\code{data.frame}}{
+containing the solution in fields (columns). Here, each row
+corresponds to a different planning unit. If the argument to \code{x}
+contains a single zone, the fields containing solutions are named
+\code{"solution_XXX"} where \code{"XXX"} corresponds to the solution
+number. If the argument to \code{x} contains multiple zones, the fields
+containing solutions are named \code{"solution_XXX_YYY"} where
+\code{"XXX"} corresponds to the solution and \code{"YYY"} is the name
+of the management zone.}
 
-  }
+}
 
-  Since this function returns an object that specifies how much of each
-  planning unit is allocated to each management zone, it may be useful to use
-  the \code{\link{category_layer}} function to reformat the output
-  for problems containing multiple zones.
+After solving problems that contain multiple zones,
+it may be useful to use the \code{\link[=category_layer]{category_layer()}} or
+\code{\link[=category_vector]{category_vector()}} function to reformat the output.
 }
 \examples{
 # set seed for reproducibility
@@ -105,7 +125,7 @@ p1 <- problem(sim_pu_raster, sim_features) \%>\%
       add_min_set_objective() \%>\%
       add_relative_targets(0.1) \%>\%
       add_binary_decisions()
-\donttest{
+\dontrun{
 # solve the problem
 s1 <- solve(p1)
 
@@ -129,7 +149,7 @@ p2 <- problem(sim_pu_polygons, sim_features, cost_column = "cost") \%>\%
       add_min_set_objective() \%>\%
       add_relative_targets(0.1) \%>\%
       add_binary_decisions()
-\donttest{
+\dontrun{
 # solve the problem
 s2 <- solve(p2)
 
@@ -149,7 +169,7 @@ p3 <- problem(sim_pu_sf, sim_features, cost_column = "cost") \%>\%
       add_min_set_objective() \%>\%
       add_relative_targets(0.1) \%>\%
       add_binary_decisions()
-\donttest{
+\dontrun{
 # solve the problem
 s3 <- solve(p3)
 
@@ -170,7 +190,7 @@ p4 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5,
                                   ncol = 3)) \%>\%
       add_binary_decisions()
-\donttest{
+\dontrun{
 # solve the problem
 s4 <- solve(p4)
 
@@ -191,7 +211,7 @@ p5 <- problem(sim_pu_zones_sf, sim_features_zones,
       add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5,
                                   ncol = 3)) \%>\%
       add_binary_decisions()
-\donttest{
+\dontrun{
 # solve the problem
 s5 <- solve(p5)
 
@@ -216,7 +236,7 @@ plot(s5[, "solution"])
 }
 }
 \seealso{
-\code{\link{feature_representation}}, \code{\link{problem}},
-  \code{\link{solvers}}, \code{\link{category_layer}},
-  \code{\link{presolve_check}}.
+\code{\link[=feature_representation]{feature_representation()}}, \code{\link[=problem]{problem()}},
+\link{solvers}, \code{\link[=category_layer]{category_layer()}},
+\code{\link[=presolve_check]{presolve_check()}}.
 }

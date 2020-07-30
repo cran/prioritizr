@@ -16,7 +16,7 @@ add_gurobi_solver(
 )
 }
 \arguments{
-\item{x}{\code{\link{ConservationProblem-class}} object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{gap}{\code{numeric} gap to optimality. This gap is relative when
 solving problems using \pkg{gurobi}, and will cause the optimizer to
@@ -30,9 +30,11 @@ The solver will return the current best solution when this time limit is
 exceeded.}
 
 \item{presolve}{\code{integer} number indicating how intensively the
-solver should try to simplify the problem before solving it. The default
-value of 2 indicates to that the solver should be very aggressive in
-trying to simplify the problem.}
+solver should try to simplify the problem before solving it. Available
+options are: (-1) automatically determine the intensity of
+pre-solving, (0) disable pre-solving, (1) conservative
+level of pre-solving, and (2) very aggressive level of pre-solving .
+The default value is 2.}
 
 \item{threads}{\code{integer} number of threads to use for the
 optimization algorithm. The default value of 1 will result in only
@@ -57,8 +59,8 @@ to 3). Defaults to \code{FALSE}.}
 optimization problems?}
 }
 \value{
-\code{\link{ConservationProblem-class}} object with the solver added
-  to it.
+Object (i.e. \code{\linkS4class{ConservationProblem}}) with the solver
+added to it.
 }
 \description{
 Specify that the \emph{Gurobi} software should be used to solve a
@@ -67,12 +69,12 @@ customize the behavior of the solver. It requires the \pkg{gurobi} package.
 }
 \details{
 \href{http://gurobi.com}{\emph{Gurobi}} is a
-  state-of-the-art commercial optimization software with an R package
-  interface. It is by far the fastest of the solvers available in this
-  package, however, it is also the only solver that is not freely
-  available. That said, licenses are available to academics at no cost. The
-  \pkg{gurobi} package is distributed with the \emph{Gurobi} software suite.
-  This solver uses the \pkg{gurobi} package to solve problems.
+state-of-the-art commercial optimization software with an R package
+interface. It is by far the fastest of the solvers available in this
+package, however, it is also the only solver that is not freely
+available. That said, licenses are available to academics at no cost. The
+\pkg{gurobi} package is distributed with the \emph{Gurobi} software suite.
+This solver uses the \pkg{gurobi} package to solve problems.
 }
 \examples{
 # load data
@@ -83,7 +85,7 @@ p <- problem(sim_pu_raster, sim_features) \%>\%
   add_min_set_objective() \%>\%
   add_relative_targets(0.1) \%>\%
   add_binary_decisions()
-\donttest{
+\dontrun{
 # if the package is installed then add solver and generate solution
 if (require("gurobi")) {
   # specify solver and generate solution
@@ -97,5 +99,5 @@ if (require("gurobi")) {
 }
 }
 \seealso{
-\code{\link{solvers}}.
+\link{solvers}.
 }

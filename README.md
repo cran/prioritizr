@@ -28,11 +28,11 @@ Citation
 
 Please cite the *prioritizr R* package when using it in publications. To cite the latest official version, please use:
 
-> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 5.0.1. Available at <https://CRAN.R-project.org/package=prioritizr>.
+> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 5.0.2. Available at <https://CRAN.R-project.org/package=prioritizr>.
 
 Alternatively, to cite the latest development version, please use:
 
-> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 5.0.1. Available at <https://github.com/prioritizr/prioritizr>.
+> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 5.0.2. Available at <https://github.com/prioritizr/prioritizr>.
 
 Additionally, we keep a [record of publications](https://prioritizr.net/articles/publication_record.html) that use the *prioritizr R* package. If you use this package in any reports or publications, please [file an issue on GitHub](https://github.com/prioritizr/prioritizr/issues/new) so we can add it to the record.
 
@@ -115,7 +115,7 @@ After we have built a [`problem`](https://prioritizr.net/reference/problem.html)
 s1 <- solve(p1)
 ```
 
-    ## Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
+    ## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
     ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
     ## Model fingerprint: 0x8f50132f
     ## Variable types: 0 continuous, 90 integer (90 binary)
@@ -233,7 +233,7 @@ print(attr(s1, "runtime"))
 ```
 
     ## solution_1 
-    ##   2.599041
+    ##   2.596609
 
 ``` r
 # extract state message from the solver
@@ -263,7 +263,7 @@ p2 <- p1 %>%
 s2 <- solve(p2)
 ```
 
-    ## Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
+    ## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
     ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
     ## Model fingerprint: 0xb2af8965
     ## Variable types: 0 continuous, 90 integer (90 binary)
@@ -357,7 +357,7 @@ p3 <- p2 %>%
 s3 <- solve(p3)
 ```
 
-    ## Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
+    ## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
     ## Optimize a model with 293 rows, 234 columns and 1026 nonzeros
     ## Model fingerprint: 0x517c913c
     ## Variable types: 0 continuous, 234 integer (234 binary)
@@ -424,7 +424,7 @@ p4 <- p3 %>%
 s4 <- solve(p4)
 ```
 
-    ## Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
+    ## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
     ## Optimize a model with 654 rows, 506 columns and 2292 nonzeros
     ## Model fingerprint: 0x1ced3129
     ## Variable types: 0 continuous, 506 integer (506 binary)

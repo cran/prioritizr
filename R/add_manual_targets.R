@@ -3,59 +3,59 @@ NULL
 
 #' Add manual targets
 #'
-#' Set targets for a conservation planning \code{\link{problem}} by manually
+#' Set targets for a conservation planning [problem()] by manually
 #' specifying all the required information for each target. This function
 #' is useful because it can be used to customize all aspects of a target. For
 #' most cases, targets can be specified using the
-#' \code{link{add_absolute_targets}} and \code{\link{add_relative_targets}}
+#' \code{link{add_absolute_targets}} and [add_relative_targets()]
 #' functions. However, this function can be used to (i) mix absolute and
 #' relative targets for different features and zones, (ii) set targets that
 #' pertain to the allocations of planning units in multiple zones, and (iii)
 #' set targets that require different senses (e.g. targets which specify the
-#' solution should not exceed a certain quantity using \code{"<="} values).
+#' solution should not exceed a certain quantity using `"<="` values).
 #'
-#' @param x \code{\link{ConservationProblem-class}} object.
+#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
 #'
-#' @param targets \code{data.frame} or \code{\link[tibble]{tibble}} object. See
+#' @param targets `data.frame` or [tibble::tibble()] object. See
 #'   the Details section for more information.
 #'
 #' @details Targets are used to specify the minimum amount or proportion of a
 #'   feature's distribution that needs to be protected. Most conservation
 #'   planning problems require targets with the exception of the maximum cover
-#'   (see \code{\link{add_max_cover_objective}}) and maximum utility
-#'   (see \code{\link{add_max_utility_objective}}) problems. Attempting to solve
+#'   (see [add_max_cover_objective()]) and maximum utility
+#'   (see [add_max_utility_objective()]) problems. Attempting to solve
 #'   problems with objectives that require targets without specifying targets
 #'   will throw an error.
 #'
-#'   The \code{targets} argument should contain the following fields (columns):
+#'   The `targets` argument should contain the following fields (columns):
 #'
 #'   \describe{
 #'
-#'   \item{\code{"feature"}}{\code{character} name of features in argument
-#'     to \code{x}.}
+#'   \item{`"feature"`}{`character` name of features in argument
+#'     to `x`.}
 #'
-#'   \item{\code{"zone"}}{\code{character} name of zones in argument to
-#'     \code{x}. This field (column) is optional for arguments to \code{x}
+#'   \item{`"zone"`}{`character` name of zones in argument to
+#'     `x`. This field (column) is optional for arguments to `x`
 #'     that do not contain multiple zones.}
 #'
-#'   \item{\code{"type"}}{\code{character} describing the type of target.
-#'     Acceptable values include \code{"absolute"} and \code{"relative"}.
-#'     These values correspond to \code{\link{add_absolute_targets}},
-#'     and \code{\link{add_relative_targets}} respectively.}
+#'   \item{`"type"`}{`character` describing the type of target.
+#'     Acceptable values include `"absolute"` and `"relative"`.
+#'     These values correspond to [add_absolute_targets()],
+#'     and [add_relative_targets()] respectively.}
 #'
-#'   \item{\code{"sense"}}{\code{character} sense of the target. Acceptable
-#'     values include: \code{">="}, \code{"<="}, and \code{"="}. This field
+#'   \item{`"sense"`}{`character` sense of the target. Acceptable
+#'     values include: `">="`, `"<="`, and `"="`. This field
 #'     (column) is optional and if it is missing then target senses will
-#'     default to \code{">="} values.}
+#'     default to `">="` values.}
 #'
-#'   \item{\code{"target"}}{\code{numeric} target threshold.}
+#'   \item{`"target"`}{`numeric` target threshold.}
 #'
 #'   }
 #'
-#' @return \code{\link{ConservationProblem-class}} object with the targets added
+#' @return Object (i.e. [`ConservationProblem-class`]) with the targets added
 #'   to it.
 #'
-#' @seealso \code{\link{targets}}.
+#' @seealso [targets].
 #'
 #' @examples
 #' # set seed for reproducibility
@@ -69,7 +69,7 @@ NULL
 #'       add_min_set_objective() %>%
 #'       add_relative_targets(0.1) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s1 <- solve(p1)
 #'
@@ -83,7 +83,7 @@ NULL
 #'                                     type = "relative", sense = ">=",
 #'                                     target = 0.1)) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s2 <- solve(p2)
 #'
@@ -97,7 +97,7 @@ NULL
 #'         feature = names(sim_features)[1:3], type = "relative",
 #'         sense = ">=", target = 0.1)) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s3 <- solve(p3)
 #'
@@ -114,7 +114,7 @@ NULL
 #'         feature = names(sim_features)[1:2], type = "relative",
 #'         sense = c(">=", "<="), target = c(0.1, 0.2))) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s4 <- solve(p4)
 #'
@@ -129,7 +129,7 @@ NULL
 #'       add_min_set_objective() %>%
 #'       add_absolute_targets(targets_matrix) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s5 <- solve(p5)
 #'
@@ -146,7 +146,7 @@ NULL
 #'       add_min_set_objective() %>%
 #'       add_manual_targets(targets_dataframe) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s6 <- solve(p6)
 #'
@@ -179,7 +179,7 @@ NULL
 #'       add_min_set_objective() %>%
 #'       add_manual_targets(targets_dataframe2) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s7 <- solve(p7)
 #'

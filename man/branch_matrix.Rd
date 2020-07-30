@@ -13,12 +13,12 @@ branch_matrix(x)
 \method{branch_matrix}{phylo}(x)
 }
 \arguments{
-\item{x}{\code{\link[ape]{phylo}} tree object.}
+\item{x}{\code{\link[ape:read.tree]{ape::phylo()}} tree object.}
 }
 \value{
-\code{\link[Matrix]{dgCMatrix-class}} sparse matrix object. Each row
-  corresponds to a different species. Each column corresponds to a different
-  branch. Species that inherit from a given branch are denoted with a one.
+\code{\linkS4class{dgCMatrix}} sparse matrix object. Each row
+corresponds to a different species. Each column corresponds to a different
+branch. Species that inherit from a given branch are denoted with a one.
 }
 \description{
 Phylogenetic trees depict the evolutionary relationships between different
@@ -37,7 +37,7 @@ data(sim_phylogeny)
 m <- branch_matrix(sim_phylogeny)
 
 # plot data
-\donttest{
+\dontrun{
 par(mfrow = c(1,2))
 plot(sim_phylogeny, main = "phylogeny")
 plot(raster(as.matrix(m)), main = "branch matrix", axes = FALSE,

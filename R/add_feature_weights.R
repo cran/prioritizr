@@ -12,46 +12,46 @@ NULL
 #' representation of some features over other features when making decisions
 #' about how the budget should be allocated.
 #'
-#' @param x \code{\link{ConservationProblem-class}} object.
+#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
 #'
-#' @param weights \code{numeric} or \code{matrix} of weights. See the
+#' @param weights `numeric` or `matrix` of weights. See the
 #'   Details section for more information.
 #'
 #' @details Weights can only be applied to problems that have an objective
-#'   that is budget limited (e.g. \code{\link{add_max_cover_objective}}). #'
+#'   that is budget limited (e.g. [add_max_cover_objective()]). #'
 #'   They can be applied to problems that aim to maximize phylogenetic
-#'   representation (\code{\link{add_max_phylo_div_objective}}) to favor the
+#'   representation ([add_max_phylo_div_objective()]) to favor the
 #'   representation of specific features over the representation of
 #'   some phylogenetic branches. Weights cannot be negative values
 #'   and must have values that are equal to or larger than zero.
-#'   \strong{Note that planning unit costs are scaled to 0.01 to identify
+#'   **Note that planning unit costs are scaled to 0.01 to identify
 #'   the cheapest solution among multiple optimal solutions. This means
 #'   that the optimization process will favor cheaper solutions over solutions
 #'   that meet feature targets (or occurrences) when feature weights are
-#'   lower than 0.01.}
+#'   lower than 0.01.**
 #'
 #'   \describe{
 #'
-#'   \item{\code{numeric}}{containing weights for each feature. Note that this
+#'   \item{`numeric`}{containing weights for each feature. Note that this
 #'     type of argument cannot be used to specify weights for problems with
 #'     multiple zones.}
 #'
-#'   \item{\code{matrix}}{containing weights for each feature in each zone.
+#'   \item{`matrix`}{containing weights for each feature in each zone.
 #'      Here, each row corresponds to a different feature in argument to
-#'      \code{x}, each column corresponds to a different zone in argument to
-#'      \code{x}, and each cell contains the weight value for a given feature
+#'      `x`, each column corresponds to a different zone in argument to
+#'      `x`, and each cell contains the weight value for a given feature
 #'      that the solution can to secure in a given zone. Note that
 #'      if the problem contains targets created using
-#'      \code{\link{add_manual_targets}} then a \code{matrix} should be
+#'      [add_manual_targets()] then a `matrix` should be
 #'      supplied containing a single column that indicates that weight for
 #'      fulfilling each target.}
 #'
 #'   }
 #'
-#' @return \code{\link{ConservationProblem-class}} object with the weights
-#'   added to it.
+#' @return Object (i.e. [`ConservationProblem-class`]) with the weights
+#'  added to it.
 #'
-#' @seealso \code{\link{objectives}}.
+#' @seealso [objectives].
 #'
 #' @examples
 #' # load ape package
@@ -82,7 +82,7 @@ NULL
 #' # denote higher extinction risk)
 #' w3 <- c(0, 0, 0, 100, 200)
 #' p3 <- p1 %>% add_feature_weights(w3)
-#' \donttest{
+#' \dontrun{
 #' # solve problems
 #' s1 <- stack(solve(p1), solve(p2), solve(p3))
 #'
@@ -92,7 +92,7 @@ NULL
 #' }
 #'
 #' # plot the example phylogeny
-#' \donttest{
+#' \dontrun{
 #' par(mfrow = c(1, 1))
 #' plot(sim_phylogeny, main = "simulated phylogeny")
 #' }
@@ -103,7 +103,7 @@ NULL
 #'       add_max_phylo_div_objective(1900, sim_phylogeny) %>%
 #'       add_relative_targets(0.1) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s4 <- solve(p4)
 #'
@@ -134,7 +134,7 @@ NULL
 #' # the branch lengths in the phylogeny so solutions that represent this
 #' # feature be much closer to optimality
 #' print(sim_phylogeny$edge.length)
-#' \donttest{
+#' \dontrun{
 #' # create problem with high weighting for the third feature and solve it
 #' s5 <- p4 %>% add_feature_weights(w5) %>% solve()
 #'
@@ -173,7 +173,7 @@ NULL
 #'
 #' # create problem with weights
 #' p7 <- p6 %>% add_feature_weights(w7)
-#' \donttest{
+#' \dontrun{
 #' # solve problems
 #' s6 <- solve(p6)
 #' s7 <- solve(p7)
@@ -191,7 +191,7 @@ NULL
 #'                                     target = 0.1)) %>%
 #'       add_feature_weights(matrix(c(1, 200), ncol = 1)) %>%
 #'       add_binary_decisions()
-#' \donttest{
+#' \dontrun{
 #' # solve problem
 #' s8 <- solve(p8)
 #'

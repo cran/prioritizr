@@ -22,40 +22,40 @@ connectivity_matrix(x, y, ...)
 \S4method{connectivity_matrix}{Raster,Raster}(x, y, ...)
 }
 \arguments{
-\item{x}{\code{\link[raster]{Raster-class}},
-\code{\link[sp]{SpatialPolygonsDataFrame-class}},
-\code{\link[sp]{SpatialLinesDataFrame-class}},
-or \code{\link[sf]{sf}} object
+\item{x}{\code{\linkS4class{Raster}},
+\code{\linkS4class{SpatialPolygonsDataFrame}},
+\code{\linkS4class{SpatialLinesDataFrame}},
+or \code{\link[sf:sf]{sf::sf()}} object
 representing planning units.
-If \code{x} is a \code{\link[raster]{Raster-class}} object then it must
+If \code{x} is a \code{\linkS4class{Raster}} object then it must
 contain a single layer.}
 
-\item{y}{\code{\link[raster]{Raster-class}} object showing the conductance
+\item{y}{\code{\linkS4class{Raster}} object showing the conductance
 of different areas across the study area, or a \code{character} object
 denoting a column name in the attribute table of \code{x} that contains
 the conductance values. Note that argument to \code{y} can only be a
 \code{character} object if the argument to \code{x} is a
-\code{\link[sp]{Spatial-class}} or \code{\link[sf]{sf}} object.
+\code{\linkS4class{Spatial}} or \code{\link[sf:sf]{sf::sf()}} object.
 Also, note that if the argument to \code{x} is a
-\code{\link{Raster-class}} object then
+\code{\linkS4class{Raster}} object then
 argument to \code{y} must have the same spatial properties as it
 (i.e. coordinate system, extent, resolution).}
 
-\item{...}{additional arguments passed to \code{\link{fast_extract}} for
+\item{...}{additional arguments passed to \code{\link[=fast_extract]{fast_extract()}} for
 extracting and calculating the conductance values for each planning unit.
 These arguments are only used if argument to \code{x} is a
-\code{link[sp]{Spatial-class}} or \code{\link[sf]{sf}} object and argument
-to \code{y} is a \code{\link{Raster-class}} object.}
+\code{link[sp]{Spatial-class}} or \code{\link[sf:sf]{sf::sf()}} object and argument
+to \code{y} is a \code{\linkS4class{Raster}} object.}
 }
 \value{
-\code{\link[Matrix]{dsCMatrix-class}} sparse symmetric matrix.
-  Each row and column represents a planning unit.
-  Cells values indicate the connectivity between different pairs of planning
-  units.
-  To reduce computational burden, cells among the matrix diagonal are
-  set to zero. Furthermore, if the argument to \code{x} is a
-  \code{\link[raster]{Raster-class}} object, then cells with \code{NA}
-  values are set to zero too.
+\code{\linkS4class{dsCMatrix}} symmetric sparse matrix object.
+Each row and column represents a planning unit.
+Cells values indicate the connectivity between different pairs of planning
+units.
+To reduce computational burden, cells among the matrix diagonal are
+set to zero. Furthermore, if the argument to \code{x} is a
+\code{\linkS4class{Raster}} object, then cells with \code{NA}
+values are set to zero too.
 }
 \description{
 Create a matrix showing the connectivity between planning units. Connectivity
@@ -66,7 +66,7 @@ boundary are associated with greater connectivity.
 }
 \details{
 Shared boundary calculations are performed using
-  \code{\link{boundary_matrix}}.
+\code{\link[=boundary_matrix]{boundary_matrix()}}.
 }
 \examples{
 # load data
@@ -78,34 +78,137 @@ data(sim_pu_raster, sim_pu_sf, sim_features)
 r <- crop(sim_pu_raster, c(0, 0.3, 0, 0.3))
 
 ## extract conductance data for the 9 planning units
-cd <- crop(r, sim_features[[1]])
+cd <- crop(sim_features, r)
 
-## make connectivity matrix
-cm_raster <- connectivity_matrix(r, cd)
+## make connectivity matrix using the habitat suitability data for the
+## second feature to represent the planning unit conductance data
+cm_raster <- connectivity_matrix(r, cd[[2]])
 
 ## plot data and matrix
-\donttest{
+\dontrun{
 par(mfrow = c(1,3))
 plot(r, main = "planning units (raster)", axes = FALSE, box = FALSE)
-plot(cd, main = "conductivity", axes = FALSE, box = FALSE)
-plot(raster(as.matrix(cm_raster)), main = "connectivity", axes = FALSE,
-     box = FALSE)
+plot(cd[[2]], main = "conductivity", axes = FALSE, box = FALSE)
+plot(clamp(raster(as.matrix(cm_raster)), lower = 1e-5, useValues = FALSE),
+     main = "connectivity", axes = FALSE, box = FALSE)
 }
 # create connectivity matrix using polygon planning unit data using
-# the habitat suitability data for sim_features[[1]] to represent
+# the habitat suitability data for the second feature to represent
 # planning unit conductances
 ## subset data to 9 polygons
 ply <- sim_pu_sf[c(1:2, 10:12, 20:22), ]
 
 ## make connectivity matrix
-cm_ply <- connectivity_matrix(ply, sim_features[[1]])
+cm_ply <- connectivity_matrix(ply, sim_features[[2]])
 
 ## plot data and matrix
-\donttest{
-par(mfrow = c(1, 3))
-plot(ply, main = "planning units (sf)")
-plot(sim_features[[1]], main = "conductivity", axes = FALSE, box = FALSE)
-plot(raster(as.matrix(cm_ply)), main = "connectivity", axes = FALSE,
-     box = FALSE)
+\dontrun{
+par(mfrow = c(1, 2))
+plot(st_geometry(ply), main = "planning units (sf)")
+plot(clamp(raster(as.matrix(cm_ply)), lower = 1e-5, useValues = FALSE),
+     main = "connectivity", axes = FALSE, box = FALSE)
 }
+
+# create connectivity matrix using habitat suitability data for each feature,
+# this could be useful if prioritisations should spatially clump
+# together adjacent planning units that have suitable habitat
+# for the same species (e.g. to maintain functional connectivity)
+
+## let's use the raster data for this example, and we can generate the
+## connectivity matrix that we would use in the prioritization by
+## (1) generating a connectivity matrix for each feature separately, and
+## and then (2) then summing the values together
+cm_sum <- lapply(as.list(cd), connectivity_matrix, x = r) # make matrices
+cm_sum <- Reduce("+", cm_sum) # sum matrices together
+
+## plot data and matrix
+\dontrun{
+par(mfrow = c(1, 2))
+plot(r, main = "planning units (raster)", axes = FALSE, box = FALSE)
+plot(clamp(raster(as.matrix(cm_sum)), lower = 1e-5, useValues = FALSE),
+     main = "connectivity", axes = FALSE, box = FALSE)
+}
+
+## we could take this example one step further, and use weights to indicate
+## relative importance of maintaining functional connectivity
+## for each feature (i.e. use the weighted sum instead of the sum)
+
+## let's pretend that the first feature is 20 times more important
+## than all the other species
+weights <- c(20, 1, 1, 1, 1)
+
+## calculate connectivity matrix using weighted sum
+cm_wsum <- lapply(as.list(cd), connectivity_matrix, x = r) # make matrices
+cm_wsum <- Map("*", cm_wsum, weights) # multiply by weights
+cm_wsum <- Reduce("+", cm_wsum) # sum matrices together
+
+## plot data and matrix
+\dontrun{
+par(mfrow = c(1, 2))
+plot(r, main = "planning units (raster)", axes = FALSE, box = FALSE)
+plot(clamp(raster(as.matrix(cm_wsum)), lower = 1e-5, useValues = FALSE),
+     main = "connectivity", axes = FALSE, box = FALSE)
+}
+
+## since the statistical distribution of the connectivity values
+## for each feature (e.g. the mean and standard deviation of the
+## connectivity values) are different, it might make sense -- depending
+## on the goal of the conservation planning exercise and the underlying
+## data -- to first normalize the conductance values before applying the
+## weights and summing the data for feature together
+
+## one approach would be to linearly rescale the values between 0.01 and 1
+## note that we wouldn't want to rescale them between 0 and 1 since
+## a value of zero means that there is no connectivity at all (and
+## and not a relatively small amount of connectivity)
+\dontrun{
+### define helper function
+library(scales) # load scales library for rescale
+rescale_matrix <- function(x) {x@x <- rescale(x@x, c(0.01, 1)); x}
+
+### calculate functional connectivity matrix using the weighted sum of
+### connectivity values that have been normalized by linearly re-scaling
+### values
+cm_lwsum <- lapply(as.list(cd), connectivity_matrix, x = r) # make matrices
+cm_lwsum <- lapply(cm_lwsum, rescale_matrix) # rescale matrices to [0.01, 1]
+cm_lwsum <- Map("*", cm_lwsum, weights) # multiply by weights
+cm_lwsum <- Reduce("+", cm_lwsum) # sum matrices together
+}
+
+## plot data and matrix
+\dontrun{
+par(mfrow = c(1, 2))
+plot(r, main = "planning units (raster)", axes = FALSE, box = FALSE)
+plot(clamp(raster(as.matrix(cm_lwsum)), lower = 1e-5, useValues = FALSE),
+     main = "connectivity", axes = FALSE, box = FALSE)
+}
+
+## another approach for normalizing the data could be using z-scores
+## note that after normalizing the data we would need to add a constant
+## value so that none of the connectivity values are negative
+
+### define helper functions
+zscore <- function(x) {x@x <- (x@x - mean(x@x)) / sd(x@x); x}
+min_non_zero_value <- function(x) min(x@x)
+add_non_zero_value <- function(x, y) {x@x <- x@x + y; x}
+
+### calculate functional connectivity matrix using the weighted sum of
+### connectivity values that have been normalized using z-scores,
+### and transformed to account for negative values
+cm_zwsum <- lapply(as.list(cd), connectivity_matrix, x = r) # make matrices
+cm_zwsum <- lapply(cm_zwsum, zscore) # normalize using z-scores
+min_value <- min(sapply(cm_zwsum, min_non_zero_value)) # find min value
+min_value <- abs(min_value) + 0.01 # prepare constant for adding to matrices
+cm_zwsum <- lapply(cm_zwsum, add_non_zero_value, min_value) # add constant
+cm_zwsum <- Map("*", cm_zwsum, weights) # multiply by weights
+cm_zwsum <- Reduce("+", cm_zwsum) # sum matrices together
+
+## plot data and matrix
+\dontrun{
+par(mfrow = c(1, 2))
+plot(r, main = "planning units (raster)", axes = FALSE, box = FALSE)
+plot(clamp(raster(as.matrix(cm_zwsum)), lower = 1e-5, useValues = FALSE),
+     main = "connectivity", axes = FALSE, box = FALSE)
+}
+
 }

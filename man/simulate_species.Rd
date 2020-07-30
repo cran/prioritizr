@@ -13,28 +13,29 @@ simulate_species(
 )
 }
 \arguments{
-\item{x}{\code{\link[raster]{RasterLayer-class}} object to use as}
+\item{x}{\code{\linkS4class{RasterLayer}} object to use as
+a template.}
 
 \item{n}{\code{integer} number of species to simulate.}
 
-\item{model}{\code{\link[RandomFields]{RP}} model object
+\item{model}{\code{\link[RandomFields:RP]{RandomFields::RP()}} model object
 to use for simulating data.}
 
 \item{transform}{\code{function} to transform values output
 from the random fields simulation.}
 
 \item{...}{additional arguments passed to
-\code{\link[RandomFields]{RFsimulate}}.}
+\code{\link[RandomFields:RFsimulate]{RandomFields::RFsimulate()}}.}
 }
 \value{
-\code{\link[raster]{RasterStack-class}} object.
+\code{\linkS4class{RasterStack}} object.
 }
 \description{
 Generates a random set of species using random field models. By default,
 the output will contain values between zero and one.
 }
 \examples{
-\donttest{
+\dontrun{
 # create raster
 r <- raster(ncol=10, nrow=10, xmn=0, xmx=1, ymn=0, ymx=1)
 values(r) <- 1
@@ -48,5 +49,5 @@ plot(spp, main = "simulated species distributions")
 
 }
 \seealso{
-\code{\link{simulate_data}}.
+\code{\link[=simulate_data]{simulate_data()}}.
 }
