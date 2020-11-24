@@ -10,7 +10,7 @@ NULL
 #' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
 #'
 #' @param gap `numeric` gap to optimality. This gap is relative when
-#'   solving problems using \pkg{gurobi}, and will cause the optimizer to
+#'   solving problems using *Gurobi* or *CPLEX*, and will cause the optimizer to
 #'   terminate when the difference between the upper and lower objective
 #'   function bounds is less than the gap times the upper bound. For example, a
 #'   value of 0.01 will result in the optimizer stopping when the difference
@@ -49,10 +49,10 @@ NULL
 #' @param verbose `logical` should information be printed while solving
 #'  optimization problems?
 #'
-#' @details [*Gurobi*](http://gurobi.com) is a
+#' @details [*Gurobi*](https://www.gurobi.com/) is a
 #'   state-of-the-art commercial optimization software with an R package
-#'   interface. It is by far the fastest of the solvers available in this
-#'   package, however, it is also the only solver that is not freely
+#'   interface. It is by far the fastest of the solvers available for
+#'   generating prioritizations, however, it is not freely
 #'   available. That said, licenses are available to academics at no cost. The
 #'   \pkg{gurobi} package is distributed with the *Gurobi* software suite.
 #'   This solver uses the \pkg{gurobi} package to solve problems.
@@ -170,7 +170,8 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
       model <- self$get_data("model")
       p <- self$get_data("parameters")
       # solve problem
-      x <- gurobi::gurobi(model = model, params = p)
+      x <- withr::with_locale(c(LC_CTYPE = "C"),
+                              gurobi::gurobi(model = model, params = p))
       # fix potential floating point arithmetic issues
       b <- model$vtype == "B"
       if (is.numeric(x$x)) {

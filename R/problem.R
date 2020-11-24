@@ -136,7 +136,7 @@ NULL
 #'
 #' @param run_checks `logical` flag indicating whether checks should be
 #'   run to ensure the integrity of the input data. These checks are run by
-#'   default; however, for large data sets they may increase run time. If it is
+#'   default; however, for large datasets they may increase run time. If it is
 #'   taking a prohibitively long time to create the prioritization problem, it
 #'   is suggested to try setting `run_checks` to `FALSE`.
 #'
@@ -255,7 +255,7 @@ NULL
 #' sim_pu_polygons$spp_3 <- rpois(length(sim_pu_polygons), 2)
 #'
 #' # create problem using pre-processed data when feature abundances are
-#' # stored in the columns of an attribute table for a spatial vector data set
+#' # stored in the columns of an attribute table for a spatial vector dataset
 #' p6 <- problem(sim_pu_polygons, features = c("spp_1", "spp_2", "spp_3"),
 #'               "cost") %>%
 #'       add_min_set_objective() %>%
@@ -808,7 +808,6 @@ methods::setMethod(
       is.character(features$name) || is.factor(features$name),
       # rij_matrix
       all(vapply(rij_matrix, inherits, logical(1), c("matrix", "dgCMatrix"))),
-      all(vapply(rij_matrix, function(x) sum(is.finite(x)), numeric(1)) > 0),
       # multiple arguments
       ncol(x) == length(rij_matrix),
       all(vapply(rij_matrix, ncol, numeric(1)) == nrow(x)),
@@ -817,6 +816,11 @@ methods::setMethod(
     verify_that(all(vapply(rij_matrix, min, numeric(1), na.rm = TRUE) >= 0),
                 msg = "argument to rij_matrix has negative feature data")
     verify_that(all(x > 0, na.rm = TRUE))
+    assertthat::assert_that(
+      all(vapply(rij_matrix, FUN.VALUE = logical(1), function(x) {
+        all(is.finite(c(min(x, na.rm = TRUE), max(x, na.rm = TRUE))))
+      })),
+      msg = "argument to x contains missing (NA) or non-finite (Inf) values")
     # add names to rij_matrix if missing
     if (is.null(names(rij_matrix)))
       names(rij_matrix) <- as.character(seq_along(rij_matrix))
