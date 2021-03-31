@@ -10,7 +10,7 @@ NULL
 
 #' prioritizr: Systematic Conservation Prioritization in R
 #'
-#' The \pkg{prioritizr R} package uses integer linear programming (ILP)
+#' The \pkg{prioritizr R} package uses mixed integer linear programming (MILP)
 #' techniques to provide a flexible interface for building and solving
 #' conservation planning problems (Rodrigues *et al.* 2000; Billionnet
 #' 2013). It supports a broad range of objectives, constraints, and penalties
@@ -32,9 +32,9 @@ NULL
 #' for more information.
 #'
 #' @details This package contains several vignettes that are designed to
-#'   showcase its functionality. To view them, type of the command
+#'   showcase its functionality. To view them, please use the code
 #'   `vignette("name", package = "prioritizr")` where `"name"` is the
-#'   name of the desired vignette (e.g. `"gurobi_installation"`.
+#'   name of the desired vignette (e.g. `"gurobi_installation"`).
 #'
 #'   \describe{
 #'

@@ -10,24 +10,28 @@ add_gurobi_solver(
   time_limit = .Machine$integer.max,
   presolve = 2,
   threads = 1,
-  first_feasible = 0,
+  first_feasible = FALSE,
   numeric_focus = FALSE,
+  start_solution = NULL,
   verbose = TRUE
 )
 }
 \arguments{
 \item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
 
-\item{gap}{\code{numeric} gap to optimality. This gap is relative when
-solving problems using \emph{Gurobi} or \emph{CPLEX}, and will cause the optimizer to
-terminate when the difference between the upper and lower objective
-function bounds is less than the gap times the upper bound. For example, a
-value of 0.01 will result in the optimizer stopping when the difference
-between the bounds is 1 percent of the upper bound.}
+\item{gap}{\code{numeric} gap to optimality. This gap is relative
+and expresses the acceptable deviance from the optimal objective.
+For example, a value of 0.01 will result in the solver stopping when
+it has found a solution within 1\% of optimality.
+Additionally, a value of 0 will result in the solver stopping
+when it has found an optimal solution.
+The default value is 0.1 (i.e. 10\% from optimality).}
 
-\item{time_limit}{\code{numeric} time limit in seconds to run the optimizer.
+\item{time_limit}{\code{numeric} time limit (seconds) for generating solutions.
 The solver will return the current best solution when this time limit is
-exceeded.}
+exceeded. The default value is the largest integer value
+(i.e. \code{.Machine$integer.max}), effectively meaning that solver
+will keep running until a solution within the optimality gap is found.}
 
 \item{presolve}{\code{integer} number indicating how intensively the
 solver should try to simplify the problem before solving it. Available
@@ -37,8 +41,7 @@ level of pre-solving, and (2) very aggressive level of pre-solving .
 The default value is 2.}
 
 \item{threads}{\code{integer} number of threads to use for the
-optimization algorithm. The default value of 1 will result in only
-one thread being used.}
+optimization algorithm. The default value is 1.}
 
 \item{first_feasible}{\code{logical} should the first feasible solution be
 be returned? If \code{first_feasible} is set to \code{TRUE}, the solver
@@ -55,17 +58,28 @@ issues. Beware that it will likely substantially increase run time
 (sets the \emph{Gurobi} \code{NumericFocus} parameter
 to 3). Defaults to \code{FALSE}.}
 
+\item{start_solution}{\code{NULL} or object containing the starting solution
+for the solver. Defaults to \code{NULL} such that no starting solution is used.
+To specify a starting solution, the argument to \code{start_solution} should
+be in the same format as the planning units (i.e. a \code{NULL}, \code{numeric},
+\code{matrix}, \code{data.frame}, \code{\linkS4class{Raster}}, \code{\linkS4class{Spatial}},
+or \code{\link[sf:sf]{sf::sf()}} object).
+See the Start solution format section for more information.}
+
 \item{verbose}{\code{logical} should information be printed while solving
-optimization problems?}
+optimization problems? Defaults to \code{TRUE}.}
 }
 \value{
 Object (i.e. \code{\linkS4class{ConservationProblem}}) with the solver
 added to it.
 }
 \description{
-Specify that the \emph{Gurobi} software should be used to solve a
-conservation planning problem. This function can also be used to
-customize the behavior of the solver. It requires the \pkg{gurobi} package.
+Specify that the \href{https://www.gurobi.com/}{\emph{Gurobi}} software
+(Gurobi Optimization LLC 2021) should be used to solve a
+conservation planning \code{\link[=problem]{problem()}}. This function can also be used to
+customize the behavior of the solver.
+It requires the \pkg{gurobi} package to be installed
+(see below for installation instructions).
 }
 \details{
 \href{https://www.gurobi.com/}{\emph{Gurobi}} is a
@@ -75,28 +89,140 @@ generating prioritizations, however, it is not freely
 available. That said, licenses are available to academics at no cost. The
 \pkg{gurobi} package is distributed with the \emph{Gurobi} software suite.
 This solver uses the \pkg{gurobi} package to solve problems.
+For information on the performance of different solvers,
+please see Schuster \emph{et al.} (2020) for benchmarks comparing the
+run time and solution quality of different solvers when applied to
+different sized datasets.
 }
+\section{Installation}{
+
+Please see the \emph{Gurobi Installation Guide} vignette for details on
+installing the \emph{Gurobi} software and the \pkg{gurobi} package.
+You can access this vignette \href{https://prioritizr.net/articles/gurobi_installation.html}{online}
+or using the following code:\preformatted{vignette("gurobi_installation", package = "prioritizr")
+}
+}
+
+\section{Start solution format}{
+
+Broadly speaking, the argument to \code{start_solution} must be in the same
+format as the planning unit data in the argument to \code{x}.
+Further details on the correct format are listed separately
+for each of the different planning unit data formats:
+
+\describe{
+
+\item{\code{x} has \code{numeric} planning units}{The argument to \code{start_solution} must be a
+\code{numeric} vector with each element corresponding to a different planning
+unit. It should have the same number of planning units as those
+in the argument to \code{x}. Additionally, any planning units missing
+cost (\code{NA}) values should also have missing (\code{NA}) values in the
+argument to \code{start_solution}.
+}
+
+\item{\code{x} has \code{matrix} planning units}{The argument to \code{start_solution} must be a
+\code{matrix} vector with each row corresponding to a different planning
+unit, and each column correspond to a different management zone.
+It should have the same number of planning units and zones
+as those in the argument to \code{x}. Additionally, any planning units
+missing cost (\code{NA}) values for a particular zone should also have a
+missing (\code{NA}) values in the argument to \code{start_solution}.
+}
+
+\item{\code{x} has \code{\linkS4class{Raster}} planning units}{The argument to \code{start_solution}
+be a \code{\linkS4class{Raster}} object where different grid cells (pixels) correspond
+to different planning units and layers correspond to
+a different management zones. It should have the same dimensionality
+(rows, columns, layers), resolution, extent, and coordinate reference
+system as the planning units in the argument to \code{x}. Additionally,
+any planning units missing cost (\code{NA}) values for a particular zone
+should also have missing (\code{NA})  values in the argument to \code{start_solution}.
+}
+
+\item{\code{x} has \code{data.frame} planning units}{The argument to \code{start_solution} must
+be a \code{data.frame} with each column corresponding to a different zone,
+each row corresponding to a different planning unit, and cell values
+corresponding to the solution value. This means that if a \code{data.frame}
+object containing the solution also contains additional columns, then
+these columns will need to be subsetted prior to using this function
+(see below for example with \code{\link[sf:sf]{sf::sf()}} data).
+Additionally, any planning units missing cost
+(\code{NA}) values for a particular zone should also have missing (\code{NA})
+values in the argument to \code{start_solution}.
+}
+
+\item{\code{x} has \code{\linkS4class{Spatial}} planning units}{The argument to \code{start_solution}
+must be a \code{\linkS4class{Spatial}} object with each column corresponding to a
+different zone, each row corresponding to a different planning unit, and
+cell values corresponding to the solution value. This means that if the
+\code{\linkS4class{Spatial}} object containing the solution also contains additional
+columns, then these columns will need to be subsetted prior to using this
+function (see below for example with \code{\link[sf:sf]{sf::sf()}} data).
+Additionally, the argument to \code{start_solution} must also have the same
+coordinate reference system as the planning unit data.
+Furthermore, any planning units missing cost
+(\code{NA}) values for a particular zone should also have missing (\code{NA})
+values in the argument to \code{start_solution}.
+}
+
+\item{\code{x} has \code{\link[sf:sf]{sf::sf()}} planning units}{The argument to \code{start_solution} must be
+a \code{\link[sf:sf]{sf::sf()}} object with each column corresponding to a different
+zone, each row corresponding to a different planning unit, and cell values
+corresponding to the solution value. This means that if the
+\code{\link[sf:sf]{sf::sf()}} object containing the solution also contains additional
+columns, then these columns will need to be subsetted prior to using this
+function (see below for example).
+Additionally, the argument to \code{start_solution} must also have the same
+coordinate reference system as the planning unit data.
+Furthermore, any planning units missing cost
+(\code{NA}) values for a particular zone should also have missing (\code{NA})
+values in the argument to \code{start_solution}.
+}
+}
+}
+
 \examples{
+\dontrun{
 # load data
 data(sim_pu_raster, sim_features)
 
 # create problem
 p <- problem(sim_pu_raster, sim_features) \%>\%
-  add_min_set_objective() \%>\%
-  add_relative_targets(0.1) \%>\%
-  add_binary_decisions()
-\dontrun{
-# if the package is installed then add solver and generate solution
-if (require("gurobi")) {
-  # specify solver and generate solution
-  s <- p \%>\% add_gurobi_solver(gap = 0.1, presolve = 2, time_limit = 5) \%>\%
-             solve()
+     add_min_set_objective() \%>\%
+     add_relative_targets(0.1) \%>\%
+     add_binary_decisions() \%>\%
+     add_gurobi_solver(gap = 0, verbose = FALSE)
 
-  # plot solutions
-  plot(stack(sim_pu_raster, s), main = c("planning units", "solution"),
-       axes = FALSE, box = FALSE)
+# generate solution \%>\%
+s <- solve(p)
+
+# plot solution
+plot(s, main = "solution", axes = FALSE, box = FALSE)
+
+# create a similar problem with boundary length penalties and
+# specify the solution from the previous run as a starting solution
+p2 <- problem(sim_pu_raster, sim_features) \%>\%
+     add_min_set_objective() \%>\%
+     add_relative_targets(0.1) \%>\%
+     add_boundary_penalties(10) \%>\%
+     add_binary_decisions() \%>\%
+     add_gurobi_solver(gap = 0, start_solution = s, verbose = FALSE)
+
+# generate solution
+s2 <- solve(p2)
+
+# plot solution
+plot(s2, main = "solution with boundary penalties", axes = FALSE,
+     box = FALSE)
 }
 }
+\references{
+Gurobi Optimization LLC (2021) Gurobi Optimizer Reference Manual.
+\url{https://www.gurobi.com}.
+
+Schuster R, Hanson JO, Strimas-Mackey M, and Bennett JR (2020). Exact
+integer linear programming solvers outperform simulated annealing for
+solving conservation planning problems. \emph{PeerJ}, 8: e9258.
 }
 \seealso{
 \link{solvers}.

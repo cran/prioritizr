@@ -24,16 +24,15 @@ test_that("compile (compressed formulation, single zone)", {
   expect_equal(o$A()[n_f + 1, ],
     c(p$planning_unit_costs(), rep(0, n_f)))
   expect_true(all(o$A()[seq_len(n_f), n_pu + seq_len(n_f)] ==
-    Matrix::sparseMatrix(i = seq_len(n_f), j = seq_len(n_f),
-      x = rep(-1, n_f), giveCsparse = FALSE)))
+    triplet_sparse_matrix(
+      i = seq_len(n_f), j = seq_len(n_f), x = rep(-1, n_f))))
   expect_equal(o$lb(), rep(0, n_f + n_pu))
   expect_equal(o$ub(), rep(1, n_f + n_pu))
 })
 
 test_that("solve (compressed formulation, single zone)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- 4.23
   cost <- raster::raster(matrix(c(1, 2, NA, 4), nrow = 1))
@@ -103,8 +102,7 @@ test_that("compile (expanded formulation, single zone)", {
 
 test_that("solve (expanded formulation, single zone)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- 4.23
   cost <- raster::raster(matrix(c(1, 2, NA, 4), nrow = 1))
@@ -193,8 +191,7 @@ test_that("compile (compressed formulation, multiple zones)", {
 
 test_that("solve (compressed formulation, multiple zones)", {
   skip_on_cran()
-  skip_if_not(default_solver_name() != "lpsymphony")
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- 20
   cost <- raster::stack(
@@ -299,8 +296,7 @@ test_that("compile (expanded formulation, multiple zones)", {
 
 test_that("solve (expanded formulation, multiple zones)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- 20
   cost <- raster::stack(
@@ -359,11 +355,33 @@ test_that("invalid inputs (multiple zones)", {
   })
 })
 
-test_that("throw warning with minimum set objective", {
+test_that("throw warning with min set objective", {
   # generate optimization problem
   data(sim_pu_raster, sim_features)
   p1 <- problem(sim_pu_raster, sim_features) %>%
        add_min_set_objective() %>%
+       add_relative_targets(0.1) %>%
+       add_binary_decisions()
+  p2 <- p1 %>% add_feature_weights(runif(raster::nlayers(sim_features)))
+  # tests
+  o1 <- compile(p1)
+  expect_warning({o2 <- compile(p2)})
+  expect_equal(o1$modelsense(), o2$modelsense())
+  expect_equal(o1$obj(), o2$obj())
+  expect_equal(o1$sense(), o2$sense())
+  expect_equal(o1$rhs(), o2$rhs())
+  expect_equal(o1$col_ids(), o2$col_ids())
+  expect_equal(o1$row_ids(), o2$row_ids())
+  expect_equal(o1$A(), o2$A())
+  expect_equal(o1$lb(), o2$lb())
+  expect_equal(o1$ub(), o2$ub())
+})
+
+test_that("throw warning with min largest shortfall objective", {
+  # generate optimization problem
+  data(sim_pu_raster, sim_features)
+  p1 <- problem(sim_pu_raster, sim_features) %>%
+       add_min_largest_shortfall_objective(100) %>%
        add_relative_targets(0.1) %>%
        add_binary_decisions()
   p2 <- p1 %>% add_feature_weights(runif(raster::nlayers(sim_features)))

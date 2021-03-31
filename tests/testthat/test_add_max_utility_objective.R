@@ -23,8 +23,8 @@ test_that("compile (compressed formulation, single zone)", {
   expect_equal(o$A()[n_f + 1, ],
     c(p$planning_unit_costs(), rep(0, n_f)))
   expect_true(all(o$A()[seq_len(n_f), n_pu + seq_len(n_f)] ==
-    Matrix::sparseMatrix(i = seq_len(n_f), j = seq_len(n_f),
-      x = rep(-1, n_f), giveCsparse = FALSE)))
+    triplet_sparse_matrix(
+      i = seq_len(n_f), j = seq_len(n_f), x = rep(-1, n_f))))
   expect_equal(o$lb(), rep(0, n_f + n_pu))
   expect_equal(o$ub(), c(rep(1, n_pu),
     unname(p$feature_abundances_in_planning_units())))
@@ -32,8 +32,7 @@ test_that("compile (compressed formulation, single zone)", {
 
 test_that("solve (compressed formulation, single zone)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- 4.23
   cost <- raster::raster(matrix(c(1, 2, 2, NA), ncol = 4))
@@ -103,8 +102,7 @@ test_that("compile (expanded formulation, single zone)", {
 
 test_that("solve (expanded formulation, single zone)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- 4.23
   cost <- raster::raster(matrix(c(1, 2, 2, NA), ncol = 4))
@@ -200,8 +198,7 @@ test_that("compile (compressed formulation, multiple zones, scalar budget)", {
 
 test_that("solve (compressed formulation, multiple zones, scalar budget)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- 4.23
   cost <- raster::stack(
@@ -297,8 +294,7 @@ test_that("compile (expanded formulation, multiple zones, scalar budget)", {
 
 test_that("solve (expanded formulation, multiple zones, scalar budget)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- 4.23
   cost <- raster::stack(
@@ -376,8 +372,7 @@ test_that("compile (compressed formulation, multiple zones, vector budget)", {
 
 test_that("solve (compressed formulation, multiple zones, vector budget)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- c(2, 11)
   cost <- raster::stack(
@@ -477,8 +472,7 @@ test_that("compile (expanded formulation, multiple zones, vector budget)", {
 
 test_that("solve (expanded formulation, multiple zones, vector budget)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # create data
   budget <- c(2, 11)
   cost <- raster::stack(

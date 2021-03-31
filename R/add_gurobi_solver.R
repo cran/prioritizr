@@ -3,22 +3,28 @@ NULL
 
 #' Add a *Gurobi* solver
 #'
-#' Specify that the *Gurobi* software should be used to solve a
-#' conservation planning problem. This function can also be used to
-#' customize the behavior of the solver. It requires the \pkg{gurobi} package.
+#' Specify that the [*Gurobi*](https://www.gurobi.com/) software
+#' (Gurobi Optimization LLC 2021) should be used to solve a
+#' conservation planning [problem()]. This function can also be used to
+#' customize the behavior of the solver.
+#' It requires the \pkg{gurobi} package to be installed
+#' (see below for installation instructions).
 #'
 #' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
 #'
-#' @param gap `numeric` gap to optimality. This gap is relative when
-#'   solving problems using *Gurobi* or *CPLEX*, and will cause the optimizer to
-#'   terminate when the difference between the upper and lower objective
-#'   function bounds is less than the gap times the upper bound. For example, a
-#'   value of 0.01 will result in the optimizer stopping when the difference
-#'   between the bounds is 1 percent of the upper bound.
+#' @param gap `numeric` gap to optimality. This gap is relative
+#'   and expresses the acceptable deviance from the optimal objective.
+#'   For example, a value of 0.01 will result in the solver stopping when
+#'   it has found a solution within 1% of optimality.
+#'   Additionally, a value of 0 will result in the solver stopping
+#'   when it has found an optimal solution.
+#'   The default value is 0.1 (i.e. 10% from optimality).
 #'
-#' @param time_limit `numeric` time limit in seconds to run the optimizer.
+#' @param time_limit `numeric` time limit (seconds) for generating solutions.
 #'   The solver will return the current best solution when this time limit is
-#'   exceeded.
+#'   exceeded. The default value is the largest integer value
+#'   (i.e. `.Machine$integer.max`), effectively meaning that solver
+#'   will keep running until a solution within the optimality gap is found.
 #'
 #' @param presolve `integer` number indicating how intensively the
 #'   solver should try to simplify the problem before solving it. Available
@@ -28,8 +34,7 @@ NULL
 #'   The default value is 2.
 #'
 #' @param threads `integer` number of threads to use for the
-#'   optimization algorithm. The default value of 1 will result in only
-#'   one thread being used.
+#'   optimization algorithm. The default value is 1.
 #'
 #' @param first_feasible `logical` should the first feasible solution be
 #'   be returned? If `first_feasible` is set to `TRUE`, the solver
@@ -46,42 +51,92 @@ NULL
 #'   (sets the *Gurobi* `NumericFocus` parameter
 #'   to 3). Defaults to `FALSE`.
 #'
-#' @param verbose `logical` should information be printed while solving
-#'  optimization problems?
+#' @param start_solution `NULL` or object containing the starting solution
+#'   for the solver. Defaults to `NULL` such that no starting solution is used.
+#'   To specify a starting solution, the argument to `start_solution` should
+#'   be in the same format as the planning units (i.e. a `NULL`, `numeric`,
+#'   `matrix`, `data.frame`, [`Raster-class`], [`Spatial-class`],
+#'   or [sf::sf()] object).
+#'   See the Start solution format section for more information.
 #'
-#' @details [*Gurobi*](https://www.gurobi.com/) is a
-#'   state-of-the-art commercial optimization software with an R package
-#'   interface. It is by far the fastest of the solvers available for
-#'   generating prioritizations, however, it is not freely
-#'   available. That said, licenses are available to academics at no cost. The
-#'   \pkg{gurobi} package is distributed with the *Gurobi* software suite.
-#'   This solver uses the \pkg{gurobi} package to solve problems.
+#' @param verbose `logical` should information be printed while solving
+#'  optimization problems? Defaults to `TRUE`.
+#'
+#' @details
+#' [*Gurobi*](https://www.gurobi.com/) is a
+#' state-of-the-art commercial optimization software with an R package
+#' interface. It is by far the fastest of the solvers available for
+#' generating prioritizations, however, it is not freely
+#' available. That said, licenses are available to academics at no cost. The
+#' \pkg{gurobi} package is distributed with the *Gurobi* software suite.
+#' This solver uses the \pkg{gurobi} package to solve problems.
+#' For information on the performance of different solvers,
+#' please see Schuster _et al._ (2020) for benchmarks comparing the
+#' run time and solution quality of different solvers when applied to
+#' different sized datasets.
+#'
+#' @section Installation:
+#' Please see the *Gurobi Installation Guide* vignette for details on
+#' installing the *Gurobi* software and the \pkg{gurobi} package.
+#' You can access this vignette [online](https://prioritizr.net/articles/gurobi_installation.html)
+#' or using the following code:
+#' ```
+#' vignette("gurobi_installation", package = "prioritizr")
+#' ```
+#'
+#' @section Start solution format:
+#' Broadly speaking, the argument to `start_solution` must be in the same
+#' format as the planning unit data in the argument to `x`.
+#' Further details on the correct format are listed separately
+#' for each of the different planning unit data formats:
+#' `r solution_format_documentation("start_solution")`
 #'
 #' @return Object (i.e. [`ConservationProblem-class`]) with the solver
 #'  added to it.
 #'
 #' @seealso [solvers].
 #'
+#' @references
+#' Gurobi Optimization LLC (2021) Gurobi Optimizer Reference Manual.
+#' <https://www.gurobi.com>.
+#'
+#' Schuster R, Hanson JO, Strimas-Mackey M, and Bennett JR (2020). Exact
+#' integer linear programming solvers outperform simulated annealing for
+#' solving conservation planning problems. *PeerJ*, 8: e9258.
+#'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_features)
 #'
 #' # create problem
 #' p <- problem(sim_pu_raster, sim_features) %>%
-#'   add_min_set_objective() %>%
-#'   add_relative_targets(0.1) %>%
-#'   add_binary_decisions()
-#' \dontrun{
-#' # if the package is installed then add solver and generate solution
-#' if (require("gurobi")) {
-#'   # specify solver and generate solution
-#'   s <- p %>% add_gurobi_solver(gap = 0.1, presolve = 2, time_limit = 5) %>%
-#'              solve()
+#'      add_min_set_objective() %>%
+#'      add_relative_targets(0.1) %>%
+#'      add_binary_decisions() %>%
+#'      add_gurobi_solver(gap = 0, verbose = FALSE)
 #'
-#'   # plot solutions
-#'   plot(stack(sim_pu_raster, s), main = c("planning units", "solution"),
-#'        axes = FALSE, box = FALSE)
-#' }
+#' # generate solution %>%
+#' s <- solve(p)
+#'
+#' # plot solution
+#' plot(s, main = "solution", axes = FALSE, box = FALSE)
+#'
+#' # create a similar problem with boundary length penalties and
+#' # specify the solution from the previous run as a starting solution
+#' p2 <- problem(sim_pu_raster, sim_features) %>%
+#'      add_min_set_objective() %>%
+#'      add_relative_targets(0.1) %>%
+#'      add_boundary_penalties(10) %>%
+#'      add_binary_decisions() %>%
+#'      add_gurobi_solver(gap = 0, start_solution = s, verbose = FALSE)
+#'
+#' # generate solution
+#' s2 <- solve(p2)
+#'
+#' # plot solution
+#' plot(s2, main = "solution with boundary penalties", axes = FALSE,
+#'      box = FALSE)
 #' }
 #' @name add_gurobi_solver
 NULL
@@ -89,31 +144,37 @@ NULL
 #' @rdname add_gurobi_solver
 #' @export
 add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
-                              presolve = 2, threads = 1, first_feasible = 0,
-                              numeric_focus = FALSE, verbose = TRUE) {
-  # assert that arguments are valid
+                              presolve = 2, threads = 1, first_feasible = FALSE,
+                              numeric_focus = FALSE, start_solution = NULL,
+                              verbose = TRUE) {
+  # assert that arguments are valid (except start_solution)
   assertthat::assert_that(inherits(x, "ConservationProblem"),
                           isTRUE(all(is.finite(gap))),
                           assertthat::is.scalar(gap),
                           isTRUE(gap >= 0), isTRUE(all(is.finite(time_limit))),
                           assertthat::is.count(time_limit),
                           isTRUE(all(is.finite(presolve))),
-                          assertthat::is.scalar(presolve), isTRUE(presolve >= -1 & presolve <= 2),
+                          assertthat::is.scalar(presolve),
+                          isTRUE(presolve >= -1 & presolve <= 2),
                           isTRUE(all(is.finite(threads))),
                           assertthat::is.count(threads),
                           isTRUE(threads <= parallel::detectCores(TRUE)),
-                          assertthat::is.scalar(first_feasible),
-                          isTRUE(first_feasible == 1 | first_feasible == 0),
+                          assertthat::is.flag(first_feasible),
+                          assertthat::noNA(first_feasible),
                           assertthat::is.flag(numeric_focus),
                           assertthat::noNA(numeric_focus),
                           assertthat::is.flag(verbose),
                           requireNamespace("gurobi", quietly = TRUE))
+  # extract start solution
+  if (!is.null(start_solution)) {
+    start_solution <- planning_unit_solution_status(x, start_solution)
+  }
   # add solver
   x$add_solver(pproto(
     "GurobiSolver",
     Solver,
     name = "Gurobi",
-    data = list(),
+    data = list(start = start_solution),
     parameters = parameters(
       numeric_parameter("gap", gap, lower_limit = 0),
       integer_parameter("time_limit", time_limit, lower_limit = -1L,
@@ -147,6 +208,12 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
                 SolutionLimit = self$parameters$get("first_feasible"))
       if (p$SolutionLimit == 0)
         p$SolutionLimit <- NULL
+      # add starting solution if specified
+      start <- self$get_data("start")
+      if (!is.null(start) && !is.Waiver(start)) {
+        n_extra <- length(model$obj) - length(start)
+        model$start <- c(c(start), rep(NA_real_, n_extra))
+      }
       # add extra parameters from portfolio if needed
       p2 <- list(...)
       for (i in seq_along(p2))
@@ -170,8 +237,11 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
       model <- self$get_data("model")
       p <- self$get_data("parameters")
       # solve problem
-      x <- withr::with_locale(c(LC_CTYPE = "C"),
-                              gurobi::gurobi(model = model, params = p))
+      rt <- system.time({
+        x <- withr::with_locale(
+          c(LC_CTYPE = "C"),
+          gurobi::gurobi(model = model, params = p))
+      })
       # fix potential floating point arithmetic issues
       b <- model$vtype == "B"
       if (is.numeric(x$x)) {
@@ -186,8 +256,11 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
         x$x <- pmin(x$x, model$ub)
       }
       # extract solutions
-      out <- list(x = x$x, objective = x$objval, status = x$status,
-                 runtime = x$runtime)
+      out <- list(
+        x = x$x,
+        objective = x$objval,
+        status = x$status,
+        runtime = rt[[3]])
       # add pool if required
       if (!is.null(p$PoolSearchMode) && is.numeric(x$x) &&
           isTRUE(length(x$pool) > 1)) {

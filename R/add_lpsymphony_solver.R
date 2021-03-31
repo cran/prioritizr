@@ -1,61 +1,74 @@
 #' @include Solver-proto.R
 NULL
 
-#' Add a SYMPHONY solver with *lpsymphony*
+#' Add a *SYMPHONY* solver with *lpsymphony*
 #'
-#' Specify that the *SYMPHONY* software should be used to solve a
-#' conservation planning problem using the \pkg{lpsymphony} package. This
-#' function can also be used to customize the behavior of the solver.
-#' It requires the \pkg{lpsymphony} package.
+#' Specify that the [*SYMPHONY*](https://projects.coin-or.org/SYMPHONY)
+#' software (Ralphs & Güzelsoy 2005) -- using the \pkg{lpsymphony} package --
+#' should be used to solve a conservation planning [problem()].
+#' This function can also be used to customize the behavior of the solver.
+#' It requires the \pkg{lpsymphony} package to be installed
+#' (see below for installation instructions).
 #'
-#' @inheritParams add_rsymphony_solver
+#' @inheritParams add_gurobi_solver
 #'
-#' @details [*SYMPHONY*](https://projects.coin-or.org/SYMPHONY) is an
-#'   open-source integer programming solver that is part of the Computational
-#'   Infrastructure for Operations Research (COIN-OR) project, an initiative
-#'   to promote development of open-source tools for operations research (a
-#'   field that includes linear programming). The \pkg{lpsymphony} package is
-#'   distributed through
-#'   [Bioconductor](https://doi.org/doi:10.18129/B9.bioc.lpsymphony).
-#'   This functionality is provided because the \pkg{lpsymphony} package may
-#'   be easier to install to install on Windows and Mac OSX systems than the
-#'   \pkg{Rsymphony} package.
+#' @details
+#' [*SYMPHONY*](https://projects.coin-or.org/SYMPHONY) is an
+#' open-source mixed integer programming solver that is part of the
+#' Computational Infrastructure for Operations Research (COIN-OR) project.
+#' This solver is provided because it may be easier to install
+#' on some systems than the \pkg{Rsymphony} package. Additionally --
+#' although the \pkg{lpsymphony} package doesn't provide the functionality
+#' to specify the number of threads for solving a problem -- the
+#' \pkg{lpsymphony} package will solve problems using parallel processing
+#' (unlike the \pkg{Rsymphony} package). As a consequence, this
+#' solver will likely generate solutions much faster than the
+#' [add_rsymphony_solver()].
+#' Although formal benchmarks examining the performance of this solver
+#' have yet to be completed,
+#' please see Schuster _et al._ (2020) for benchmarks comparing the
+#' run time and solution quality of the \pkg{Rsymphony} solver.
 #'
-#' @inherit add_rsymphony_solver seealso return
+#' @section Installation:
+#' The \pkg{lpsymphony} package is
+#' distributed through
+#' [Bioconductor](https://doi.org/doi:10.18129/B9.bioc.lpsymphony).
+#' To install the \pkg{lpsymphony} package, please use the following code:
+#' ```
+#' if (!require(remotes)) install.packages("remotes")
+#' remotes::install_bioc("lpsymphony")
+#' ```
+#'
+#' @inherit add_rsymphony_solver seealso return references
 #'
 #' @seealso [solvers].
 #'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_features)
 #'
 #' # create problem
 #' p <- problem(sim_pu_raster, sim_features) %>%
 #'   add_min_set_objective() %>%
-#'   add_relative_targets(0.1) %>%
-#'   add_binary_decisions()
-#' \dontrun{
-#' # if the package is installed then add solver and generate solution
-#' # note that this solver is skipped on Linux systems due to the fact
-#' # that the lpsymphony package randomly crashes on these systems
-#' if (require(lpsymphony) &
-#'     isTRUE(Sys.info()[["sysname"]] != "Linux")) {
-#'   # specify solver and generate solution
-#'   s <- p %>% add_lpsymphony_solver(time_limit = 5) %>%
-#'              solve()
+#'   add_relative_targets(0.05) %>%
+#'   add_proportion_decisions() %>%
+#'   add_lpsymphony_solver(time_limit = 5, verbose = FALSE)
 #'
-#'   # plot solutions
-#'   plot(stack(sim_pu_raster, s), main = c("planning units", "solution"))
-#' }
-#' }
+#' # generate solution
+#' s <- solve(p)
 #'
+#' # plot solution
+#' plot(s, main = "solution", axes = FALSE, box = FALSE)
+#' }
 #' @name add_lsymphony_solver
 NULL
 
 #' @rdname add_lsymphony_solver
 #' @export
-add_lpsymphony_solver <- function(x, gap = 0.1, time_limit = -1,
-                                  first_feasible = 0, verbose = TRUE) {
+add_lpsymphony_solver <- function(x, gap = 0.1,
+                                  time_limit = .Machine$integer.max,
+                                  first_feasible = FALSE, verbose = TRUE) {
   # assert that arguments are valid
   assertthat::assert_that(inherits(x, "ConservationProblem"),
                           isTRUE(all(is.finite(gap))),
@@ -65,9 +78,8 @@ add_lpsymphony_solver <- function(x, gap = 0.1, time_limit = -1,
                           assertthat::is.count(time_limit) || isTRUE(time_limit
                             == -1),
                           assertthat::is.flag(verbose),
-                          assertthat::is.scalar(first_feasible),
-                          isTRUE(first_feasible == 1 || isTRUE(first_feasible
-                            == 0)),
+                          assertthat::is.flag(first_feasible),
+                          assertthat::noNA(first_feasible),
                           requireNamespace("lpsymphony", quietly = TRUE))
   # throw warning about bug in lpsymphony
   if (utils::packageVersion("lpsymphony") <= as.package_version("1.4.1"))
@@ -90,22 +102,29 @@ add_lpsymphony_solver <- function(x, gap = 0.1, time_limit = -1,
       # create model
       model <- list(
         obj = x$obj(),
-        mat = as.matrix(x$A()),
+        mat = methods::as(x$A(), "dgTMatrix"),
         dir = x$sense(),
         rhs = x$rhs(),
         types = x$vtype(),
         bounds = list(lower = list(ind = seq_along(x$lb()), val = x$lb()),
                       upper = list(ind = seq_along(x$ub()), val = x$ub())),
         max = isTRUE(x$modelsense() == "max"))
+      # convert constraint matrix to sparse format
+      model$mat <- slam::simple_triplet_matrix(
+        i = model$mat@i + 1, j = model$mat@j + 1, v = model$mat@x,
+        nrow = nrow(model$mat), ncol = ncol(model$mat))
+      # prepare sense and variables types for SYMPHONY
+      model$dir <- replace(model$dir, model$dir == "=", "==")
+      model$types <- replace(model$types, model$types == "S", "C")
+      # set parameters
       p <- as.list(self$parameters)
       p$verbosity <- -1
       if (!p$verbose)
         p$verbosity <- -2
       p <- p[names(p) != "verbose"]
       names(p)[which(names(p) == "gap")] <- "gap_limit"
-      model$dir <- replace(model$dir, model$dir == "=", "==")
-      model$types <- replace(model$types, model$types == "S", "C")
       p$first_feasible <- as.logical(p$first_feasible)
+      p$gap_limit <- p$gap_limit * 100
       # store input data and parameters
       self$set_data("model", model)
       self$set_data("parameters", p)
@@ -117,9 +136,9 @@ add_lpsymphony_solver <- function(x, gap = 0.1, time_limit = -1,
       model <- self$get_data("model")
       p <- self$get_data("parameters")
       # solve problem
-      start_time <- Sys.time()
-      x <- do.call(lpsymphony::lpsymphony_solve_LP, append(model, p))
-      end_time <- Sys.time()
+      rt <- system.time({
+        x <- do.call(lpsymphony::lpsymphony_solve_LP, append(model, p))
+      })
       if (is.null(x$solution) ||
           names(x$status) %in% c("TM_NO_SOLUTION", "PREP_NO_SOLUTION"))
         return(NULL)
@@ -139,11 +158,16 @@ add_lpsymphony_solver <- function(x, gap = 0.1, time_limit = -1,
           stop("infeasible solution returned, try relaxing solver parameters")
         }
       }
+      # fix floating point issues with continuous variables
+      cv <- which(model$types == "C")
+      x$solution[cv] <-
+        pmax(x$solution[cv], self$data$model$bounds$lower$val[cv])
+      x$solution[cv] <-
+        pmin(x$solution[cv], self$data$model$bounds$upper$val[cv])
       # return output
-      return(list(x = x$solution, objective = x$objval,
-                  status = as.character(x$status),
-                  runtime = as.double(end_time - start_time,
-                                      format = "seconds")))
+      list(
+        x = x$solution, objective = x$objval, status = as.character(x$status),
+        runtime = rt[[3]])
     },
     set_variable_ub = function(self, index, value) {
       self$data$model$bounds$upper$val[index] <- value

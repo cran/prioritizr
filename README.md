@@ -1,12 +1,14 @@
 
 <!--- README.md is generated from README.Rmd. Please edit that file -->
-# Systematic Conservation Prioritization in R <img src="man/figures/logo.png" align="right" width=10% />
+Systematic Conservation Prioritization in R <img src="man/figures/logo.png" align="right" width=10% />
+======================================================================================================
 
-[![lifecycle](https://img.shields.io/badge/Lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable) [![R-CMD-check-Ubuntu](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Ubuntu/master.svg?label=Ubuntu)](https://github.com/prioritizr/prioritizr/actions) [![R-CMD-check-Windows](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Windows/master.svg?label=Windows)](https://github.com/prioritizr/prioritizr/actions) [![R-CMD-check-Mac-OSX](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Mac%20OSX/master.svg?label=Mac%20OSX)](https://github.com/prioritizr/prioritizr/actions) [![Coverage Status](https://codecov.io/github/prioritizr/prioritizr/coverage.svg?branch=master)](https://codecov.io/github/prioritizr/prioritizr?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/prioritizr)](https://CRAN.R-project.org/package=prioritizr)
+[![lifecycle](https://img.shields.io/badge/Lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html) [![R-CMD-check-Ubuntu](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Ubuntu/master.svg?label=Ubuntu)](https://github.com/prioritizr/prioritizr/actions) [![R-CMD-check-Windows](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Windows/master.svg?label=Windows)](https://github.com/prioritizr/prioritizr/actions) [![R-CMD-check-Mac-OSX](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Mac%20OSX/master.svg?label=Mac%20OSX)](https://github.com/prioritizr/prioritizr/actions) [![Coverage Status](https://codecov.io/github/prioritizr/prioritizr/coverage.svg?branch=master)](https://codecov.io/github/prioritizr/prioritizr?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/prioritizr)](https://CRAN.R-project.org/package=prioritizr)
 
 The *prioritizr R* package uses integer linear programming (ILP) techniques to provide a flexible interface for building and solving conservation planning problems. It supports a broad range of objectives, constraints, and penalties that can be used to custom-tailor conservation planning problems to the specific needs of a conservation planning exercise. Once built, conservation planning problems can be solved using a variety of commercial and open-source exact algorithm solvers. In contrast to the algorithms conventionally used to solve conservation problems, such as heuristics or simulated annealing, the exact algorithms used here are guaranteed to find optimal solutions. Furthermore, conservation problems can be constructed to optimize the spatial allocation of different management actions or zones, meaning that conservation practitioners can identify solutions that benefit multiple stakeholders. Finally, this package has the functionality to read input data formatted for the *Marxan* conservation planning program, and find much cheaper solutions in a much shorter period of time than *Marxan*.
 
-## Installation
+Installation
+------------
 
 The latest official version of the *prioritizr R* package can be installed from the [Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/) using the following *R* code.
 
@@ -21,19 +23,21 @@ if (!require(remotes)) install.packages("remotes")
 remotes::install_github("prioritizr/prioritizr")
 ```
 
-## Citation
+Citation
+--------
 
 Please cite the *prioritizr R* package when using it in publications. To cite the latest official version, please use:
 
-> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 5.0.3. Available at <https://CRAN.R-project.org/package=prioritizr>.
+> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2021). prioritizr: Systematic Conservation Prioritization in R. R package version 7.0.1. Available at <https://CRAN.R-project.org/package=prioritizr>.
 
 Alternatively, to cite the latest development version, please use:
 
-> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2020). prioritizr: Systematic Conservation Prioritization in R. R package version 5.0.3. Available at <https://github.com/prioritizr/prioritizr>.
+> Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Watts ME, Arcese P, Bennett J, Possingham HP (2021). prioritizr: Systematic Conservation Prioritization in R. R package version 7.0.1. Available at <https://github.com/prioritizr/prioritizr>.
 
 Additionally, we keep a [record of publications](https://prioritizr.net/articles/publication_record.html) that use the *prioritizr R* package. If you use this package in any reports or publications, please [file an issue on GitHub](https://github.com/prioritizr/prioritizr/issues/new) so we can add it to the record.
 
-## Usage
+Usage
+-----
 
 Here we will provide a short example showing how the *prioritizr R* package can be used to build and solve conservation problems. For brevity, we will use one of the built-in simulated datasets that is distributed with the package. First, we will load the *prioritizr R* package.
 
@@ -111,7 +115,8 @@ After we have built a [`problem`](https://prioritizr.net/reference/problem.html)
 s1 <- solve(p1)
 ```
 
-    ## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+    ## Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (linux64)
+    ## Thread count: 2 physical cores, 4 logical processors, using up to 1 threads
     ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
     ## Model fingerprint: 0x8f50132f
     ## Variable types: 0 continuous, 90 integer (90 binary)
@@ -121,7 +126,7 @@ s1 <- solve(p1)
     ##   Bounds range     [1e+00, 1e+00]
     ##   RHS range        [4e+00, 1e+01]
     ## Found heuristic solution: objective 3139.8880309
-    ## Presolve time: 0.00s
+    ## Presolve time: 0.01s
     ## Presolved: 5 rows, 90 columns, 450 nonzeros
     ## Variable types: 0 continuous, 90 integer (90 binary)
     ## Presolved: 5 rows, 90 columns, 450 nonzeros
@@ -134,11 +139,11 @@ s1 <- solve(p1)
     ## 
     ##      0     0 2611.17006    0    4 3139.88803 2611.17006  16.8%     -    0s
     ## H    0     0                    2780.0314635 2611.17006  6.07%     -    0s
-    ##      0     0 2611.74321    0    5 2780.03146 2611.74321  6.05%     -    0s
-    ## H    0     0                    2750.8323723 2611.74321  5.06%     -    0s
-    ##      0     0 2611.83195    0    6 2750.83237 2611.83195  5.05%     -    0s
-    ##      0     0 2611.88195    0    7 2750.83237 2611.88195  5.05%     -    0s
-    ## H    0     0                    2747.3774616 2611.88195  4.93%     -    0s
+    ## H    0     0                    2761.3302091 2611.17006  5.44%     -    0s
+    ## H    0     0                    2747.3774616 2611.17006  4.96%     -    0s
+    ##      0     0 2611.74321    0    5 2747.37746 2611.74321  4.94%     -    0s
+    ##      0     0 2611.83195    0    6 2747.37746 2611.83195  4.93%     -    0s
+    ##      0     0 2611.88195    0    7 2747.37746 2611.88195  4.93%     -    0s
     ##      0     0 2611.94509    0    7 2747.37746 2611.94509  4.93%     -    0s
     ##      0     0 2611.95916    0    8 2747.37746 2611.95916  4.93%     -    0s
     ##      0     0 2611.98750    0    8 2747.37746 2611.98750  4.93%     -    0s
@@ -162,62 +167,33 @@ s1 <- solve(p1)
     ##      0     0 2612.72195    0    9 2747.37746 2612.72195  4.90%     -    0s
     ##      0     0 2612.78753    0   10 2747.37746 2612.78753  4.90%     -    0s
     ##      0     0 2612.78891    0   11 2747.37746 2612.78891  4.90%     -    0s
-    ##      0     0 2613.13568    0    7 2747.37746 2613.13568  4.89%     -    0s
-    ##      0     0 2613.22338    0    8 2747.37746 2613.22338  4.88%     -    0s
-    ##      0     0 2613.34297    0    9 2747.37746 2613.34297  4.88%     -    0s
-    ##      0     0 2613.51894    0   10 2747.37746 2613.51894  4.87%     -    0s
-    ##      0     0 2613.52981    0   10 2747.37746 2613.52981  4.87%     -    0s
-    ##      0     0 2613.62584    0   11 2747.37746 2613.62584  4.87%     -    0s
-    ##      0     0 2613.62990    0   10 2747.37746 2613.62990  4.87%     -    0s
-    ##      0     0 2613.64411    0   11 2747.37746 2613.64411  4.87%     -    0s
-    ##      0     0 2613.70527    0   10 2747.37746 2613.70527  4.87%     -    0s
-    ##      0     0 2613.74931    0   10 2747.37746 2613.74931  4.86%     -    0s
-    ##      0     0 2613.75935    0   11 2747.37746 2613.75935  4.86%     -    0s
-    ##      0     0 2613.78321    0   10 2747.37746 2613.78321  4.86%     -    0s
-    ##      0     0 2613.85241    0   10 2747.37746 2613.85241  4.86%     -    0s
-    ##      0     0 2613.85382    0   11 2747.37746 2613.85382  4.86%     -    0s
-    ##      0     0 2613.85510    0   11 2747.37746 2613.85510  4.86%     -    0s
-    ##      0     0 2613.85824    0   12 2747.37746 2613.85824  4.86%     -    0s
-    ##      0     0 2613.86743    0   12 2747.37746 2613.86743  4.86%     -    0s
-    ##      0     0 2613.89542    0   12 2747.37746 2613.89542  4.86%     -    0s
-    ##      0     0 2613.90080    0   13 2747.37746 2613.90080  4.86%     -    0s
-    ##      0     0 2613.90780    0   14 2747.37746 2613.90780  4.86%     -    0s
-    ##      0     0 2613.91321    0   14 2747.37746 2613.91321  4.86%     -    0s
-    ##      0     0 2613.93526    0   12 2747.37746 2613.93526  4.86%     -    0s
-    ##      0     0 2613.93676    0   13 2747.37746 2613.93676  4.86%     -    0s
-    ##      0     0 2614.07265    0   12 2747.37746 2614.07265  4.85%     -    0s
-    ##      0     0 2614.12054    0   12 2747.37746 2614.12054  4.85%     -    0s
-    ##      0     0 2614.15681    0   12 2747.37746 2614.15681  4.85%     -    0s
-    ##      0     0 2614.15970    0   13 2747.37746 2614.15970  4.85%     -    0s
-    ##      0     0 2614.26936    0   12 2747.37746 2614.26936  4.84%     -    0s
-    ##      0     0 2614.28046    0   12 2747.37746 2614.28046  4.84%     -    0s
-    ##      0     0 2614.30152    0   11 2747.37746 2614.30152  4.84%     -    0s
-    ##      0     0 2614.30559    0   12 2747.37746 2614.30559  4.84%     -    0s
-    ##      0     0 2614.31022    0   13 2747.37746 2614.31022  4.84%     -    0s
-    ##      0     0 2614.32003    0   12 2747.37746 2614.32003  4.84%     -    0s
-    ##      0     0 2614.32230    0   13 2747.37746 2614.32230  4.84%     -    0s
-    ##      0     0 2614.32331    0   13 2747.37746 2614.32331  4.84%     -    0s
-    ##      0     2 2614.33358    0   13 2747.37746 2614.33358  4.84%     -    0s
-    ## H 7050   989                    2627.6389306 2618.95150  0.33%   1.8    0s
-    ##  28925  1164     cutoff   53      2627.63893 2624.61659  0.12%   2.7    5s
+    ##      0     0 2612.78990    0   11 2747.37746 2612.78990  4.90%     -    0s
+    ##      0     0 2612.80122    0   12 2747.37746 2612.80122  4.90%     -    0s
+    ##      0     0 2612.80272    0   11 2747.37746 2612.80272  4.90%     -    0s
+    ##      0     2 2612.91183    0   11 2747.37746 2612.91183  4.89%     -    0s
+    ##  17172  8841 2623.25579   39    4 2747.37746 2619.27303  4.66%   1.8    5s
+    ##  36250 17106 2623.07131   47    3 2747.37746 2620.38057  4.62%   1.8   10s
+    ##  50825 26846 2650.05340   54    4 2747.37746 2621.03733  4.60%   1.7   15s
+    ##  68065 38276 2665.49982   85    1 2747.37746 2621.55116  4.58%   1.7   20s
+    ## H76889  5280                    2627.6389306 2621.79315  0.22%   1.7   22s
+    ##  84890  5830 2622.63702   46    5 2627.63893 2622.63702  0.19%   1.9   25s
     ## 
     ## Cutting planes:
-    ##   Gomory: 5
-    ##   Cover: 5
-    ##   MIR: 46
-    ##   StrongCG: 25
-    ##   Flow cover: 2
+    ##   Gomory: 7
+    ##   MIR: 66
+    ##   StrongCG: 39
+    ##   Flow cover: 10
     ## 
-    ## Explored 31196 nodes (83170 simplex iterations) in 5.27 seconds
+    ## Explored 99210 nodes (201659 simplex iterations) in 28.96 seconds
     ## Thread count was 1 (of 4 available processors)
     ## 
-    ## Solution count 5: 2627.64 2747.38 2750.83 ... 3139.89
+    ## Solution count 5: 2627.64 2747.38 2761.33 ... 3139.89
     ## 
     ## Optimal solution found (tolerance 0.00e+00)
     ## Best objective 2.627638930618e+03, best bound 2.627638930618e+03, gap 0.0000%
 
 ``` r
-# extract the objective (cost of solution in this case)
+# extract the objective
 print(attr(s1, "objective"))
 ```
 
@@ -230,7 +206,7 @@ print(attr(s1, "runtime"))
 ```
 
     ## solution_1 
-    ##   5.271301
+    ##     28.973
 
 ``` r
 # extract state message from the solver
@@ -249,6 +225,39 @@ spplot(s1, "solution_1", main = "Solution", at = c(0, 0.5, 1.1),
 
 <img src="man/figures/README-minimal_solution-1.png" width="400" style="display: block; margin: auto;" />
 
+To evaluate the performance of the solution, we can calculate summary statistics.
+
+``` r
+# calculate solution cost
+print(eval_cost_summary(p1, s1[, "solution_1"]), width = Inf)
+```
+
+    ## # A tibble: 1 x 2
+    ##   summary  cost
+    ##   <chr>   <dbl>
+    ## 1 overall 2628.
+
+``` r
+# calculate information describing how well the targets are met by the solution
+print(eval_target_coverage_summary(p1, s1[, "solution_1"]), width = Inf)
+```
+
+    ## # A tibble: 5 x 9
+    ##   feature met   total_amount absolute_target absolute_held absolute_shortfall
+    ##   <chr>   <lgl>        <dbl>           <dbl>         <dbl>              <dbl>
+    ## 1 layer.1 TRUE          74.5           11.2          11.5                   0
+    ## 2 layer.2 TRUE          28.1            4.21          4.22                  0
+    ## 3 layer.3 TRUE          64.9            9.73          9.75                  0
+    ## 4 layer.4 TRUE          38.2            5.73          5.76                  0
+    ## 5 layer.5 TRUE          50.7            7.60          7.60                  0
+    ##   relative_target relative_held relative_shortfall
+    ##             <dbl>         <dbl>              <dbl>
+    ## 1            0.15         0.155                  0
+    ## 2            0.15         0.150                  0
+    ## 3            0.15         0.150                  0
+    ## 4            0.15         0.151                  0
+    ## 5            0.15         0.150                  0
+
 Although this solution adequately conserves each feature, it is inefficient because it does not consider the fact some of the planning units are already inside protected areas. Since our planning unit data contains information on which planning units are already inside protected areas (in the `"locked_in"` column of the attribute table), we can add constraints to ensure they are prioritized in the solution ([`add_locked_in_constraints`](https://prioritizr.net/reference/add_locked_in_constraints.html)).
 
 ``` r
@@ -260,7 +269,8 @@ p2 <- p1 %>%
 s2 <- solve(p2)
 ```
 
-    ## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+    ## Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (linux64)
+    ## Thread count: 2 physical cores, 4 logical processors, using up to 1 threads
     ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
     ## Model fingerprint: 0xb2af8965
     ## Variable types: 0 continuous, 90 integer (90 binary)
@@ -297,36 +307,22 @@ s2 <- solve(p2)
     ##      0     0 2836.87897    0    7 2839.12090 2836.87897  0.08%     -    0s
     ##      0     0 2836.88941    0    7 2839.12090 2836.88941  0.08%     -    0s
     ##      0     0 2836.89042    0    8 2839.12090 2836.89042  0.08%     -    0s
-    ##      0     0 2836.99962    0    7 2839.12090 2836.99962  0.07%     -    0s
-    ##      0     0 2837.08985    0    7 2839.12090 2837.08985  0.07%     -    0s
-    ##      0     0 2837.24552    0    6 2839.12090 2837.24552  0.07%     -    0s
-    ##      0     0 2837.31750    0    9 2839.12090 2837.31750  0.06%     -    0s
-    ##      0     0 2837.36426    0   10 2839.12090 2837.36426  0.06%     -    0s
-    ##      0     0 2837.39901    0   11 2839.12090 2837.39901  0.06%     -    0s
-    ##      0     0 2837.50764    0   10 2839.12090 2837.50764  0.06%     -    0s
-    ##      0     0 2837.51431    0   10 2839.12090 2837.51431  0.06%     -    0s
-    ##      0     0 2837.53639    0    9 2839.12090 2837.53639  0.06%     -    0s
-    ##      0     0 2837.53849    0   10 2839.12090 2837.53849  0.06%     -    0s
-    ##      0     0 2837.72116    0    8 2839.12090 2837.72116  0.05%     -    0s
-    ##      0     0 2837.76058    0    8 2839.12090 2837.76058  0.05%     -    0s
-    ##      0     0 2837.76433    0    9 2839.12090 2837.76433  0.05%     -    0s
-    ##      0     0 2837.77226    0    9 2839.12090 2837.77226  0.05%     -    0s
-    ##      0     0 2837.78842    0   10 2839.12090 2837.78842  0.05%     -    0s
-    ##      0     0 2837.82220    0    9 2839.12090 2837.82220  0.05%     -    0s
-    ##      0     0 2837.82524    0   10 2839.12090 2837.82524  0.05%     -    0s
-    ##      0     0 2837.87512    0    9 2839.12090 2837.87512  0.04%     -    0s
-    ##      0     0 2837.88038    0   10 2839.12090 2837.88038  0.04%     -    0s
-    ##      0     0 2837.95407    0    9 2839.12090 2837.95407  0.04%     -    0s
-    ##      0     0 2837.96355    0    9 2839.12090 2837.96355  0.04%     -    0s
-    ##      0     0 2838.04745    0    7 2839.12090 2838.04745  0.04%     -    0s
-    ## H    0     0                    2838.2640999 2838.04745  0.01%     -    0s
-    ##      0     0 2838.12770    0    5 2838.26410 2838.12770  0.00%     -    0s
+    ## H    0     0                    2838.2640999 2836.89042  0.05%     -    0s
+    ##      0     0 2836.99962    0    7 2838.26410 2836.99962  0.04%     -    0s
+    ##      0     0 2837.08985    0    7 2838.26410 2837.08985  0.04%     -    0s
+    ##      0     0 2837.24683    0    5 2838.26410 2837.24683  0.04%     -    0s
+    ##      0     0 2837.57052    0    7 2838.26410 2837.57052  0.02%     -    0s
+    ##      0     0 2837.63877    0    8 2838.26410 2837.63877  0.02%     -    0s
+    ##      0     0 2838.10881    0    2 2838.26410 2838.10881  0.01%     -    0s
+    ##      0     0     cutoff    0      2838.26410 2838.26410  0.00%     -    0s
     ## 
     ## Cutting planes:
-    ##   MIR: 7
-    ##   StrongCG: 3
+    ##   Gomory: 1
+    ##   MIR: 5
+    ##   StrongCG: 2
+    ##   RLT: 1
     ## 
-    ## Explored 1 nodes (95 simplex iterations) in 0.03 seconds
+    ## Explored 1 nodes (58 simplex iterations) in 0.03 seconds
     ## Thread count was 1 (of 4 available processors)
     ## 
     ## Solution count 3: 2838.26 2839.12 3027.7 
@@ -354,7 +350,8 @@ p3 <- p2 %>%
 s3 <- solve(p3)
 ```
 
-    ## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+    ## Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (linux64)
+    ## Thread count: 2 physical cores, 4 logical processors, using up to 1 threads
     ## Optimize a model with 293 rows, 234 columns and 1026 nonzeros
     ## Model fingerprint: 0x517c913c
     ## Variable types: 0 continuous, 234 integer (234 binary)
@@ -372,7 +369,7 @@ s3 <- solve(p3)
     ## Presolved: 221 rows, 188 columns, 832 nonzeros
     ## 
     ## 
-    ## Root relaxation: objective 3.862929e+03, 120 iterations, 0.00 seconds
+    ## Root relaxation: objective 3.862929e+03, 120 iterations, 0.01 seconds
     ## 
     ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
     ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
@@ -391,9 +388,10 @@ s3 <- solve(p3)
     ##      0     0 3934.87486    0    4 3939.60154 3934.87486  0.12%     -    0s
     ## 
     ## Cutting planes:
-    ##   GUB cover: 2
+    ##   Cover: 1
+    ##   GUB cover: 1
     ## 
-    ## Explored 1 nodes (217 simplex iterations) in 0.06 seconds
+    ## Explored 1 nodes (217 simplex iterations) in 0.08 seconds
     ## Thread count was 1 (of 4 available processors)
     ## 
     ## Solution count 6: 3939.6 3951.75 4058.75 ... 19567.2
@@ -421,7 +419,8 @@ p4 <- p3 %>%
 s4 <- solve(p4)
 ```
 
-    ## Gurobi Optimizer version 9.0.2 build v9.0.2rc0 (linux64)
+    ## Gurobi Optimizer version 9.1.1 build v9.1.1rc0 (linux64)
+    ## Thread count: 2 physical cores, 4 logical processors, using up to 1 threads
     ## Optimize a model with 654 rows, 506 columns and 2292 nonzeros
     ## Model fingerprint: 0x1ced3129
     ## Variable types: 0 continuous, 506 integer (506 binary)
@@ -431,7 +430,7 @@ s4 <- solve(p4)
     ##   Bounds range     [1e+00, 1e+00]
     ##   RHS range        [1e+00, 1e+01]
     ## Presolve removed 340 rows and 252 columns
-    ## Presolve time: 0.02s
+    ## Presolve time: 0.03s
     ## Presolved: 314 rows, 254 columns, 702 nonzeros
     ## Variable types: 0 continuous, 254 integer (254 binary)
     ## Found heuristic solution: objective 7270.1195351
@@ -446,18 +445,18 @@ s4 <- solve(p4)
     ## 
     ##      0     0 5489.15943    0   59 6070.20745 5489.15943  9.57%     -    0s
     ## H    0     0                    5859.8468810 5489.15943  6.33%     -    0s
-    ## H    0     0                    5858.4184908 5489.15943  6.30%     -    0s
-    ##      0     0 5738.84421    0   49 5858.41849 5738.84421  2.04%     -    0s
-    ##      0     0 5738.84421    0   29 5858.41849 5738.84421  2.04%     -    0s
-    ##      0     0 5814.59442    0   22 5858.41849 5814.59442  0.75%     -    0s
+    ##      0     0 5738.84421    0   49 5859.84688 5738.84421  2.06%     -    0s
+    ##      0     0 5738.84421    0   29 5859.84688 5738.84421  2.06%     -    0s
+    ## H    0     0                    5858.4184908 5738.84421  2.04%     -    0s
+    ##      0     0 5814.59442    0   24 5858.41849 5814.59442  0.75%     -    0s
     ##      0     0     cutoff    0      5858.41849 5858.41849  0.00%     -    0s
     ## 
     ## Cutting planes:
-    ##   Gomory: 6
-    ##   Zero half: 8
+    ##   Gomory: 5
+    ##   Zero half: 5
     ##   RLT: 6
     ## 
-    ## Explored 1 nodes (241 simplex iterations) in 0.05 seconds
+    ## Explored 1 nodes (236 simplex iterations) in 0.07 seconds
     ## Thread count was 1 (of 4 available processors)
     ## 
     ## Solution count 4: 5858.42 5859.85 6070.21 7270.12 
@@ -474,13 +473,13 @@ spplot(s4, "solution_1", main = "Solution", at = c(0, 0.5, 1.1),
 
 <img src="man/figures/README-contiguity_constraints-1.png" width="400" style="display: block; margin: auto;" />
 
-Now let's explore which planning units selected in the prioritization are most important for meeting our targets as cost-effectively as possible. To achieve this, we will calculate irreplaceability scores using the replacement cost method. Under this method, planning units with higher scores are more irreplaceable than those with lower scores. Furthermore, planning units with infinite scores are critical---it is impossible to meet our targets without protecting these planning units. Note that we override the solver behavior in the code below to prevent lots of unnecessary text from being output.
+Now let's explore which planning units selected in the prioritization are most important for meeting our targets as cost-effectively as possible. To achieve this, we will calculate importance (irreplaceability) scores using a version of the replacement cost method. Under this method, planning units with higher scores are more important for meeting the objective of our conservation planning problem than those with lower scores. Furthermore, planning units with infinite scores are irreplaceable---it is impossible to meet our targets without protecting these planning units. Note that we override the solver behavior in the code below to prevent lots of unnecessary text from being output.
 
 ``` r
 # solve the problem
 rc <- p4 %>%
       add_default_solver(gap = 0, verbose = FALSE) %>%
-      replacement_cost(s4[, "solution_1"])
+      eval_replacement_importance(s4[, "solution_1"])
 ```
 
     ## Warning in res(x, ...): overwriting previously defined solver
@@ -489,9 +488,8 @@ rc <- p4 %>%
 # set infinite values as 1.09 so we can plot them
 rc$rc[rc$rc > 100] <- 1.09
 
-# plot the irreplaceability scores
-# planning units that are replaceable are shown in purple, blue, green, and
-# yellow, and planning units that are truly irreplaceable are shown in red
+# plot the importance scores
+# planning units that are truly irreplaceable are shown in red
 spplot(rc, "rc", main = "Irreplaceability", xlim = c(-0.1, 1.1),
        ylim = c(-0.1, 1.1), at = c(seq(0, 0.9, 0.1), 1.01, 1.1),
        col.regions = c("#440154", "#482878", "#3E4A89", "#31688E", "#26828E",
@@ -501,8 +499,9 @@ spplot(rc, "rc", main = "Irreplaceability", xlim = c(-0.1, 1.1),
 
 <img src="man/figures/README-replacement_cost-1.png" width="400" style="display: block; margin: auto;" />
 
-This short example demonstrates how the *prioritizr R* package can be used to build a minimal conservation problem, how constraints and penalties can be iteratively added to the problem to obtain a solution, and how irreplaceability scores can be calculated for the solution to identify critical places. Although we explored just a few different functions for modifying the a conservation problem, the *prioritizr R* package provides many functions for specifying objectives, constraints, penalties, and decision variables, so that you can build and custom-tailor a conservation planning problem to suit your exact planning scenario.
+This short example demonstrates how the *prioritizr R* package can be used to build a minimal conservation problem, how constraints and penalties can be iteratively added to the problem to obtain a solution, and how importance scores can be calculated for the solution to identify critical places. Although we explored just a few different functions for modifying the a conservation problem, the *prioritizr R* package provides many functions for specifying objectives, constraints, penalties, and decision variables, so that you can build and custom-tailor a conservation planning problem to suit your exact planning scenario.
 
-## Getting help
+Getting help
+------------
 
 Please refer to the [package website](https://prioritizr.net/index.html) for more information on the *prioritizr R* package. This website contains [a comprehensive tutorial on the package](https://prioritizr.net/articles/prioritizr.html), [instructions for installing the *Gurobi* software suite to solve large-scale and complex conservation planning problems](https://prioritizr.net/articles/gurobi_installation.html), and [a tutorial on solving problems with multiple management zones](https://prioritizr.net/articles/zones.html). It also provides two worked examples that involve real-world data from [Tasmania, Australia](https://prioritizr.net/articles/tasmania.html) and [Salt Spring Island, Canada](https://prioritizr.net/articles/saltspring.html). Additionally, slides for previous seminars about the package can be found in [teaching repository](https://github.com/prioritizr/teaching). Furthermore, materials accompanying previous workshops are also available online too (i.e. the [CIBIO 2019 workshop](https://prioritizr.github.io/cibio-workshop/) and the [PacMara 2019 workshop](https://prioritizr.github.io/PacMara_workshop/)). If you have any questions about using the *prioritizr R* package or suggestions for improving it, please [file an issue at the package's online code repository](https://github.com/prioritizr/prioritizr/issues/new).

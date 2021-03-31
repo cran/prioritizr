@@ -14,8 +14,7 @@ NULL
 #'   [`Raster-class`] object then it must have only one
 #'   layer.
 #'
-#' @param str_tree `logical` should a
-#'   [GEOS STRtree](https://geos.osgeo.org/doxygen/classgeos_1_1index_1_1strtree_1_1STRtree.html) be used to
+#' @param str_tree `logical` should a GEOS STRtree structure be used to
 #'   to pre-process data? If `TRUE`, then the experimental
 #'   [rgeos::gUnarySTRtreeQuery()] function
 #'   will be used to pre-compute which planning units are adjacent to
@@ -159,7 +158,7 @@ boundary_matrix.SpatialPolygons <- function(x, str_tree = FALSE) {
   if (length(y$warnings) > 0)
     vapply(y$warnings, warning, character(1))
   # return result
-  Matrix::sparseMatrix(i = y[[1]], j = y[[2]], x = y[[3]], giveCsparse = TRUE,
+  Matrix::sparseMatrix(i = y[[1]], j = y[[2]], x = y[[3]],
                        symmetric = TRUE, dims = rep(length(x), 2))
 }
 

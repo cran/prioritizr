@@ -24,9 +24,11 @@ test_that("minimum set objective (compile, single zone)", {
   Matrix::diag(b_data) <- 0
   # i,j,x matrix for planning unit boundaries
   b_data <- as(b_data, "dgTMatrix")
-  b_data <- Matrix::sparseMatrix(i = b_data@i[b_data@x != 0],
-    j = b_data@j[b_data@x != 0], x = b_data@x[b_data@x != 0],
-    giveCsparse = FALSE, index1 = FALSE)
+  b_data <- triplet_sparse_matrix(
+    i = b_data@i[b_data@x != 0],
+    j = b_data@j[b_data@x != 0],
+    x = b_data@x[b_data@x != 0],
+    index1 = FALSE)
   # objectives for boundary decision variables
   b_obj <- o$obj()[n_pu + seq_len(length(b_data@i))]
   # lower bound for boundary decision variables
@@ -97,8 +99,7 @@ test_that("minimum set objective (compile, single zone)", {
 
 test_that("minimum set objective (solve, single zone)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # check that solution is feasible
   data(sim_pu_raster, sim_features)
   p1 <- problem(sim_pu_raster, sim_features) %>%
@@ -334,8 +335,7 @@ test_that("minimum set objective (compile, multiple zones)", {
 
 test_that("minimum set objective (solve, multiple zones)", {
   skip_on_cran()
-  skip_on_ci()
-  skip_if_not(any_solvers_installed())
+  skip_if_no_fast_solvers_installed()
   # load data
   data(sim_pu_zones_polygons, sim_features_zones)
   p_zones <- diag(3)

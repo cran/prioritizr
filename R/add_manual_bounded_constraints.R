@@ -14,29 +14,29 @@ NULL
 #'
 #' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
 #'
-#' @param data `data.frame` or [tibble::tibble()] object. See
-#'   the Details section for more information.
+#' @param data `data.frame` or [tibble::tibble()] object.
+#'   See the Data format section for more information.
 #'
-#' @details The argument to `data` must contain the following fields
-#'   (columns):
+#' @section Data format:
+#' The argument to `data` must contain the following fields (columns):
 #'
-#'   \describe{
+#' \describe{
 #'
-#'   \item{`"pu"`}{`integer` planning unit identifier.}
+#' \item{pu}{`integer` planning unit identifier.}
 #'
-#'   \item{`"zone"`}{`character` names of zones. Note that this
-#'     argument is optional for arguments to `x` that contain a single
-#'     zone.}
+#' \item{zone}{`character` names of zones. Note that this
+#'   argument is optional for arguments to `x` that contain a single
+#'   zone.}
 #'
-#'   \item{`"lower"`}{`numeric` values indicating the minimum
-#'     value that each planning unit can be allocated to in each zone
-#'     in the solution.}
+#' \item{lower}{`numeric` values indicating the minimum
+#'   value that each planning unit can be allocated to in each zone
+#'   in the solution.}
 #'
-#'   \item{`"upper"`}{`numeric` values indicating the maximum
-#'     value that each planning unit can be allocated to in each zone
-#'     in the solution.}
+#' \item{upper}{`numeric` values indicating the maximum
+#'   value that each planning unit can be allocated to in each zone
+#'   in the solution.}
 #'
-#'   }
+#' }
 #'
 #' @inherit add_contiguity_constraints return seealso
 #'
@@ -52,7 +52,8 @@ NULL
 #' p1 <- problem(sim_pu_polygons, sim_features, "cost") %>%
 #'       add_min_set_objective() %>%
 #'       add_relative_targets(0.2) %>%
-#'       add_binary_decisions()
+#'       add_binary_decisions() %>%
+#'       add_default_solver(verbose = FALSE)
 #'
 #' # create problem with locked in constraints using add_locked_constraints
 #' p2 <- p1 %>% add_locked_in_constraints("locked_in")
@@ -85,7 +86,8 @@ NULL
 #'       add_min_set_objective() %>%
 #'       add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5,
 #'                                   ncol = 3)) %>%
-#'       add_binary_decisions()
+#'       add_binary_decisions() %>%
+#'       add_default_solver(verbose = FALSE)
 #'
 #' # create data.frame with the following constraints:
 #' # planning units 1, 2, and 3 must be allocated to zone 1 in the solution
@@ -187,9 +189,6 @@ methods::setMethod("add_manual_bounded_constraints",
     # define function to validate changes to data
     vfun <- function(x) !inherits(try(validate_data(x), silent = TRUE),
                                   "try-error")
-    # define function to render data
-    rfun <- function(x)
-      utils::getFromNamespace("rHandsontableOutput", "rhandsontable")(x)
      # add constraints
      x$add_constraint(pproto(
       "BoundsManualConstraint",
@@ -199,8 +198,7 @@ methods::setMethod("add_manual_bounded_constraints",
         paste0(self$name, " [", nrow(self$parameters$get("Bound data")),
                " bound units]")
       },
-      parameters = parameters(misc_parameter("Bound data", data,
-                                             vfun, rfun)),
+      parameters = parameters(misc_parameter("Bound data", data, vfun)),
       calculate = function(self, x) {
         assertthat::assert_that(inherits(x, "ConservationProblem"))
         # get bound data
