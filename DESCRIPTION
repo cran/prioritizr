@@ -1,6 +1,6 @@
 Package: prioritizr
 Type: Package
-Version: 7.0.1
+Version: 7.1.1
 Title: Systematic Conservation Prioritization in R
 Description: 
     Systematic conservation prioritization using mixed integer linear
@@ -31,6 +31,9 @@ Authors@R:
       person(c('Matthew'), 'Strimas-Mackey',
         email='mstrimas@gmail.com', role = c('aut'),
         comment = c(ORCID = '0000-0001-8929-7776')),
+      person(c('Brandon', 'P', 'M'), 'Edwards',
+        email='brandonedwards3@cmail.carleton.ca', role = c('aut'),
+        comment = c(ORCID = '0000-0003-0865-3076')),
       person(c('Matthew', 'E'), 'Watts',
         email='m.watts@uq.edu.au', role = c('aut')),
       person(c('Peter'), 'Arcese',
@@ -44,12 +47,11 @@ Authors@R:
         comment = c(ORCID = '0000-0001-7755-996X')))
 Imports: utils, methods, assertthat (>= 0.2.0), data.table, uuid,
         Matrix, slam (>= 0.1-48), igraph, ape, rgeos, plyr, parallel,
-        doParallel, magrittr, exactextractr (>= 0.2.0), fasterize (>=
-        1.0.2), tibble (>= 2.0.0), withr (>= 2.3.0)
-Suggests: testthat, knitr, roxygen2, scales, xtable, RandomFields,
-        maptools, PBSmapping, gurobi, rcbc (>= 0.1.0.9001), cplexAPI
-        (>= 1.4.0), lpsymphony, Rsymphony, rmarkdown, prioritizrdata
-        (>= 0.2.4)
+        doParallel, magrittr, fasterize (>= 1.0.2), exactextractr (>=
+        0.2.0), tibble (>= 2.0.0), withr (>= 2.3.0)
+Suggests: testthat, knitr, roxygen2, scales, RandomFields, maptools,
+        PBSmapping, gurobi, rcbc (>= 0.1.0.9001), cplexAPI (>= 1.4.0),
+        lpsymphony, Rsymphony, rmarkdown, prioritizrdata (>= 0.2.4)
 Depends: R (>= 3.5.0), raster, sp, sf (>= 0.8-0), proto
 LinkingTo: Rcpp, RcppArmadillo (>= 0.10.1.0.0), BH
 License: GPL-3
@@ -60,7 +62,7 @@ SystemRequirements: C++11
 URL: https://prioritizr.net, https://github.com/prioritizr/prioritizr
 BugReports: https://github.com/prioritizr/prioritizr/issues
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'ArrayParameter-proto.R' 'MiscParameter-proto.R'
         'Parameters-proto.R' 'ScalarParameter-proto.R' 'parameters.R'
@@ -80,10 +82,11 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'add_default_solver.R' 'add_default_targets.R'
         'add_extra_portfolio.R' 'add_feature_contiguity_constraints.R'
         'add_feature_weights.R' 'add_gap_portfolio.R'
-        'add_gurobi_solver.R' 'add_linear_penalties.R'
-        'intersecting_units.R' 'add_locked_in_constraints.R'
-        'add_locked_out_constraints.R' 'loglinear_interpolation.R'
-        'add_loglinear_targets.R' 'add_lpsymphony_solver.R'
+        'add_gurobi_solver.R' 'add_linear_constraints.R'
+        'add_linear_penalties.R' 'intersecting_units.R'
+        'add_locked_in_constraints.R' 'add_locked_out_constraints.R'
+        'loglinear_interpolation.R' 'add_loglinear_targets.R'
+        'add_lpsymphony_solver.R'
         'add_mandatory_allocation_constraints.R' 'tbl_df.R'
         'add_manual_targets.R' 'add_manual_bounded_constraints.R'
         'add_manual_locked_constraints.R' 'add_max_cover_objective.R'
@@ -91,7 +94,7 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'add_max_phylo_end_objective.R' 'add_max_utility_objective.R'
         'add_min_largest_shortfall_objective.R'
         'add_min_set_objective.R' 'add_min_shortfall_objective.R'
-        'add_neighbor_contraints.R' 'add_proportion_decisions.R'
+        'add_neighbor_constraints.R' 'add_proportion_decisions.R'
         'add_relative_targets.R' 'add_rsymphony_solver.R'
         'add_semicontinuous_decisions.R' 'add_shuffle_portfolio.R'
         'add_top_portfolio.R' 'adjacency_matrix.R' 'boundary_matrix.R'
@@ -115,15 +118,16 @@ Collate: 'internal.R' 'pproto.R' 'Parameter-proto.R'
         'show.R' 'simulate.R' 'solvers.R' 'summaries.R' 'targets.R'
         'write_problem.R' 'zone_names.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2021-03-31 03:54:10 UTC; richard
+Packaged: 2021-10-26 22:52:43 UTC; richard
 Author: Jeffrey O Hanson [aut] (<https://orcid.org/0000-0002-4716-6134>),
   Richard Schuster [aut, cre] (<https://orcid.org/0000-0003-3191-7869>),
   Nina Morrell [aut],
   Matthew Strimas-Mackey [aut] (<https://orcid.org/0000-0001-8929-7776>),
+  Brandon P M Edwards [aut] (<https://orcid.org/0000-0003-0865-3076>),
   Matthew E Watts [aut],
   Peter Arcese [aut] (<https://orcid.org/0000-0002-8097-482X>),
   Joseph Bennett [aut] (<https://orcid.org/0000-0002-3901-9513>),
   Hugh P Possingham [aut] (<https://orcid.org/0000-0001-7755-996X>)
 Maintainer: Richard Schuster <richard.schuster@glel.carleton.ca>
 Repository: CRAN
-Date/Publication: 2021-03-31 12:40:02 UTC
+Date/Publication: 2021-10-29 22:50:09 UTC

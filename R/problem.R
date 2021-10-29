@@ -11,7 +11,9 @@ NULL
 #' customized to meet specific goals using [objectives],
 #' [targets], [constraints], and
 #' [penalties]. After building the problem, the
-#'  [solve()] function can be used to identify solutions.
+#' [solve()] function can be used to identify solutions.
+#' **Note that problems require an objective, and failing to specify an
+#' an objective will throw an error when attempting to solve it.**
 #'
 #' @param x [`Raster-class`],
 #'   [sf::st_sf()],
@@ -47,9 +49,7 @@ NULL
 #'     with column names that correspond to the abundance or occurrence of
 #'     different features in each planning unit. Note that this argument
 #'     type can only be used to create problems involving a single zone.
-#'   * [`x = Spatial-class`][sp::Spatial-class], or
-#'     [`x = sf::st_sf()`][sf::st_sf()], or
-#'     `x = data.frame`, or
+#'   * `x = data.frame`, or
 #'     `x = numeric` vector, or
 #'     `x = matrix`:
 #'     `y = data.frame` object
@@ -143,69 +143,136 @@ NULL
 #'
 #' @param ... not used.
 #'
-#' @details A reserve design exercise starts by dividing the study region
-#'   into planning units (typically square or hexagonal cells) and, for
-#'   each planning unit, assigning values that quantify socioeconomic
-#'   cost and conservation benefit for a set of conservation features. The
-#'   cost can be the acquisition cost of the land, the cost of management,
-#'   the opportunity cost of foregone commercial activities (e.g. from logging
-#'   or agriculture), or simply the area. The conservation features are
-#'   typically species (e.g. Clouded Leopard) or habitats (e.g. mangroves or
-#'   cloud forest). The benefit that each feature derives from a planning unit
-#'   can take a variety of forms, but is typically either occupancy (i.e.
-#'   presence or absence) or area of occurrence within each planning unit.
-#'   Finally, in some types of reserve design models, representation targets
-#'   must be set for each conservation feature, such as 20% of the current
-#'   extent of cloud forest or 10,000 km^2 of Clouded Leopard habitat
-#'   (see [targets]).
+#' @details
+#' A systematic conservation planning exercise leverages data to help inform
+#' conservation decision making. To help ensure that the
+#' data -- and resulting prioritizations -- are relevant to the over-arching
+#' goals of the exercise, you should decide on the management action
+#' (or set of actions) that need be considered in the exercise.
+#' For example, these actions could include establishing protected areas,
+#' selecting land for conservation easements, restoring habitat,
+#' planting trees for carbon sequestration, eradicating invasive
+#' species, or some combination of the previous actions.
+#' If the exercise involves multiple different actions, they can
+#' be incorporated by using multiple zones
+#' (see the Management Zones vignette for details). After deciding
+#' on the management action(s), you can compile the following data.
 #'
-#'   The goal of the reserve design exercise is then to optimize the trade-off
-#'   between conservation benefit and socioeconomic cost, i.e. to get the most
-#'   benefit for your limited conservation funds. In general, the goal of an
-#'   optimization problem is to minimize an objective function over a set of
-#'   decision variables, subject to a series of constraints. The decision
-#'   variables are what we control, usually there is one binary variable for
-#'   each planning unit specifying whether or not to protect that unit (but
-#'   other approaches are available, see [decisions]). The
-#'   constraints can be thought of as rules that need to be followed, for
-#'   example, that the reserve must stay within a certain budget or meet the
-#'   representation targets.
+#' First, you will need to create a set of planning units
+#' (i.e. discrete spatial areas) to inform decision making.
+#' Planning units are often created by subdividing a study region
+#' into a set square or hexagonal cells. They can also be created using
+#' administrative boundaries (e.g. provinces), land management boundaries
+#' (e.g. property boundaries derived from cadastral data), or
+#' ecological boundaries (e.g. based on ecosystem classification data).
+#' The size (i.e. spatial grain) of the planning units is often determined
+#' based on a compromise between the scale needed to inform decision making, the
+#' spatial accuracy (resolution) of available datasets, and
+#' the computational resources available for generating prioritizations
+#' (e.g. RAM and number of CPUs on your computer).
 #'
-#'   Integer linear programming (ILP) is the subset of optimization algorithms
-#'   used in this package to solve reserve design problems. The general form of
-#'   an integer programming problem can be expressed in matrix notation using
-#'   the following equation.
+#' Second, you will need data to quantify the cost of implementing
+#' implementing each management action within each planning unit.
+#' Critically, the cost data should reflect the management action(s)
+#' considered in the exercise.
+#' For example, costs are often specified using data that reflect economic
+#' expenditure (e.g. land acquisition cost),
+#' socioeconomic conditions (e.g. human population density),
+#' opportunity costs of foregone commercial activities
+#' (e.g. logging or agriculture), or
+#' opportunity costs of foregone recreational activities
+#' (e.g. recreational fishing) activities,
+#' In some cases -- depending on the management action(s) considered --
+#' it can make sense to use a constant cost value
+#' (e.g. all planning units are assigned a cost value equal to one)
+#' or use a cost value based on spatial extent
+#' (e.g. each planning unit is assigned a cost value based on its total area).
+#' Also, in most cases, you want to avoid negative cost values.
+#' This because a negative value means that a place is *desirable*
+#' for implementing a management action, and such places will almost
+#' always be selected for prioritization even if they provide no benefit.
 #'
-#'   \deqn{\mathit{Minimize} \space \mathbf{c}^{\mathbf{T}}\mathbf{x} \space
-#'   \mathit{subject \space to} \space
-#'   \mathbf{Ax}\geq= or\leq \mathbf{b}}{Minimize (c^T)*x subject to Ax \ge, =,
-#'   or \le b}
+#' Third, you will need data to quantify the benefits of implementing
+#' management actions within planning units.
+#' To achieve this, you will need to select a set of conservation features
+#' that relate to the over-arching goals of the exercise.
+#' For example, conservation features often include
+#' species (e.g. Clouded Leopard), habitats (e.g. mangroves or
+#' cloud forest), or ecosystems.
+#' The benefit that each feature derives from a planning unit
+#' can take a variety of forms, but is typically occupancy (i.e.
+#' presence or absence), area of occurrence within each planning unit
+#' (e.g. based on species' geographic range data), or
+#' a measure of habitat suitability (e.g. estimated using a statistical model).
+#' After compiling these data, you have the minimal data need to generate
+#' a prioritization.
 #'
-#'   Here, \eqn{x} is a vector of decision variables, \eqn{c} and \eqn{b} are
-#'   vectors of known coefficients, and \eqn{A} is the constraint
-#'   matrix. The final term specifies a series of structural
-#'   constraints where relational operators for the constraint can be either
-#'   \eqn{\ge}, \eqn{=}, or \eqn{\le} the coefficients. For example, in the
-#'   minimum set
-#'   cover problem, \eqn{c} would be a vector of costs for each planning unit,
-#'   \eqn{b} a vector of targets for each conservation feature, the relational
-#'   operator would be \eqn{\ge} for all features, and \eqn{A} would be the
-#'   representation matrix with \eqn{A_{ij}=r_{ij}}{Aij = rij}, the
-#'   representation level of feature \eqn{i} in planning unit \eqn{j}.
+#' A systematic conservation planning exercise involves prioritizing a set of
+#' management actions to be implemented within certain planning units.
+#' Critically, this prioritization should ideally optimize the trade-off
+#' between benefits and costs.
+#' To accomplish this, the \pkg{prioritizr} package uses input data
+#' to formulate optimization problems (see Optimization section for details).
+#' Broadly speaking, the goal of an optimization problem is to minimize
+#' (or maximize) an objective function over a set of
+#' decision variables, subject to a series of constraints.
+#' Here, an objective function specifies the metric for evaluating
+#' conservation plans. The decision variables are what we control, and usually
+#' there is one binary variable for each planning unit to specify whether that
+#' unit is selected or not (but other approaches are available, see
+#' [decisions]). The constraints can be thought of as rules that must be
+#' followed. For example, constraints can be used to ensure a prioritization
+#' must stay within a certain budget. These constraints can also leverage
+#' additional data to help ensure that prioritizations meet the over-arching
+#' goals of the exercise. For example, to account for existing conservation
+#' efforts, you could obtain data delineating the extent of existing protected
+#' areas and use constraints to lock in planning units that are covered by them
+#' (see [add_locked_in_constraints]).
 #'
-#'   Please note that this function internally computes the amount of each
-#'   feature in each planning unit when this data is not supplied (using the
-#'   `rij_matrix` parameter). As a consequence, it can take a while to
-#'   initialize large-scale conservation planning problems that involve
-#'   millions of planning units.
+#' @section Optimization:
+#' The \pkg{prioritizr} package uses exact algorithms to solve reserve design
+#' problems (see [solvers] for details).
+#' To achieve this, it internally formulates mathematical optimization problems
+#' using mixed integer linear programming (MILP). The general form of
+#' such problems can be expressed in matrix notation using
+#' the following equation.
+#'
+#' \deqn{\mathit{Minimize} \space \mathbf{c}^{\mathbf{T}}\mathbf{x} \space
+#' \mathit{subject \space to} \space
+#' \mathbf{Ax}\geq= or\leq \mathbf{b}}{Minimize (c^T)*x subject to Ax \ge, =,
+#' or \le b}
+#'
+#' Here, \eqn{x} is a vector of decision variables, \eqn{c} and \eqn{b} are
+#' vectors of known coefficients, and \eqn{A} is the constraint
+#' matrix. The final term specifies a series of structural
+#' constraints where relational operators for the constraint can be either
+#' \eqn{\ge}, \eqn{=}, or \eqn{\le} the coefficients. For example, in the
+#' minimum set cover problem, \eqn{c} would be a vector of costs for each
+#' planning unit, \eqn{b} a vector of targets for each conservation feature,
+#' the relational operator would be \eqn{\ge} for all features, and \eqn{A}
+#' would be the representation matrix with \eqn{A_{ij}=r_{ij}}{Aij = rij}, the
+#' representation level of feature \eqn{i} in planning unit \eqn{j}.
+#' If you wish to see exactly how a conservation planning problem is
+#' formulated as mixed integer linear programming problem, you can use
+#' the [write_problem()] function to save the optimization problem
+#' to a plain-text file on your computer and then view it using a standard
+#' text editor (e.g. Notepad).
+#'
+#' Please note that this function internally computes the amount of each
+#' feature in each planning unit when this data is not supplied (using the
+#' [rij_matrix] function). As a consequence, it can take a while to
+#' initialize large-scale conservation planning problems that involve
+#' millions of planning units.
 #'
 #' @return [`ConservationProblem-class`] object containing
-#'   data for building a prioritization problem.
+#'   data for a prioritization.
 #'
-#' @seealso [constraints], [decisions],
-#'  [objectives] [penalties],
-#'  [portfolios], [solvers], [targets],
-#'  [summaries], [importance].
+#' @seealso
+#' See [solve()] for details on solving a problem to generate solutions.
+#' Also, see [objectives], [penalties], [targets], [constraints],
+#' [decisions], [portfolios], [solvers] for information on customizing problems.
+#' Additionally, see [summaries] and [importance] for information on
+#' evaluating solutions.
 #'
 #' @aliases problem,Raster,Raster-method problem,Spatial,Raster-method problem,data.frame,data.frame-method problem,numeric,data.frame-method problem,data.frame,character-method problem,Spatial,character-method problem,Raster,ZonesRaster-method problem,Spatial,ZonesRaster-method problem,Spatial,ZonesCharacter-method problem,data.frame,ZonesCharacter-method problem,matrix,data.frame-method problem,sf,Raster-method problem,sf,ZonesCharacter-method problem,sf,character-method problem,sf,ZonesRaster-method
 #'
@@ -254,27 +321,52 @@ NULL
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
 #'
-#' # add columns to polygon planning unit data representing the abundance
-#' # of species inside them
-#' sim_pu_polygons$spp_1 <- rpois(length(sim_pu_polygons), 5)
-#' sim_pu_polygons$spp_2 <- rpois(length(sim_pu_polygons), 8)
-#' sim_pu_polygons$spp_3 <- rpois(length(sim_pu_polygons), 2)
+#' # since geo-processing can be slow for large spatial vector datasets
+#' # (e.g. polygons, lines, points), it can be worthwhile to pre-process the
+#' # planning unit data so that it contains columns indicating the amount of
+#' # each feature inside each planning unit
+#' # (i.e. each column corresponds to a different feature)
 #'
-#' # create problem using pre-processed data when feature abundances are
-#' # stored in the columns of an attribute table for a spatial vector dataset
-#' p6 <- problem(sim_pu_polygons, features = c("spp_1", "spp_2", "spp_3"),
-#'               "cost") %>%
+#' # calculate the amount of each species within each planning unit
+#' # (i.e. SpatialPolygonsDataFrame object)
+#' pre_proc_data <- rij_matrix(sim_pu_polygons, sim_features)
+#'
+#' # add extra columns to the polygon (Spatial) planning unit data
+#' # to indicate the amount of each species within each planning unit
+#' pre_proc_data <- as.data.frame(t(as.matrix(pre_proc_data)))
+#' names(pre_proc_data) <- names(sim_features)
+#' sim_pu_polygons@data <- cbind(sim_pu_polygons@data, pre_proc_data)
+#'
+#' # create problem using the polygon (Spatial) planning unit data
+#' # with the pre-processed columns
+#' p6 <- problem(sim_pu_polygons, features = names(pre_proc_data), "cost") %>%
 #'       add_min_set_objective() %>%
 #'       add_relative_targets(0.2) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
 #'
-#' # alternatively one can supply pre-processed aspatial data
+#' # this strategy of pre-processing columns can be used for sf objects too
+#' pre_proc_data2 <- rij_matrix(sim_pu_sf, sim_features)
+#' pre_proc_data2 <- as.data.frame(t(as.matrix(pre_proc_data2)))
+#' names(pre_proc_data2) <- names(sim_features)
+#' sim_pu_sf <- cbind(sim_pu_sf, pre_proc_data2)
+#'
+#' # create problem using the polygon (sf) planning unit data
+#' # with pre-processed columns
+#' p7 <- problem(sim_pu_sf, features = names(pre_proc_data2), "cost") %>%
+#'       add_min_set_objective() %>%
+#'       add_relative_targets(0.2) %>%
+#'       add_binary_decisions() %>%
+#'       add_default_solver(verbose = FALSE)
+#'
+#' # in addition to spatially explicit data, pre-processed aspatial data
+#' # can also be used to create a problem
+#' # (e.g. data created using external spreadsheet software)
 #' costs <- sim_pu_polygons$cost
 #' features <- data.frame(id = seq_len(nlayers(sim_features)),
 #'                        name = names(sim_features))
 #' rij_mat <- rij_matrix(sim_pu_polygons, sim_features)
-#' p7 <- problem(costs, features, rij_matrix = rij_mat) %>%
+#' p8 <- problem(costs, features, rij_matrix = rij_mat) %>%
 #'       add_min_set_objective() %>%
 #'       add_relative_targets(0.2) %>%
 #'       add_binary_decisions() %>%
@@ -288,28 +380,30 @@ NULL
 #' s5 <- solve(p5)
 #' s6 <- solve(p6)
 #' s7 <- solve(p7)
+#' s8 <- solve(p8)
 #'
 #' # plot solutions for problems associated with spatial data
 #' par(mfrow = c(3, 2), mar = c(0, 0, 4.1, 0))
-#' plot(s1, main = "raster data", axes = FALSE, box = FALSE)
+#' plot(s1, main = "raster data", axes = FALSE, box = FALSE, legend = FALSE)
 #'
 #' plot(s2, main = "polygon data")
-#' plot(s2[s2$solution_1 == 1, ], col = "darkgreen", add = TRUE)
+#' plot(s2[s2$solution_1 > 0.5, ], col = "darkgreen", add = TRUE)
 #'
 #' plot(s3, main = "line data")
-#' lines(s3[s3$solution_1 == 1, ], col = "darkgreen", lwd = 2)
+#' lines(s3[s3$solution_1 > 0.5, ], col = "darkgreen", lwd = 2)
 #'
 #' plot(s4, main = "point data", pch = 19)
-#' points(s4[s4$solution_1 == 1, ], col = "darkgreen", cex = 2, pch = 19)
+#' points(s4[s4$solution_1 > 0.5, ], col = "darkgreen", cex = 2, pch = 19)
 #'
-#' plot(s5, main = "sf (polygon) data", pch = 19)
-#' points(s5[s5$solution_1 == 1, ], col = "darkgreen", cex = 2, pch = 19)
+#' # note that as_Spatial() is for convenience to plot all solutions together
+#' plot(as_Spatial(s5), main = "sf (polygon) data", pch = 19)
+#' plot(as_Spatial(s5[s5$solution_1 > 0.5, ]), col = "darkgreen", add = TRUE)
 #'
-#' plot(s6, main = "preprocessed data", pch = 19)
-#' plot(s6[s6$solution_1 == 1, ], col = "darkgreen", add = TRUE)
+#' plot(s6, main = "preprocessed data (polygon data)", pch = 19)
+#' plot(s6[s6$solution_1 > 0.5, ], col = "darkgreen", add = TRUE)
 #'
 #' # show solutions for problems associated with aspatial data
-#' str(s7)
+#' str(s8)
 #' }
 #' # create some problems with multiple zones
 #'

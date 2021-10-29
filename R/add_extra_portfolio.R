@@ -17,7 +17,12 @@ NULL
 #'   [add_gurobi_solver()]. Specifically, version 8.0.0 (or greater)
 #'   of the \pkg{gurobi} package must be installed.
 #'
-#' @inherit add_cuts_portfolio seealso return
+#' @inherit add_cuts_portfolio return
+#'
+#' @seealso
+#' See [portfolios] for an overview of all functions for adding a portfolio.
+#'
+#' @family portfolios
 #'
 #' @examples
 #' \dontrun{
@@ -71,10 +76,10 @@ add_extra_portfolio <- function(x) {
   assertthat::assert_that(inherits(x, "ConservationProblem"))
   # check that version 8.0.0 or greater of gurobi is installed
   if (!requireNamespace("gurobi", quietly = TRUE))
-    stop(paste("the gurobi R package is required to generate solutions ",
+    stop(paste("the \"gurobi\" package is required to generate solutions ",
                "using this portfolio method"))
   if (utils::packageVersion("gurobi") < as.package_version("8.0.0"))
-    stop(paste("version 8.0.0 (or greater) of the gurobi package is required ",
+    stop(paste("version 8.0.0 (or greater) of the Gurobi software is required ",
                "to generate solution using this portfolio method"))
   # add portfolio
   x$add_portfolio(pproto(

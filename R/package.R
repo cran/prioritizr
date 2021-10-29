@@ -8,6 +8,10 @@ NULL
 #' @useDynLib prioritizr, .registration = TRUE
 NULL
 
+#' @importMethodsFrom fasterize raster
+#' @export
+NULL
+
 #' prioritizr: Systematic Conservation Prioritization in R
 #'
 #' The \pkg{prioritizr R} package uses mixed integer linear programming (MILP)
@@ -38,28 +42,30 @@ NULL
 #'
 #'   \describe{
 #'
-#'   \item{prioritizr}{provides background
-#'     information on systematic conservation planning and a comprehensive
-#'     overview of the package and its usage.}
+#'   \item{prioritizr}{Background information on systematic conservation
+#'     planning and a comprehensive overview of the package and its usage.}
 #'
-#'   \item{gurobi_installation}{contains
-#'     detailed instructions for installing and setting up the *Gurobi*
-#'     software suite for use with the package.}
-#'
-#'   \item{publication_record}{lists of
-#'     scientific publications that have used the package for developing
-#'     prioritizations.}
-#'
-#'   \item{zones}{describes how problems can be constructed with multiple
-#'     management actions or zones.}
-#'
-#'   \item{tasmania}{provides a tutorial using Tasmania, Australia
+#'   \item{tasmania}{Tutorial using Tasmania, Australia
 #'     as a case-study. This tutorial uses vector-based planning unit data and
 #'     is written for individuals familiar with the *Marxan* decision
 #'     support tool.}
 #'
-#'   \item{saltspring}{provides a tutorial using Salt Spring Island, Canada as a
+#'   \item{saltspring}{Tutorial using Salt Spring Island, Canada as a
 #'     case-study. This tutorial uses raster-based planning unit data.}
+#'
+#'   \item{zones}{Tutorial on using multiple management actions or zones
+#'     to create detailed prioritizations.}
+#'
+#'   \item{gurobi_installation}{Instructions for installing and setting up
+#'     the *Gurobi* optimization software for use with the package.}
+#'
+#'   \item{solver_benchmark}{Reports run times for solving
+#'     conservation planning problems of varying size and complexity
+#'     using different solvers.}
+#'
+#'   \item{publication_record}{List of publications that have cited the
+#'     package.}
+#'
 #'   }
 #'
 #' @references
@@ -83,3 +89,6 @@ NULL
 #' @name prioritizr
 #' @docType package
 NULL
+
+# avoid false positive NOTES
+f <- exactextractr::exact_extract

@@ -12,6 +12,7 @@ add_gurobi_solver(
   threads = 1,
   first_feasible = FALSE,
   numeric_focus = FALSE,
+  node_file_start = Inf,
   start_solution = NULL,
   verbose = TRUE
 )
@@ -57,6 +58,21 @@ useful when dealing problems that may suffer from numerical instability
 issues. Beware that it will likely substantially increase run time
 (sets the \emph{Gurobi} \code{NumericFocus} parameter
 to 3). Defaults to \code{FALSE}.}
+
+\item{node_file_start}{\code{numeric} threshold amount of memory (in GB).
+Once the amount of memory (RAM) used to store information for solving
+the optimization problem exceeds this parameter value, the solver
+will begin storing this information on disk
+(using the *Gurobi( \code{NodeFileStart} parameter).
+This functionality is useful if the system has insufficient memory to
+solve a given problem (e.g. solving the problem with default settings
+yields the \verb{OUT OF MEMORY} error message) and a system with more memory is
+not readily available.
+For example, a value of 4 indicates that the solver will start using
+the disk after it uses more than 4 GB of memory to store information
+on solving the problem.
+Defaults to \code{Inf} such that the solver will not attempt
+to store information on disk when solving a given problem.}
 
 \item{start_solution}{\code{NULL} or object containing the starting solution
 for the solver. Defaults to \code{NULL} such that no starting solution is used.
@@ -193,7 +209,7 @@ p <- problem(sim_pu_raster, sim_features) \%>\%
      add_binary_decisions() \%>\%
      add_gurobi_solver(gap = 0, verbose = FALSE)
 
-# generate solution \%>\%
+# generate solution
 s <- solve(p)
 
 # plot solution
@@ -225,5 +241,13 @@ integer linear programming solvers outperform simulated annealing for
 solving conservation planning problems. \emph{PeerJ}, 8: e9258.
 }
 \seealso{
-\link{solvers}.
+See \link{solvers} for an overview of all functions for adding a solver.
+
+Other solvers: 
+\code{\link{add_cbc_solver}()},
+\code{\link{add_cplex_solver}()},
+\code{\link{add_default_solver}()},
+\code{\link{add_lsymphony_solver}},
+\code{\link{add_rsymphony_solver}()}
 }
+\concept{solvers}

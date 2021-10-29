@@ -24,7 +24,12 @@ NULL
 #' run time and solution quality of different solvers when applied to
 #' different sized datasets.
 #'
-#' @inherit add_gurobi_solver seealso return references
+#' @inherit add_gurobi_solver return references
+#'
+#' @seealso
+#' See [solvers] for an overview of all functions for adding a solver.
+#'
+#' @family solvers
 #'
 #' @references
 #' Ralphs TK and Güzelsoy M (2005) The SYMPHONY callable library for mixed
@@ -130,10 +135,14 @@ add_rsymphony_solver <- function(x, gap = 0.1,
       rt <- system.time({
         x <- do.call(Rsymphony::Rsymphony_solve_LP, append(model, p))
       })
+      # manually return NULL to indicate error if no solution
+      #nocov start
       if (is.null(x$solution) ||
           names(x$status) %in% c("TM_NO_SOLUTION", "PREP_NO_SOLUTION"))
         return(NULL)
+      #nocov end
       # fix floating point issues with binary variables
+      #nocov start
       b <- which(model$types == "B")
       if (any(x$solution[b] > 1)) {
         if (max(x$solution[b]) < 1.01) {
@@ -149,6 +158,7 @@ add_rsymphony_solver <- function(x, gap = 0.1,
           stop("infeasible solution returned, try relaxing solver parameters")
         }
       }
+      #nocov end
       # fix floating point issues with continuous variables
       cv <- which(model$types == "C")
       x$solution[cv] <-

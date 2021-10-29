@@ -5,10 +5,6 @@ NULL
 #'
 #' Calculate importance scores for planning units selected in
 #' a solution following Ferrier *et al.* (2000).
-#' **Please note that
-#' the mathematical formulation for computing these scores needs verification,
-#' and so this functionality should be considered experimental at this point in
-#' time.**
 #'
 #' @inheritParams eval_replacement_importance
 #'
@@ -18,8 +14,19 @@ NULL
 #' calculated as the sum of the scores for each feature.
 #' Note that this function only works for problems with
 #' a minimum set objective and a single zone.
-#' It will throw an error for other types of problems that do not meet
-#' this specification.
+#' It will throw an error for problems that do not meet this criteria.
+#'
+#' **Please note that
+#' the mathematical formulation for computing these scores needs verification,
+#' and so this functionality should be considered experimental at this point in
+#' time.**
+#'
+#' @section Notes:
+#' In previous versions, the documentation for this function had a warning
+#' indicating that the mathematical formulation for this function required
+#' verification. The mathematical formulation for this function has since
+#' been corrected and verified, so now this function is recommended
+#' for general use.
 #'
 #' @inheritSection eval_cost_summary Solution format
 #'
@@ -36,6 +43,12 @@ NULL
 #' irreplaceability of areas for achieving a conservation goal, its application
 #' to real-world planning, and a research agenda for further refinement.
 #' *Biological Conservation*, 93: 303--325.
+#'
+#' @seealso
+#' See [importance] for an overview of all functions for evaluating
+#' the importance of planning units selected in a solution.
+#.
+#' @family importances
 #'
 #' @examples
 #' # seed seed for reproducibility
@@ -95,8 +108,6 @@ NULL
 #' plot(fs2, main = "Ferrier scores")
 #'
 #' }
-#'
-#' @inherit eval_replacement_importance seealso
 #'
 #' @aliases eval_ferrier_importance,ConservationProblem,numeric-method eval_ferrier_importance,ConservationProblem,matrix-method eval_ferrier_importance,ConservationProblem,data.frame-method eval_ferrier_importance,ConservationProblem,Spatial-method eval_ferrier_importance,ConservationProblem,sf-method eval_ferrier_importance,ConservationProblem,Raster-method
 #'

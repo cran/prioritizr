@@ -1,3 +1,66 @@
+# prioritizr 7.1.1
+
+- Release candidate for CRAN.
+
+# prioritizr 7.1.0.4
+
+- Update `eval_ferrier_importance` function with verified code.
+- Update documentation with information about Ferrier importance scores.
+- Brandon Edwards added to package author list.
+- Update Gurobi Installation guide vignette.
+- Update benchmark vignette.
+- Update `presolve_check` function to throw warning when
+  really high values specified in `add_neighbor_constraints`.
+
+# prioritizr 7.1.0.3
+
+Update `add_cbc_solver` function so that it can use a starting solution to reduce run time (via the `start_solution` parameter).
+
+# prioritizr 7.1.0.2
+
+- Fix examples that fail package checks.
+- Remove _xtable R_ package from Suggests because it is no longer used.
+
+# prioritizr 7.1.0.1
+
+- Update publication vignette.
+
+# prioritizr 7.1.0.0
+
+- New `add_linear_constraint` function to add arbitrary constraints.
+- Update `add_min_shortfall_objective` and
+  `add_min_largest_shortfall_objective` functions to handle targets with
+  a target threshold value of zero.
+- Minor improvements to the documentation. These include moving mathematical
+  details to dedicated sections, providing more links in the See also sections,
+  fixing text formatting for the `eval_connectivity_summary` function,
+  and tweaking the header in the README.
+- Update publication vignette.
+
+# prioritizr 7.0.1.5
+
+- Update publication vignette.
+
+# prioritizr 7.0.1.4
+
+- Update documentation and examples for `problem` function.
+- Update publication vignette.
+
+# prioritizr 7.0.1.3
+
+- New solver benchmark vignette.
+
+# prioritizr 7.0.1.2
+
+- Update `add_gurobi_solver` function so that it doesn't print excess debugging
+  information (accidentally introduced in previous version 7.0.1.1).
+
+# prioritizr 7.0.1.1
+
+- Update `add_gurobi_solver` function to support the `node_file_start`
+  parameter for the Gurobi software. This functionality is useful solving large
+  problems on systems with limited memory (#139).
+
 # prioritizr 7.0.1
 
 - Release candidate for CRAN.
