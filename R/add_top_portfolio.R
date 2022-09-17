@@ -7,12 +7,12 @@ NULL
 #' [problem()] by finding a pre-specified number of solutions that
 #' are closest to optimality (i.e the top solutions).
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param number_solutions `integer` number of solutions required.
 #'
 #' @details This strategy for generating a portfolio requires problems to
-#'   be solved using the *Gurobi* software suite (i.e. using
+#'   be solved using the *Gurobi* software suite (i.e., using
 #'   [add_gurobi_solver()]. Specifically, version 9.0.0 (or greater)
 #'   of the \pkg{gurobi} package must be installed.
 #'   Note that the number of solutions returned may be less than the argument to
@@ -65,8 +65,8 @@ NULL
 #' print(length(s2))
 #'
 #' # plot solutions in portfolio
-#' plot(stack(lapply(s2, category_layer)), main = "solution", axes = FALSE,
-#'      box = FALSE)
+#' plot(stack(lapply(s2, category_layer)),
+#'      main = "solution", axes = FALSE, box = FALSE)
 #' }
 #' @name add_top_portfolio
 NULL

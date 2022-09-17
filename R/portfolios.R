@@ -6,10 +6,10 @@ NULL
 #' Conservation planning exercises rarely have access to all the
 #' data needed to identify the *truly* perfect solution. This is because
 #' available data may lack important details
-#' (e.g. land acquisition costs may be unavailable), contain errors
-#' (e.g. species presence/absence data may have false positives),
+#' (e.g., land acquisition costs may be unavailable), contain errors
+#' (e.g., species presence/absence data may have false positives),
 #' or key objectives may not be formally incorporated into the
-#' prioritization process (e.g. future land use requirements).
+#' prioritization process (e.g., future land use requirements).
 #' As such, conservation planners can help decision makers by providing
 #' them with a portfolio of solutions to inform their decision.
 #'
@@ -59,6 +59,7 @@ NULL
 #' @family overviews
 #'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_features)
 #'
@@ -74,7 +75,7 @@ NULL
 #'
 #' # create problem with shuffle portfolio with 4 solutions
 #' p2 <- p %>% add_shuffle_portfolio(4)
-#' \dontrun{
+#'
 #' # create problem with extra portfolio
 #' p3 <- p %>% add_extra_portfolio()
 #'
@@ -101,8 +102,7 @@ NULL
 #'
 #' # plot solutions from shuffle portfolio
 #' plot(stack(s[[5]]), axes = FALSE, box = FALSE)
-#'
-
 #' }
+#'
 #' @name portfolios
 NULL

@@ -11,7 +11,7 @@ NULL
 #'
 #' @usage add_manual_locked_constraints(x, data)
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param data `data.frame` or [tibble::tibble()] object.
 #'   See the Data format section for more information.
@@ -30,10 +30,10 @@ NULL
 #'
 #' \item{status}{`numeric` values indicating how much
 #'   of each planning unit should be allocated to each zone in the solution.
-#'   For example, the `numeric` values could be binary values (i.e. zero
+#'   For example, the `numeric` values could be binary values (i.e., zero
 #'   or one) for problems containing binary-type decision variables
 #'   (using the [add_binary_decisions()] function). Alternatively,
-#'   the `numeric` values could be proportions (e.g. 0.5) for problems
+#'   the `numeric` values could be proportions (e.g., 0.5) for problems
 #'   containing proportion-type decision variables (using the
 #'   [add_proportion_decisions()]).}
 #'
@@ -47,6 +47,7 @@ NULL
 #' @family constraints
 #'
 #' @examples
+#' \dontrun{
 #' # set seed for reproducibility
 #' set.seed(500)
 #'
@@ -69,7 +70,7 @@ NULL
 #'                           status = 1)
 #'
 #' p3 <- p1 %>% add_manual_locked_constraints(locked_data)
-#' \dontrun{
+#'
 #' # solve problems
 #' s1 <- solve(p1)
 #' s2 <- solve(p2)
@@ -85,7 +86,7 @@ NULL
 #'
 #' plot(s3, main = "add_manual_constraints")
 #' plot(s3[s3$solution_1 == 1, ], col = "darkgreen", add = TRUE)
-#' }
+#'
 #' # create minimal problem with multiple zones
 #' p4 <- problem(sim_pu_zones_polygons, sim_features_zones,
 #'               c("cost_1", "cost_2", "cost_3")) %>%
@@ -109,7 +110,7 @@ NULL
 #'
 #' # create problem with added constraints
 #' p5 <- p4 %>% add_manual_locked_constraints(locked_data2)
-#' \dontrun{
+#'
 #' # solve problem
 #' s4 <- solve(p4)
 #' s5 <- solve(p5)
@@ -224,7 +225,7 @@ methods::setMethod("add_manual_locked_constraints",
           data$zone <- x$zone_names()[1]
         data$zone <- match(as.character(data$zone), x$zone_names())
         # remove rows for raster cells that aren't really planning units
-        # i.e. contain NA values in all zones
+        # i.e., contain NA values in all zones
         pu <- x$get_data("cost")
         if (inherits(pu, "Raster")) {
           if (raster::nlayers(pu) == 1) {

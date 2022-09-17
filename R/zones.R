@@ -17,7 +17,7 @@ NULL
 #' Specifically, the data should describe the expected amount of each
 #' feature within each planning unit given each management zone.
 #' For example, the data could describe the occupancy
-#' (e.g. presence/absence), probability of occurrence, or
+#' (e.g., presence/absence), probability of occurrence, or
 #' abundance expected for each feature when each planning unit
 #' is allocated to a different zone.
 #'
@@ -82,7 +82,6 @@ NULL
 #' data(sim_pu_raster)
 #'
 #  # simulate distributions for three species under two management zones
-#' # (note this requires the RandomFields package to be installed)
 #' zone_1 <- simulate_species(sim_pu_raster, 3)
 #' zone_2 <- simulate_species(sim_pu_raster, 3)
 #'

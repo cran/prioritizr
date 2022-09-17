@@ -11,7 +11,7 @@ marxan_problem(x, ...)
 
 \method{marxan_problem}{default}(x, ...)
 
-\method{marxan_problem}{data.frame}(x, spec, puvspr, bound = NULL, blm = 0, ...)
+\method{marxan_problem}{data.frame}(x, spec, puvspr, bound = NULL, blm = 0, symmetric = TRUE, ...)
 
 \method{marxan_problem}{character}(x, ...)
 }
@@ -102,40 +102,51 @@ between the planning units identified in the previous two columns.}
 \item{blm}{\code{numeric} boundary length modifier. This argument only
 has an effect when argument to \code{x} is a \code{data.frame}. The
 default argument is zero.}
+
+\item{symmetric}{\code{logical} does the boundary data (i.e., argument to
+\code{bound}) describe symmetric relationships between planning units?
+If the boundary data contain asymmetric connectivity data,
+this parameter should be set to \code{FALSE}.
+Defaults to \code{TRUE}.}
 }
 \value{
-\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.
+\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.
 }
 \description{
 Create a conservation planning \code{\link[=problem]{problem()}} following the
 mathematical formulations used in \emph{Marxan} (detailed in Beyer
 \emph{et al.} 2016). Note that these problems are solved using
-exact algorithms and not simulated annealing (i.e. the \emph{Marxan} software).
+exact algorithms and not simulated annealing (i.e., the \emph{Marxan} software).
 }
 \details{
 This function is provided as a convenient wrapper for solving
-\emph{Marxan} problems using \pkg{prioritizr}.
+\emph{Marxan} problems using the \pkg{prioritizr} package.
+Please note that it requires installation of the \pkg{data.table} package
+to import \emph{Marxan} data files.
 }
 \section{Notes}{
 
-In early versions, this function could accommodate asymmetric connectivity
-data. This functionality is no longer supported. To specify asymmetric
-connectivity, please see the \code{\link[=add_connectivity_penalties]{add_connectivity_penalties()}} function.
+In previous versions, this function could not accommodate asymmetric
+connectivity data. It has now been updated to handle asymmetric connectivity
+data.
 }
 
 \examples{
 # create Marxan problem using Marxan input file
+# (note this example requires the data.table package to be installed)
+\dontrun{
 input_file <- system.file("extdata/input.dat", package = "prioritizr")
 p1 <- marxan_problem(input_file) \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s1 <- solve(p1)
 
 # print solution
 head(s1)
-}
+
 # create Marxan problem using data.frames that have been loaded into R
+# (note this example also requires the data.table package to be installed)
 ## load in planning unit data
 pu_path <- system.file("extdata/input/pu.dat", package = "prioritizr")
 pu_dat <- data.table::fread(pu_path, data.table = FALSE)
@@ -160,18 +171,18 @@ head(bound_dat)
 # create problem without the boundary data
 p2 <- marxan_problem(pu_dat, spec_dat, puvspr_dat) \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s2 <- solve(p2)
 
 # print solution
 head(s2)
-}
+
 # create problem with the boundary data and a boundary length modifier
 # set to 5
 p3 <- marxan_problem(pu_dat, spec_dat, puvspr_dat, bound_dat, 5) \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s3 <- solve(p3)
 

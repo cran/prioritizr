@@ -27,40 +27,49 @@ check_that <- function(x) {
 #' @noRd
 matrix_to_triplet_dataframe <- function(x) {
   if (inherits(x, c("dsCMatrix")))
-    x <- methods::as(x, "dsTMatrix")
+    x <- as_Matrix(x, "dsTMatrix")
   if (inherits(x, c("dgCMatrix", "matrix")))
-    x <- methods::as(x, "dgTMatrix")
+    x <- as_Matrix(x, "dgTMatrix")
   data.frame(i = x@i + 1, j = x@j + 1, x = x@x)
 }
 
 #' Convert a triplet data.frame to a matrix
 #'
-#' Convert a triplet data.framr object to a sparse matrix.
+#' Convert a triplet `data.frame` object to a sparse matrix.
 #'
 #' @param x `data.frame` object. The first column contains the row
 #'   numbers, the second column contains the column numbers, and the
 #'   third column contains the cell values.
 #
+#' @param forceSymmetric `logical` should matrix be coerced to symmetric?
 #' @return [`dgCMatrix-class`] object.
 #'
 #' @noRd
-triplet_dataframe_to_matrix <- function(x, forceSymmetric=FALSE, ...) {
-  assertthat::assert_that(inherits(x, "data.frame"), isTRUE(ncol(x) == 3),
-    isTRUE(all(x[[1]] == round(x[[1]]))), isTRUE(all(x[[2]] == round(x[[2]]))))
+triplet_dataframe_to_matrix <- function(x, forceSymmetric = FALSE, ...) {
+  # assert arguments are valid
+  assertthat::assert_that(
+    inherits(x, "data.frame"),
+    isTRUE(ncol(x) == 3),
+    isTRUE(all(x[[1]] == round(x[[1]]))),
+    isTRUE(all(x[[2]] == round(x[[2]]))),
+    assertthat::is.flag(forceSymmetric),
+    assertthat::noNA(forceSymmetric))
   # create sparse amtrix
   m <- triplet_sparse_matrix(i = x[[1]], j = x[[2]], x = x[[3]], ...)
   if (forceSymmetric) {
     # force the matrix to be symmetric
-    # we cannot gurantee that the cells that are filled in belong to either
+    # we cannot guarantee that the cells that are filled in belong to either
     # the upper or the lower diagonal
     m2 <- matrix(c(m@j + 1, m@i + 1, m@x), ncol = 3)
     m2 <- m2[m2[, 1] != m2[, 2], ]
     m[m2[, 1:2]] <- m2[, 3]
-    return(Matrix::forceSymmetric(m))
+    m <- Matrix::forceSymmetric(m)
+    m <- as_Matrix(m, "dsCMatrix")
   } else {
-    # return matrix in compressed format
-    return(methods::as(m, "dgCMatrix"))
+    m <- as_Matrix(m, "dgCMatrix")
   }
+  # return result
+  m
 }
 
 #' Sparse matrix (triplet)
@@ -81,7 +90,7 @@ triplet_sparse_matrix <- function(...) {
   if (utils::packageVersion("Matrix") >= 1.3) {
     args <- list(..., repr = "T")
   } else {
-    args <- list(..., giveCsparse = FALSE)
+    args <- list(..., giveCsparse = FALSE) #nocov
   }
   # return result
   do.call(Matrix::sparseMatrix, args)
@@ -280,4 +289,64 @@ intersecting_extents <- function(x, y) {
 geometry_classes <- function(x) {
   assertthat::assert_that(inherits(x, "sf"))
   vapply(sf::st_geometry(x), class, character(3))[2, ]
+}
+
+#' Convert to Matrix
+#'
+#' Convert an object to a matrix class provided by the \pkg{Matrix} package.
+#'
+#' @param object object.
+#'
+#' @param class `character` name of new classes.
+#'
+#' @details
+#' This function is a wrapper that is designed to provide
+#' compatibility with older and newer versions of the \pkg{Matrix} package.
+#'
+#' @return `Matrix` object.
+#'
+#' @noRd
+as_Matrix <- function(object, class) {
+  # assert valid argument
+  assertthat::assert_that(
+    assertthat::is.string(class),
+    assertthat::noNA(class)
+  )
+  # if we just want to convert to generic Matrix class then do that...
+  if (identical(class, "Matrix")) {
+    return(methods::as(object, class))
+  }
+  # convert matrix
+  # nocov start
+  if (utils::packageVersion("Matrix") >= as.package_version("1.4-2")) {
+    if (identical(class, "dgCMatrix")) {
+      c1 <- "dMatrix"
+      c2 <- "generalMatrix"
+      c3 <- "CsparseMatrix"
+    } else if (identical(class, "dgTMatrix")) {
+      c1 <- "dMatrix"
+      c2 <- "generalMatrix"
+      c3 <- "TsparseMatrix"
+    } else if (identical(class, "dsCMatrix")) {
+      c1 <- "dMatrix"
+      c2 <- "symmetricMatrix"
+      c3 <- "CsparseMatrix"
+    } else if (identical(class, "dsTMatrix")) {
+      c1 <- "dMatrix"
+      c2 <- "symmetricMatrix"
+      c3 <- "TsparseMatrix"
+    } else if (identical(class, "lgCMatrix")) {
+      c1 <- "lMatrix"
+      c2 <- "generalMatrix"
+      c3 <- "CsparseMatrix"
+    } else {
+      stop("argument to \"class\" not recognized")
+    }
+    out <- methods::as(methods::as(methods::as(object, c1), c2), c3)
+  } else {
+    out <- methods::as(object, class)
+  }
+  # nocov end
+  # return result
+  out
 }

@@ -5,7 +5,7 @@ NULL
 #'
 #' Solve a conservation planning [problem()].
 #'
-#' @param a [problem()] (i.e. [`ConservationProblem-class`]) or
+#' @param a [problem()] (i.e., [`ConservationProblem-class`]) or
 #'   [`OptimizationProblem-class`] object.
 #'
 #' @param b [`Solver-class`] object. Not used if `a` is an
@@ -29,15 +29,15 @@ NULL
 #' then the best available exact algorithm solver will be used by default
 #' (see [add_default_solver()]. Although these exact algorithm
 #' solvers will often display a lot of information that isn't really that
-#' helpful (e.g. nodes, cutting planes), they do display information
-#' about the progress they are making on solving the problem (e.g. the
+#' helpful (e.g., nodes, cutting planes), they do display information
+#' about the progress they are making on solving the problem (e.g., the
 #' performance of the best solution found at a given point in time). If
 #' potential issues were detected during the
 #' presolve checks (see [presolve_check()])
-#' and the problem is being forcibly solved (i.e. with `force = TRUE`),
+#' and the problem is being forcibly solved (i.e., with `force = TRUE`),
 #' then it is also worth checking for any warnings displayed by the solver
 #' to see if these potential issues are actually causing issues
-#' (e.g. *Gurobi* can display warnings that include
+#' (e.g., *Gurobi* can display warnings that include
 #' `"Warning: Model contains large matrix coefficient range"` and
 #' `"Warning: Model contains large rhs"`).
 #'
@@ -85,11 +85,11 @@ NULL
 #'     will contain fields (columns) that solution the values.
 #'     Specifically, the field name(s) containing the solution values
 #'     be will named as `"solution_XXX"` where `"XXX"` corresponds to a solution
-#'     identifier (e.g. `"solution_1"`).
+#'     identifier (e.g., `"solution_1"`).
 #'     If the argument to `a` contains multiple zones, then the fields
 #'     containing solutions will be named as `"solution_XXX_YYY"` where
 #'     `"XXX"` corresponds to the solution identifier and `"YYY"` is the name
-#'     of the management zone (e.g. `"solution_1_zone1"`).}
+#'     of the management zone (e.g., `"solution_1_zone1"`).}
 #'
 #'   }
 #'
@@ -100,8 +100,8 @@ NULL
 #'   attributes: `"objective"` containing the solution's objective,
 #'   `"runtime"` denoting the number of seconds that elapsed while solving
 #'   the problem, and `"status"` describing the status of the solution
-#'   (e.g. `"OPTIMAL"` indicates that the optimal solution was found).
-#'   In most cases, the first solution (e.g. `"solution_1"`)
+#'   (e.g., `"OPTIMAL"` indicates that the optimal solution was found).
+#'   In most cases, the first solution (e.g., `"solution_1"`)
 #'   will contain the best solution found by the solver (note that this
 #'   may not be an optimal solution depending on the gap used to solve
 #'   the problem and noting that the default gap is 0.1).
@@ -113,6 +113,7 @@ NULL
 #' reformat solutions that contain multiple zones.
 #'
 #' @examples
+#' \dontrun{
 #' # set seed for reproducibility
 #' set.seed(500)
 #'
@@ -126,7 +127,7 @@ NULL
 #'       add_relative_targets(0.1) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve the problem
 #' s1 <- solve(p1)
 #'
@@ -144,14 +145,14 @@ NULL
 #'
 #' # plot solution
 #' plot(s1, main = "solution", axes = FALSE, box = FALSE)
-#' }
+#'
 #' # build minimal conservation problem with polygon (Spatial) data
 #' p2 <- problem(sim_pu_polygons, sim_features, cost_column = "cost") %>%
 #'       add_min_set_objective() %>%
 #'       add_relative_targets(0.1) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve the problem
 #' s2 <- solve(p2)
 #'
@@ -164,7 +165,7 @@ NULL
 #'
 #' # plot solution
 #' spplot(s2, zcol = "solution_1", main = "solution", axes = FALSE, box = FALSE)
-#' }
+#'
 #'
 #' # build minimal conservation problem with polygon (sf) data
 #' p3 <- problem(sim_pu_sf, sim_features, cost_column = "cost") %>%
@@ -172,7 +173,7 @@ NULL
 #'       add_relative_targets(0.1) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve the problem
 #' s3 <- solve(p3)
 #'
@@ -185,7 +186,7 @@ NULL
 #'
 #' # plot solution
 #' plot(s3[, "solution_1"])
-#' }
+#'
 #'
 #' # build multi-zone conservation problem with raster data
 #' p4 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
@@ -194,7 +195,7 @@ NULL
 #'                                   ncol = 3)) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve the problem
 #' s4 <- solve(p4)
 #'
@@ -207,7 +208,7 @@ NULL
 #'
 #' # plot solution
 #' plot(category_layer(s4), main = "solution", axes = FALSE, box = FALSE)
-#' }
+#'
 #' # build multi-zone conservation problem with polygon (sf) data
 #' p5 <- problem(sim_pu_zones_sf, sim_features_zones,
 #'               cost_column = c("cost_1", "cost_2", "cost_3")) %>%
@@ -216,7 +217,7 @@ NULL
 #'                                   ncol = 3)) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve the problem
 #' s5 <- solve(p5)
 #'
@@ -289,7 +290,7 @@ methods::setMethod(
     # check that solution is valid
     #nocov start
     if (is.null(sol) || is.null(sol[[1]]$x)) {
-      stop("no solution found (e.g. due to problem infeasibility or time ",
+      stop("no solution found (e.g., due to problem infeasibility or time ",
            "limits)")
     }
     #nocov end

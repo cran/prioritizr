@@ -3,7 +3,7 @@ NULL
 
 #' Add a *CBC* solver
 #'
-#' Specify that the [*CBC*](https://projects.coin-or.org/Cbc)
+#' Specify that the [*CBC*](https://github.com/coin-or/Cbc)
 #' (COIN-OR branch and cut) software (Forrest &
 #' Lougee-Heimer 2005) should be used to solve a conservation planning
 #' [problem()].
@@ -16,13 +16,13 @@ NULL
 #' @inheritParams add_gurobi_solver
 #'
 #' @details
-#' [*CBC*](https://projects.coin-or.org/Cbc) is an
+#' [*CBC*](https://github.com/coin-or/Cbc) is an
 #' open-source mixed integer programming solver that is part of the
 #' Computational Infrastructure for Operations Research (COIN-OR) project.
 #' Although formal benchmarks examining the performance of this solver for
 #' conservation planning problems have yet to be completed, preliminary
 #' analyses suggest that it performs much faster than the other open-source
-#' solvers (i.e. [add_rsymphony_solver()], [add_rsymphony_solver()]), and
+#' solvers (i.e., [add_rsymphony_solver()], [add_rsymphony_solver()]), and
 #' so we recommend using this solver if the *Gurobi* and *IBM CPLEX* solvers
 #' are unavailable.
 #'
@@ -40,12 +40,12 @@ NULL
 #' such as the
 #' [Rtools software](https://cran.r-project.org/bin/windows/Rtools/)
 #' or system libraries -- prior to installing the \pkg{rcbc} package.
-#' For further details on installing this package, please consult
-#' [official installation instructions for the package](https://dirkschumacher.github.io/rcbc/).
+#' For further details on installing this package, please consult the
+#' [online package documentation](https://dirkschumacher.github.io/rcbc/).
 #'
 #' @inheritSection add_gurobi_solver Start solution format
 #'
-#' @return Object (i.e. [`ConservationProblem-class`]) with the solver
+#' @return Object (i.e., [`ConservationProblem-class`]) with the solver
 #'  added to it.
 #'
 #' @seealso
@@ -176,11 +176,23 @@ add_cbc_solver <- function(x, gap = 0.1,
         max = identical(x$modelsense(), "max"),
         obj = x$obj(),
         is_integer = x$vtype() == "B",
-        mat = x$A(),
+        mat = as_Matrix(x$A(), "dgTMatrix"),
         col_lb = x$lb(),
         col_ub = x$ub(),
         row_lb = row_lb,
         row_ub = row_ub)
+      # if needed, insert dummy row to ensure non-zero value in last rij cell
+      if (abs(model$mat[nrow(model$mat), ncol(model$mat)]) < 1e-300) {
+        model$mat <- as_Matrix(
+          rbind(
+            model$mat,
+            Matrix::sparseMatrix(i = 1, j = ncol(model$mat), x = 1, repr = "T")
+          ),
+          "dgTMatrix"
+        )
+        model$row_lb <- c(model$row_lb, -Inf)
+        model$row_ub <- c(model$row_ub, Inf)
+      }
       # add starting solution if specified
       start <- self$get_data("start")
       if (!is.null(start) && !is.Waiver(start)) {

@@ -7,13 +7,13 @@
 add_cuts_portfolio(x, number_solutions = 10L)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{number_solutions}{\code{integer} number of attempts to generate
 different solutions. Defaults to 10.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the portfolio
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the portfolio
 added to it.
 }
 \description{
@@ -33,12 +33,13 @@ having multiple threads allocated for solving an individual problem.
 \section{Notes}{
 
 In early versions (< 4.0.1), this function was only compatible with
-\emph{Gurobi} (i.e. \code{\link[=add_gurobi_solver]{add_gurobi_solver()}}). To provide functionality with
+\emph{Gurobi} (i.e., \code{\link[=add_gurobi_solver]{add_gurobi_solver()}}). To provide functionality with
 exact algorithm solvers, this function now adds constraints to the
 problem formulation to generate multiple solutions.
 }
 
 \examples{
+\dontrun{
 # set seed for reproducibility
 set.seed(500)
 
@@ -52,13 +53,13 @@ p1 <- problem(sim_pu_raster, sim_features) \%>\%
       add_cuts_portfolio(10) \%>\%
       add_default_solver(gap = 0.2, verbose = FALSE)
 
-\dontrun{
+
 # solve problem and generate 10 solutions within 20\% of optimality
 s1 <- solve(p1)
 
 # plot solutions in portfolio
 plot(stack(s1), axes = FALSE, box = FALSE)
-}
+
 # build multi-zone conservation problem with cuts portfolio
 p2 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_min_set_objective() \%>\%
@@ -68,7 +69,6 @@ p2 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_cuts_portfolio(10) \%>\%
       add_default_solver(gap = 0.2, verbose = FALSE)
 
-\dontrun{
 # solve the problem
 s2 <- solve(p2)
 
@@ -76,8 +76,8 @@ s2 <- solve(p2)
 str(s2, max.level = 1)
 
 # plot solutions in portfolio
-plot(stack(lapply(s2, category_layer)), main = "solution", axes = FALSE,
-     box = FALSE)
+plot(stack(lapply(s2, category_layer)),
+     main = "solution", axes = FALSE, box = FALSE)
 }
 }
 \references{

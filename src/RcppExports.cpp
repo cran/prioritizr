@@ -297,6 +297,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcpp_apply_asym_connectivity_penalties
+bool rcpp_apply_asym_connectivity_penalties(SEXP x, double penalty, Rcpp::List data);
+RcppExport SEXP _prioritizr_rcpp_apply_asym_connectivity_penalties(SEXP xSEXP, SEXP penaltySEXP, SEXP dataSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type penalty(penaltySEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_apply_asym_connectivity_penalties(x, penalty, data));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_apply_boundary_penalties
 bool rcpp_apply_boundary_penalties(SEXP x, double penalty, Rcpp::NumericVector edge_factor, Rcpp::NumericMatrix zones_matrix, arma::sp_mat boundary_matrix);
 RcppExport SEXP _prioritizr_rcpp_apply_boundary_penalties(SEXP xSEXP, SEXP penaltySEXP, SEXP edge_factorSEXP, SEXP zones_matrixSEXP, SEXP boundary_matrixSEXP) {
@@ -530,6 +543,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcpp_asym_connectivity
+double rcpp_asym_connectivity(Rcpp::List data, Rcpp::NumericMatrix solution);
+RcppExport SEXP _prioritizr_rcpp_asym_connectivity(SEXP dataSEXP, SEXP solutionSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type solution(solutionSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_asym_connectivity(data, solution));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_boundary
 double rcpp_boundary(Rcpp::NumericVector edge_factor, Rcpp::NumericMatrix zones_matrix, arma::sp_mat boundary_matrix, Rcpp::NumericMatrix solution);
 RcppExport SEXP _prioritizr_rcpp_boundary(SEXP edge_factorSEXP, SEXP zones_matrixSEXP, SEXP boundary_matrixSEXP, SEXP solutionSEXP) {
@@ -629,17 +654,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type slot(slotSEXP);
     Rcpp::traits::input_parameter< std::size_t >::type n_preallocate(n_preallocateSEXP);
     rcpp_result_gen = Rcpp::wrap(rcpp_sp_to_polyset(x, slot, n_preallocate));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpp_str_tree_to_sparse_matrix
-Rcpp::List rcpp_str_tree_to_sparse_matrix(Rcpp::List data);
-RcppExport SEXP _prioritizr_rcpp_str_tree_to_sparse_matrix(SEXP dataSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_str_tree_to_sparse_matrix(data));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -16,7 +16,7 @@ add_cbc_solver(
 )
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{gap}{\code{numeric} gap to optimality. This gap is relative
 and expresses the acceptable deviance from the optimal objective.
@@ -24,12 +24,12 @@ For example, a value of 0.01 will result in the solver stopping when
 it has found a solution within 1\% of optimality.
 Additionally, a value of 0 will result in the solver stopping
 when it has found an optimal solution.
-The default value is 0.1 (i.e. 10\% from optimality).}
+The default value is 0.1 (i.e., 10\% from optimality).}
 
 \item{time_limit}{\code{numeric} time limit (seconds) for generating solutions.
 The solver will return the current best solution when this time limit is
 exceeded. The default value is the largest integer value
-(i.e. \code{.Machine$integer.max}), effectively meaning that solver
+(i.e., \code{.Machine$integer.max}), effectively meaning that solver
 will keep running until a solution within the optimality gap is found.}
 
 \item{presolve}{\code{logical} attempt to simplify the
@@ -49,7 +49,7 @@ Defaults to \code{FALSE}.}
 \item{start_solution}{\code{NULL} or object containing the starting solution
 for the solver. Defaults to \code{NULL} such that no starting solution is used.
 To specify a starting solution, the argument to \code{start_solution} should
-be in the same format as the planning units (i.e. a \code{NULL}, \code{numeric},
+be in the same format as the planning units (i.e., a \code{NULL}, \code{numeric},
 \code{matrix}, \code{data.frame}, \code{\linkS4class{Raster}}, \code{\linkS4class{Spatial}},
 or \code{\link[sf:sf]{sf::sf()}} object).
 See the Start solution format section for more information.}
@@ -58,11 +58,11 @@ See the Start solution format section for more information.}
 optimization problems? Defaults to \code{TRUE}.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the solver
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the solver
 added to it.
 }
 \description{
-Specify that the \href{https://projects.coin-or.org/Cbc}{\emph{CBC}}
+Specify that the \href{https://github.com/coin-or/Cbc}{\emph{CBC}}
 (COIN-OR branch and cut) software (Forrest &
 Lougee-Heimer 2005) should be used to solve a conservation planning
 \code{\link[=problem]{problem()}}.
@@ -72,13 +72,13 @@ It requires the \pkg{rcbc} package to be installed
 see below for installation instructions).
 }
 \details{
-\href{https://projects.coin-or.org/Cbc}{\emph{CBC}} is an
+\href{https://github.com/coin-or/Cbc}{\emph{CBC}} is an
 open-source mixed integer programming solver that is part of the
 Computational Infrastructure for Operations Research (COIN-OR) project.
 Although formal benchmarks examining the performance of this solver for
 conservation planning problems have yet to be completed, preliminary
 analyses suggest that it performs much faster than the other open-source
-solvers (i.e. \code{\link[=add_rsymphony_solver]{add_rsymphony_solver()}}, \code{\link[=add_rsymphony_solver]{add_rsymphony_solver()}}), and
+solvers (i.e., \code{\link[=add_rsymphony_solver]{add_rsymphony_solver()}}, \code{\link[=add_rsymphony_solver]{add_rsymphony_solver()}}), and
 so we recommend using this solver if the \emph{Gurobi} and \emph{IBM CPLEX} solvers
 are unavailable.
 }
@@ -88,16 +88,18 @@ The \pkg{rcbc} package is required to use this solver. Since the
 \pkg{rcbc} package is not available on the
 the Comprehensive R Archive Network (CRAN), it must be installed from
 \href{https://github.com/dirkschumacher/rcbc}{its GitHub repository}. To
-install the \pkg{rcbc} package, please use the following code:\preformatted{if (!require(remotes)) install.packages("remotes")
+install the \pkg{rcbc} package, please use the following code:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{if (!require(remotes)) install.packages("remotes")
 remotes::install_github("dirkschumacher/rcbc")
-}
+}\if{html}{\out{</div>}}
 
 Note that you may also need to install several dependencies --
 such as the
 \href{https://cran.r-project.org/bin/windows/Rtools/}{Rtools software}
 or system libraries -- prior to installing the \pkg{rcbc} package.
-For further details on installing this package, please consult
-\href{https://dirkschumacher.github.io/rcbc/}{official installation instructions for the package}.
+For further details on installing this package, please consult the
+\href{https://dirkschumacher.github.io/rcbc/}{online package documentation}.
 }
 
 \section{Start solution format}{

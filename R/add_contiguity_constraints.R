@@ -7,12 +7,12 @@ NULL
 #' that all selected planning units are spatially connected with each other
 #' and form a single contiguous unit.
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param zones `matrix` or `Matrix` object describing the
 #'   connection scheme for different zones. Each row and column corresponds
 #'   to a different zone in the argument to `x`, and cell values must
-#'   contain binary `numeric` values (i.e. one or zero) that indicate
+#'   contain binary `numeric` values (i.e., one or zero) that indicate
 #'   if connected planning units (as specified in the argument to
 #'   `data`) should be still considered connected if they are allocated to
 #'   different zones. The cell values along the diagonal
@@ -21,7 +21,7 @@ NULL
 #'   arguments to `zones` must be symmetric, and that a row or column has
 #'   a value of one then the diagonal element for that row or column must also
 #'   have a value of one. The default argument to `zones` is an identity
-#'   matrix (i.e. a matrix with ones along the matrix diagonal and zeros
+#'   matrix (i.e., a matrix with ones along the matrix diagonal and zeros
 #'   elsewhere), so that planning units are only considered connected if they
 #'   are both allocated to the same zone.
 #'
@@ -44,16 +44,16 @@ NULL
 #'
 #' \item{`data` as a `NULL` value}{indicating that connection data should be
 #'   calculated automatically using the [adjacency_matrix()] function.
-#'   This is the default argument. 
+#'   This is the default argument.
 #'   Note that the connection data must be manually defined
 #'   using one of the other formats below when the planning unit data
-#'   in the argument to `x` is not spatially referenced (e.g.
+#'   in the argument to `x` is not spatially referenced (e.g.,
 #'   in `data.frame` or `numeric` format).}
 #'
 #' \item{`data` as a `matrix`/`Matrix` object}{where rows and columns represent
 #'   different planning units and the value of each cell indicates if the
 #'   two planning units are connected or not. Cell values should be binary
-#'   `numeric` values (i.e. one or zero). Cells that occur along the
+#'   `numeric` values (i.e., one or zero). Cells that occur along the
 #'   matrix diagonal have no effect on the solution at all because each
 #'   planning unit cannot be a connected with itself.}
 #'
@@ -66,7 +66,7 @@ NULL
 #'   or not. This data can be used to describe symmetric or
 #'   asymmetric relationships between planning units. By default,
 #'   input data is assumed to be symmetric unless asymmetric data is
-#'   also included (e.g. if data is present for planning units 2 and 3, then
+#'   also included (e.g., if data is present for planning units 2 and 3, then
 #'   the same amount of connectivity is expected for planning units 3 and 2,
 #'   unless connectivity data is also provided for planning units 3 and 2).}
 #'
@@ -76,7 +76,7 @@ NULL
 #' In early versions, this function was named as the
 #' `add_connected_constraints()` function.
 #'
-#' @return Object (i.e. [`ConservationProblem-class`]) with the constraints
+#' @return Object (i.e., [`ConservationProblem-class`]) with the constraints
 #'  added to it.
 #'
 #' @seealso
@@ -84,11 +84,14 @@ NULL
 #'
 #' @family constraints
 #'
+#' @encoding UTF-8
+#'
 #' @references
 #' Önal H and Briers RA (2006) Optimal selection of a connected
 #' reserve network. *Operations Research*, 54: 379--388.
 #'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_features, sim_pu_zones_stack, sim_features_zones)
 #'
@@ -101,14 +104,14 @@ NULL
 #'
 #' # create problem with added connected constraints
 #' p2 <- p1 %>% add_contiguity_constraints()
-#' \dontrun{
+#'
 #' # solve problems
 #' s <- stack(solve(p1), solve(p2))
 #'
 #' # plot solutions
 #' plot(s, main = c("basic solution", "connected solution"), axes = FALSE,
 #'      box = FALSE)
-#' }
+#'
 #' # create minimal problem with multiple zones, and limit the solver to
 #' # 30 seconds to obtain solutions in a feasible period of time
 #' p3 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
@@ -139,7 +142,7 @@ NULL
 #' z6[2, 1] <- 1
 #' print(z6)
 #' p6 <- p3 %>% add_contiguity_constraints(z6)
-#' \dontrun{
+#'
 #' # solve problems
 #' s2 <- lapply(list(p3, p4, p5, p6), solve)
 #' s2 <- lapply(s2, category_layer)
@@ -148,7 +151,7 @@ NULL
 #' # plot solutions
 #' plot(s2, axes = FALSE, box = FALSE,
 #'      main = c("basic solution", "p4", "p5", "p6"))
-#' }
+#'
 #' # create a problem that has a main "reserve zone" and a secondary
 #' # "corridor zone" to connect up import areas. Here, each feature has a
 #' # target of 30% of its distribution. If a planning unit is allocated to the
@@ -191,7 +194,7 @@ NULL
 #'       add_contiguity_constraints(z7) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problems
 #' s7 <- category_layer(solve(p7))
 #'
@@ -222,7 +225,7 @@ methods::setMethod("add_contiguity_constraints",
      inherits(data, c("NULL", "Matrix")))
     if (!is.null(data)) {
       # check argument to data if not NULL
-      data <- methods::as(data, "dgCMatrix")
+      data <- as_Matrix(data, "dgCMatrix")
       assertthat::assert_that(all(data@x %in% c(0, 1)),
         ncol(data) == nrow(data), number_of_total_units(x) == ncol(data),
         all(is.finite(data@x)), Matrix::isSymmetric(data))
@@ -259,7 +262,7 @@ methods::setMethod("add_contiguity_constraints",
           # create matrix
           data <- adjacency_matrix(x$data$cost)
           # coerce matrix to full matrix
-          data <- methods::as(data, "dgCMatrix")
+          data <- as_Matrix(data, "dgCMatrix")
           # store data
           self$set_data("matrix", data)
         }
@@ -312,5 +315,5 @@ methods::setMethod("add_contiguity_constraints",
   methods::signature("ConservationProblem", "ANY", "matrix"),
   function(x, zones, data) {
     # add constraints
-    add_contiguity_constraints(x, zones, methods::as(data, "dgCMatrix"))
+    add_contiguity_constraints(x, zones, as_Matrix(data, "dgCMatrix"))
 })

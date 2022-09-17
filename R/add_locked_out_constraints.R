@@ -9,13 +9,13 @@ NULL
 #' useful to lock out planning units that have been degraded and are not
 #' suitable for conserving species. If specific planning units should be locked
 #' in to the solution, use [add_locked_out_constraints()]. For
-#' problems with non-binary planning unit allocations (e.g. proportions), the
+#' problems with non-binary planning unit allocations (e.g., proportions), the
 #' [add_manual_locked_constraints()] function can be used to lock
 #' planning unit allocations to a specific value.
 #'
 #' @usage add_locked_out_constraints(x, locked_out)
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param locked_out Object that determines which planning units that should be
 #'   locked out. See the Data format section for more information.
@@ -30,6 +30,7 @@ NULL
 #' @family constraints
 #'
 #' @examples
+#' \dontrun{
 #' # set seed for reproducibility
 #' set.seed(500)
 #'
@@ -55,7 +56,7 @@ NULL
 #' # create problem with added locked out constraints using spatial polygon data
 #' locked_out <- sim_pu_polygons[sim_pu_polygons$locked_out == 1, ]
 #' p5 <- p1 %>% add_locked_out_constraints(locked_out)
-#' \dontrun{
+#'
 #' # solve problems
 #' s1 <- solve(p1)
 #' s2 <- solve(p2)
@@ -82,7 +83,6 @@ NULL
 #'
 #' # reset plot
 #' par(mfrow = c(1, 1))
-#' }
 #'
 #' # create minimal multi-zone problem with spatial data
 #' p6 <- problem(sim_pu_zones_polygons, sim_features_zones,
@@ -98,7 +98,7 @@ NULL
 #' locked_matrix <- as.matrix(locked_matrix)
 #'
 #' p7 <- p6 %>% add_locked_out_constraints(locked_matrix)
-#' \dontrun{
+#'
 #' # solve problem
 #' s6 <- solve(p6)
 #'
@@ -111,11 +111,11 @@ NULL
 #'
 #' # plot solution
 #' spplot(s6, zcol = "solution", main = "solution", axes = FALSE, box = FALSE)
-#' }
+#'
 #' # create multi-zone problem with locked out constraints using field names
 #' p8 <- p6 %>% add_locked_out_constraints(c("locked_1", "locked_2",
 #'                                           "locked_3"))
-#' \dontrun{
+#'
 #' # solve problem
 #' s8 <- solve(p8)
 #'
@@ -129,7 +129,7 @@ NULL
 #'
 #' # plot solution
 #' spplot(s8, zcol = "solution", main = "solution", axes = FALSE, box = FALSE)
-#' }
+#'
 #' # create multi-zone problem with raster planning units
 #' p9 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
 #'       add_min_set_objective() %>%
@@ -146,13 +146,12 @@ NULL
 #' locked_out_stack[[3]][3] <- 1
 #'
 #' # plot locked out stack
-#' \dontrun{
+#'
 #' plot(locked_out_stack)
-#' }
+#'
 #' # add locked out raster units to problem
 #' p9 <- p9 %>% add_locked_out_constraints(locked_out_stack)
 #'
-#' \dontrun{
 #' # solve problem
 #' s9 <- solve(p9)
 #'
@@ -223,6 +222,9 @@ methods::setMethod("add_locked_out_constraints",
       x$number_of_total_units() == nrow(locked_out),
       isTRUE(all(is.finite(locked_out))),
       all(rowSums(locked_out) <= ncol(locked_out)))
+    assertthat::assert_that(
+      sum(locked_out, na.rm = TRUE) > 0,
+      msg = "at least one planning unit must be locked out")
     # create data.frame with statuses
     ind <- which(locked_out, arr.ind = TRUE)
     y <- data.frame(pu = ind[, 1], zone = x$zone_names()[ind[, 2]], status = 0,

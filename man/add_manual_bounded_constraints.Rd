@@ -13,18 +13,18 @@ add_manual_bounded_constraints(x, data)
 \S4method{add_manual_bounded_constraints}{ConservationProblem,tbl_df}(x, data)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{data}{\code{data.frame} or \code{\link[tibble:tibble]{tibble::tibble()}} object.
 See the Data format section for more information.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the constraints
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the constraints
 added to it.
 }
 \description{
 Add constraints to a conservation planning \code{\link[=problem]{problem()}} to ensure
-that the planning unit values (e.g. proportion, binary) in a solution
+that the planning unit values (e.g., proportion, binary) in a solution
 range between specific lower and upper bounds. This function offers more
 fine-grained control than the \code{\link[=add_manual_locked_constraints]{add_manual_locked_constraints()}}
 function and is is most useful for problems involving proportion-type
@@ -55,6 +55,7 @@ in the solution.}
 }
 
 \examples{
+\dontrun{
 # set seed for reproducibility
 set.seed(500)
 
@@ -77,7 +78,7 @@ bounds_data <- data.frame(pu = which(sim_pu_polygons$locked_in),
                           lower = 1, upper = 1)
 
 p3 <- p1 \%>\% add_manual_bounded_constraints(bounds_data)
-\dontrun{
+
 # solve problems
 s1 <- solve(p1)
 s2 <- solve(p2)
@@ -93,7 +94,7 @@ plot(s2[s2$solution_1 == 1, ], col = "darkgreen", add = TRUE)
 
 plot(s3, main = "add_bounds_constraints")
 plot(s3[s3$solution_1 == 1, ], col = "darkgreen", add = TRUE)
-}
+
 # create minimal problem with multiple zones
 p4 <- problem(sim_pu_zones_polygons, sim_features_zones,
               c("cost_1", "cost_2", "cost_3")) \%>\%
@@ -118,7 +119,7 @@ print(bounds_data2)
 
 # create problem with added constraints
 p5 <- p4 \%>\% add_manual_bounded_constraints(bounds_data2)
-\dontrun{
+
 # solve problem
 s4 <- solve(p4)
 s5 <- solve(p5)
@@ -151,6 +152,7 @@ Other constraints:
 \code{\link{add_locked_in_constraints}()},
 \code{\link{add_locked_out_constraints}()},
 \code{\link{add_mandatory_allocation_constraints,ConservationProblem-method}},
-\code{\link{add_manual_locked_constraints}()}
+\code{\link{add_manual_locked_constraints}()},
+\code{\link{add_neighbor_constraints}()}
 }
 \concept{constraints}

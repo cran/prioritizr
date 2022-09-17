@@ -17,7 +17,7 @@
 \S4method{add_neighbor_constraints}{ConservationProblem,ANY,ANY,array}(x, k, zones, data)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{k}{\code{integer} minimum number of neighbors for selected
 planning units in the solution. For problems with multiple zones,
@@ -26,13 +26,13 @@ the argument to \code{k} must have an element for each zone.}
 \item{zones}{\code{matrix} or \code{Matrix} object describing the
 neighborhood scheme for different zones. Each row and column corresponds
 to a different zone in the argument to \code{x}, and cell values must
-contain binary \code{numeric} values (i.e. one or zero) that indicate
+contain binary \code{numeric} values (i.e., one or zero) that indicate
 if neighboring planning units (as specified in the argument to
 \code{data}) should be considered neighbors if they are allocated to
 different zones. The cell values along the diagonal
 of the matrix indicate if planning units that are allocated to the same
 zone should be considered neighbors or not. The default argument to
-\code{zones} is an identity matrix (i.e. a matrix with ones along the
+\code{zones} is an identity matrix (i.e., a matrix with ones along the
 matrix diagonal and zeros elsewhere), so that planning units are
 only considered neighbors if they are both allocated to the same zone.}
 
@@ -44,7 +44,7 @@ neighborhood data is calculated automatically using the
 See the Data format section for more information.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the constraints
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the constraints
 added to it.
 }
 \description{
@@ -69,13 +69,13 @@ automatically
 using the \code{\link[=adjacency_matrix]{adjacency_matrix()}} function. This is the default
 argument. Note that the neighborhood data must be manually defined
 using one of the other formats below when the planning unit data
-in the argument to \code{x} is not spatially referenced (e.g.
+in the argument to \code{x} is not spatially referenced (e.g.,
 in \code{data.frame} or \code{numeric} format).}
 
 \item{\code{data} as a \code{matrix}/\code{Matrix} object}{where rows and columns represent
 different planning units and the value of each cell indicates if the
 two planning units are neighbors or not. Cell values should be binary
-\code{numeric} values (i.e. one or zero). Cells that occur along the
+\code{numeric} values (i.e., one or zero). Cells that occur along the
 matrix diagonal have no effect on the solution at all because each
 planning unit cannot be a neighbor with itself.}
 
@@ -88,7 +88,7 @@ specified in the fields \code{"id1"} and \code{"id2"} are neighbors
 or not. This data can be used to describe symmetric or
 asymmetric relationships between planning units. By default,
 input data is assumed to be symmetric unless asymmetric data is
-also included (e.g. if data is present for planning units 2 and 3, then
+also included (e.g., if data is present for planning units 2 and 3, then
 the same amount of connectivity is expected for planning units 3 and 2,
 unless connectivity data is also provided for planning units 3 and 2).
 If the argument to \code{x} contains multiple zones, then the columns
@@ -102,7 +102,7 @@ are present, then the argument to \code{zones} must be \code{NULL}.}
 \code{numeric} values indicate if planning unit should be treated
 as being neighbors with every other planning unit when they
 are allocated to every combination of management zone. The first two
-dimensions (i.e. rows and columns) correspond to the planning units,
+dimensions (i.e., rows and columns) correspond to the planning units,
 and second two dimensions correspond to the management zones. For
 example, if the argument to \code{data} had a value of 1 at the index
 \code{data[1, 2, 3, 4]} this would indicate that planning unit 1 and
@@ -113,6 +113,7 @@ allocated to zones 3 and 4 respectively.}
 }
 
 \examples{
+\dontrun{
 # load data
 data(sim_pu_raster, sim_features, sim_pu_zones_stack, sim_features_zones)
 
@@ -135,14 +136,13 @@ p3 <- p1 \%>\% add_neighbor_constraints(2)
 p4 <- p1 \%>\% add_neighbor_constraints(3,
                data = adjacency_matrix(sim_pu_raster, directions = 8))
 
-\dontrun{
 # solve problems
 s1 <- stack(list(solve(p1), solve(p2), solve(p3), solve(p4)))
 
 # plot solutions
 plot(s1, box = FALSE, axes = FALSE,
      main = c("basic solution", "1 neighbor", "2 neighbors", "3 neighbors"))
-}
+
 # create minimal problem with multiple zones
 p5 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_min_set_objective() \%>\%
@@ -172,7 +172,7 @@ z8[1, 2] <- 1
 z8[2, 1] <- 1
 print(z8)
 p8 <- p5 \%>\% add_neighbor_constraints(c(0, 1, 2), z8)
-\dontrun{
+
 # solve problems
 s2 <- list(p5, p6, p7, p8)
 s2 <- lapply(s2, solve)
@@ -194,9 +194,8 @@ conservation. \emph{European Journal of Operational Research}, 231:
 514--534.
 }
 \seealso{
-See \link{constraints} for an overview of all functions for adding constraints.
-
 Other constraints: 
+\code{\link{add_contiguity_constraints}()},
 \code{\link{add_feature_contiguity_constraints}()},
 \code{\link{add_linear_constraints}()},
 \code{\link{add_locked_in_constraints}()},
@@ -205,3 +204,4 @@ Other constraints:
 \code{\link{add_manual_bounded_constraints}()},
 \code{\link{add_manual_locked_constraints}()}
 }
+\concept{constraints}

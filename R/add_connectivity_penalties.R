@@ -3,14 +3,19 @@ NULL
 
 #' Add connectivity penalties
 #'
-#' Add penalties to a conservation planning [problem()] to favor
-#' solutions that select planning units with high connectivity between them.
+#' Add penalties to a conservation planning [problem()] to account for
+#' symmetric connectivity between planning units.
+#' Symmetric connectivity data describe connectivity information that is not
+#' directional. For example, symmetric connectivity data could describe which
+#' planning units are adjacent to each other (see [adjacency_matrix()],
+#' or which planning units are within threshold distance of each other (see
+#' [proximity_matrix()]).
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param penalty `numeric` penalty that is used to scale the importance
 #'   of selecting planning units with strong connectivity between them compared
-#'   to the main problem objective (e.g. solution cost when the argument to
+#'   to the main problem objective (e.g., solution cost when the argument to
 #'   `x` has a minimum set objective set using
 #'   [add_min_set_objective()]). Higher `penalty` values
 #'   can be used to obtain solutions with a high degree of connectivity,
@@ -26,13 +31,15 @@ NULL
 #'   the level of connectivity between planning units allocated to the
 #'   same zone. Cell values must lay between 1 and -1, where negative
 #'   values favor solutions with weak connectivity. The default argument to
-#'   `zones` is an identity matrix (i.e. a matrix with ones along the
+#'   `zones` is an identity matrix (i.e., a matrix with ones along the
 #'   matrix diagonal and zeros elsewhere), so that planning units are
 #'   only considered to be connected when they are allocated to the same zone.
-#'   This argument is required when the argument to `data` is a
-#'   `matrix` or `Matrix` object. If the argument to `data` is
-#'   an `array` or `data.frame` with zone data, this argument
-#'   must explicitly be set to `NULL` otherwise an error will be thrown.
+#'   This argument is required when working with multiple zones and the
+#'   argument to `data` is a `matrix` or `Matrix` object.
+#'   If the argument to `data` is an `array` or `data.frame` with data for
+#'   multiple zones (e.g., using the `"zone1"` and `"zone2"` column names),
+#'   this argument must explicitly be set to `NULL` otherwise an error will be
+#'   thrown.
 #'
 #' @param data `matrix`, `Matrix`, `data.frame`, or
 #'   `array` object containing connectivity data. The connectivity values
@@ -44,15 +51,11 @@ NULL
 #' @details
 #' This function adds penalties to conservation planning problem to penalize
 #' solutions that have low connectivity.
-#' Specifically, it **favors** pair-wise connections between planning units
-#' that have high connectivity values.
-#' It was inspired by Beger *et al.* (2010) and can symmetric and asymmetric
-#' connectivity relationships between planning units.
+#' Specifically, it favors pair-wise connections between planning units
+#' that have high connectivity values (based on Önal and Briers 2002).
 #'
 #' @section Data format:
 #' The argument to `data` can be specified using several different formats.
-#' These formats can be used to describe symmetric or
-#' asymmetric relationships between planning units.
 #'
 #' \describe{
 #'
@@ -68,13 +71,9 @@ NULL
 #'
 #' \item{`data` as a `data.frame` object}{containing the fields (columns)
 #'   `"id1"`, `"id2"`, and `"boundary"`. Here, each row
-#'   denotes the connectivity between two planning units following the
-#'   *Marxan* format. The data can be used to denote symmetric or
-#'   asymmetric relationships between planning units. By default,
-#'   input data is assumed to be symmetric unless asymmetric data is
-#'   also included (e.g. if data is present for planning units 2 and 3, then
-#'   the same amount of connectivity is expected for planning units 3 and 2,
-#'   unless connectivity data is also provided for planning units 3 and 2).
+#'   denotes the connectivity between a pair of planning units
+#'   (per values in the `"id1"` and `"id2"` columns) following the
+#'   *Marxan* format.
 #'   If the argument to `x` contains multiple zones, then the columns
 #'   `"zone1"` and `"zone2"` can optionally be provided to manually
 #'   specify the connectivity values between planning units when they are
@@ -86,7 +85,7 @@ NULL
 #'   containing four-dimensions where cell values
 #'   indicate the strength of connectivity between planning units
 #'   when they are assigned to specific management zones. The first two
-#'   dimensions (i.e. rows and columns) indicate the strength of
+#'   dimensions (i.e., rows and columns) indicate the strength of
 #'   connectivity between different planning units and the second two
 #'   dimensions indicate the different management zones. Thus
 #'   the `data[1, 2, 3, 4]` indicates the strength of
@@ -101,7 +100,7 @@ NULL
 #' (indexed by \eqn{i} or \eqn{j}), \eqn{Z} represent the set
 #' of management zones (indexed by \eqn{z} or \eqn{y}), and \eqn{X_{iz}}{Xiz}
 #' represent the decision variable for planning unit \eqn{i} for in zone
-#' \eqn{z} (e.g. with binary
+#' \eqn{z} (e.g., with binary
 #' values one indicating if planning unit is allocated or not). Also, let
 #' \eqn{p} represent the argument to `penalty`, \eqn{D} represent the
 #' argument to `data`, and \eqn{W} represent the argument
@@ -130,27 +129,46 @@ NULL
 #' benefit and not minimize some measure of cost, the term \eqn{-p} is
 #' replaced with \eqn{p}.
 #'
+#' @section Notes:
+#' In previous versions, this function aimed to handle both symmetric and
+#' asymmetric connectivity data. This meant that the mathematical
+#' formulation used to account for asymmetric connectivity was different
+#' to that implemented by the *Marxan* software
+#' (see Beger *et al.* for details). To ensure that asymmetric connectivity is
+#' handled in a similar manner to the *Marxan* software, the
+#' [add_asym_connectivity_penalties()] function should now be used for
+#' asymmetric connectivity data.
+#'
 #' @inherit add_boundary_penalties return
 #'
 #' @seealso
 #' See [penalties] for an overview of all functions for adding penalties.
+#' Additionally, see [add_asym_connectivity_penalties()] to account for
+#' asymmetric connectivity between planning units.
 #'
 #' @family penalties
+#'
+#' @encoding UTF-8
 #'
 #' @references
 #' Beger M, Linke S, Watts M, Game E, Treml E, Ball I, and Possingham, HP (2010)
 #' Incorporating asymmetric connectivity into spatial decision making for
 #' conservation, *Conservation Letters*, 3: 359--368.
 #'
+#' Önal H, and Briers RA (2002) Incorporating spatial criteria in optimum
+#' reserve network selection. *Proceedings of the Royal Society of London.*
+#' *Series B: Biological Sciences*, 269: 2437--2441.
+#'
 #' @examples
+#' \dontrun{
+#' # load package
+#' library(Matrix)
+#'
 #' # set seed for reproducibility
 #' set.seed(600)
 #'
-#' # load Matrix package for visualizing matrices
-#' require(Matrix)
-#'
 #' # load data
-#' data(sim_pu_polygons, sim_pu_zones_stack, sim_features, sim_features_zones)
+#' data(sim_pu_sf, sim_pu_zones_stack, sim_features, sim_features_zones)
 #'
 #' # define function to rescale values between zero and one so that we
 #' # can compare solutions from different connectivity matrices
@@ -159,27 +177,26 @@ NULL
 #' }
 #'
 #' # create basic problem
-#' p1 <- problem(sim_pu_polygons, sim_features, "cost") %>%
+#' p1 <- problem(sim_pu_sf, sim_features, "cost") %>%
 #'       add_min_set_objective() %>%
 #'       add_relative_targets(0.2) %>%
 #'       add_default_solver(verbose = FALSE)
 #'
 #' # create a symmetric connectivity matrix where the connectivity between
 #' # two planning units corresponds to their shared boundary length
-#' b_matrix <- boundary_matrix(sim_pu_polygons)
+#' b_matrix <- boundary_matrix(sim_pu_sf)
 #'
 #' # standardize matrix values to lay between zero and one
 #' b_matrix[] <- rescale(b_matrix[])
 #'
 #' # visualize connectivity matrix
-#' \dontrun{
 #' image(b_matrix)
-#' }
+#'
 #' # create a symmetric connectivity matrix where the connectivity between
 #' # two planning units corresponds to their spatial proximity
-#' # i.e. planning units that are further apart share less connectivity
-#' centroids <- rgeos::gCentroid(sim_pu_polygons, byid = TRUE)
-#' d_matrix <- (1 / (as(dist(centroids@coords), "Matrix") + 1))
+#' # i.e., planning units that are further apart share less connectivity
+#' centroids <- sf::st_coordinates(suppressWarnings(sf::st_centroid(sim_pu_sf)))
+#' d_matrix <- (1 / (Matrix::Matrix(as.matrix(dist(centroids))) + 1))
 #'
 #' # standardize matrix values to lay between zero and one
 #' d_matrix[] <- rescale(d_matrix[])
@@ -189,9 +206,8 @@ NULL
 #' d_matrix[d_matrix < 0.7] <- 0
 #'
 #' # visualize connectivity matrix
-#' \dontrun{
 #' image(d_matrix)
-#' }
+#'
 #' # create a symmetric connectivity matrix where the connectivity
 #' # between adjacent two planning units corresponds to their combined
 #' # value in a field in the planning unit attribute data
@@ -199,48 +215,15 @@ NULL
 #' # each planning unit and we could use connectivity penalties to identify
 #' # solutions that cluster planning units together that both contain large
 #' # amounts of native vegetation
-#' c_matrix <- connectivity_matrix(sim_pu_polygons, "cost")
+#' c_matrix <- connectivity_matrix(sim_pu_sf, "cost")
 #'
 #' # standardize matrix values to lay between zero and one
 #' c_matrix[] <- rescale(c_matrix[])
 #'
 #' # visualize connectivity matrix
-#' \dontrun{
 #' image(c_matrix)
-#' }
-#' # create an asymmetric connectivity matrix. Here, connectivity occurs between
-#' # adjacent planning units and, due to rivers flowing southwards
-#' # through the study area, connectivity from northern planning units to
-#' # southern planning units is ten times stronger than the reverse.
-#' ac_matrix <- matrix(0, length(sim_pu_polygons), length(sim_pu_polygons))
-#' ac_matrix <- as(ac_matrix, "Matrix")
-#' adjacent_units <- rgeos::gIntersects(sim_pu_polygons, byid = TRUE)
-#' for (i in seq_len(length(sim_pu_polygons))) {
-#'   for (j in seq_len(length(sim_pu_polygons))) {
-#'     # find if planning units are adjacent
-#'     if (adjacent_units[i, j]) {
-#'       # find if planning units lay north and south of each other
-#'       # i.e. they have the same x-coordinate
-#'       if (centroids@coords[i, 1] == centroids@coords[j, 1]) {
-#'         if (centroids@coords[i, 2] > centroids@coords[j, 2]) {
-#'           # if i is north of j add 10 units of connectivity
-#'           ac_matrix[i, j] <- ac_matrix[i, j] + 10
-#'         } else if (centroids@coords[i, 2] < centroids@coords[j, 2]) {
-#'           # if i is south of j add 1 unit of connectivity
-#'           ac_matrix[i, j] <- ac_matrix[i, j] + 1
-#'         }
-#'       }
-#'     }
-#'   }
-#' }
 #'
-#' # standardize matrix values to lay between zero and one
-#' ac_matrix[] <- rescale(ac_matrix[])
 #'
-#' # visualize asymmetric connectivity matrix
-#' \dontrun{
-#' image(ac_matrix)
-#' }
 #' # create penalties
 #' penalties <- c(10, 25)
 #'
@@ -251,26 +234,22 @@ NULL
 #'            p1 %>% add_connectivity_penalties(penalties[1], data = d_matrix),
 #'            p1 %>% add_connectivity_penalties(penalties[2], data = d_matrix),
 #'            p1 %>% add_connectivity_penalties(penalties[1], data = c_matrix),
-#'            p1 %>% add_connectivity_penalties(penalties[2], data = c_matrix),
-#'            p1 %>% add_connectivity_penalties(penalties[1], data = ac_matrix),
-#'            p1 %>% add_connectivity_penalties(penalties[2], data = ac_matrix))
+#'            p1 %>% add_connectivity_penalties(penalties[2], data = c_matrix))
 #'
 #' # assign names to the problems
 #' names(p2) <- c("basic problem",
 #'                paste0("b_matrix (", penalties,")"),
 #'                paste0("d_matrix (", penalties,")"),
-#'                paste0("c_matrix (", penalties,")"),
-#'                paste0("ac_matrix (", penalties,")"))
-#' \dontrun{
+#'                paste0("c_matrix (", penalties,")"))
+#'
 #' # solve problems
 #' s2 <- lapply(p2, solve)
 #'
 #' # plot solutions
-#' par(mfrow = c(3, 3))
+#' par(mfrow = c(2, 2))
 #' for (i in seq_along(s2)) {
 #'   plot(s2[[i]], main = names(p2)[i], cex = 1.5, col = "white")
 #'   plot(s2[[i]][s2[[i]]$solution_1 == 1, ], col = "darkgreen", add = TRUE)
-#' }
 #' }
 #'
 #' # create minimal multi-zone problem and limit solver to one minute
@@ -285,9 +264,8 @@ NULL
 #' a_matrix <- adjacency_matrix(sim_pu_zones_stack)
 #'
 #' # visualize matrix
-#' \dontrun{
 #' image(a_matrix)
-#' }
+#'
 #' # create a zone matrix where connectivities are only present between
 #' # planning units that are allocated to the same zone
 #' zm1 <- as(diag(3), "Matrix")
@@ -362,7 +340,7 @@ NULL
 #' names(p4) <- c("basic problem",
 #'                paste0("zm", rep(seq_len(5), each = 2), " (",
 #'                       rep(penalties2, 2), ")"))
-#' \dontrun{
+#'
 #' # solve problems
 #' s4 <- lapply(p4, solve)
 #' s4 <- lapply(s4, category_layer)
@@ -370,7 +348,7 @@ NULL
 #'
 #' # plot solutions
 #' plot(s4, main = names(p4), axes = FALSE, box = FALSE)
-#' }
+#'
 #'
 #' # create an array to manually specify the connectivities between
 #' # each planning unit when they are allocated to each different zone
@@ -392,7 +370,7 @@ NULL
 #'
 #' # assign names to the problems
 #' names(p5) <- c("basic problem", "connectivity array")
-#' \dontrun{
+#'
 #' # solve problems
 #' s5 <- lapply(p5, solve)
 #' s5 <- lapply(s5, category_layer)
@@ -420,8 +398,9 @@ methods::setGeneric("add_connectivity_penalties",
 methods::setMethod("add_connectivity_penalties",
   methods::signature("ConservationProblem", "ANY", "ANY", "matrix"),
   function(x, penalty, zones, data) {
-     add_connectivity_penalties(x, penalty, zones,
-       methods::as(data, "dgCMatrix"))
+    add_connectivity_penalties(
+      x, penalty, zones, as_Matrix(data, "dgCMatrix")
+   )
 })
 
 #' @name add_connectivity_penalties
@@ -431,7 +410,7 @@ methods::setMethod("add_connectivity_penalties",
   methods::signature("ConservationProblem", "ANY", "ANY", "Matrix"),
   function(x, penalty, zones, data) {
      add_connectivity_penalties(x, penalty, zones,
-       methods::as(data, "dgCMatrix"))
+       as_Matrix(data, "dgCMatrix"))
 })
 
 #' @name add_connectivity_penalties
@@ -445,8 +424,9 @@ methods::setMethod("add_connectivity_penalties",
       inherits(x, "ConservationProblem"), assertthat::is.scalar(penalty),
       is.finite(penalty), is.data.frame(data))
   # add penalties to problem
-  add_connectivity_penalties(x, penalty, zones,
-                             marxan_boundary_data_to_matrix(x, data))
+  add_connectivity_penalties(
+    x, penalty, zones,
+   marxan_connectivity_data_to_matrix(x, data, symmetric = TRUE))
 })
 
 #' @name add_connectivity_penalties
@@ -466,6 +446,15 @@ methods::setMethod("add_connectivity_penalties",
       number_of_total_units(x) == ncol(data),
       number_of_zones(x) == ncol(zones),
       all(is.finite(data@x)))
+    # check for symmetry
+    if (!Matrix::isSymmetric(data)) {
+      stop(
+        paste0(
+          "argument to data does not contain symmetric connectivity values, ",
+          "use add_asym_connectivity_penalties()"
+        )
+      )
+    }
     # coerce zones to matrix
     zones <- as.matrix(zones)
     indices <- x$planning_unit_indices()
@@ -479,7 +468,7 @@ methods::setMethod("add_connectivity_penalties",
       }
     }
     # add penalties
-    internal_add_connectivity_penalties (x, penalty, m)
+    internal_add_connectivity_penalties(x, penalty, m)
 })
 
 #' @name add_connectivity_penalties
@@ -505,7 +494,7 @@ methods::setMethod("add_connectivity_penalties",
       m[[z1]] <- list()
       for (z2 in seq_len(dim(data)[4])) {
         m[[z1]][[z2]] <-
-          methods::as(data[indices, indices, z1, z2], "dgCMatrix")
+          as_Matrix(data[indices, indices, z1, z2], "dgCMatrix")
       }
     }
     # add penalties
@@ -528,8 +517,14 @@ internal_add_connectivity_penalties <- function(x, penalty, data) {
       apply = function(self, x, y) {
         assertthat::assert_that(inherits(x, "OptimizationProblem"),
                                 inherits(y, "ConservationProblem"))
+        # coerce to symmetric connectivity data
+        cm <- self$get_data("data")
+        cm <- lapply(cm, function(x) {
+          lapply(x, function(y) as_Matrix(Matrix::tril(y), "dgCMatrix"))
+        })
+        # apply penalties
         rcpp_apply_connectivity_penalties(
-          x$ptr, self$parameters$get("penalty"), self$get_data("data"))
+          x$ptr, self$parameters$get("penalty"), cm)
         invisible(TRUE)
     }))
 }

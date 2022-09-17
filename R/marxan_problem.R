@@ -6,7 +6,7 @@ NULL
 #' Create a conservation planning [problem()] following the
 #' mathematical formulations used in *Marxan* (detailed in Beyer
 #' *et al.* 2016). Note that these problems are solved using
-#' exact algorithms and not simulated annealing (i.e. the *Marxan* software).
+#' exact algorithms and not simulated annealing (i.e., the *Marxan* software).
 #'
 #' @param x `character` file path for a *Marxan* input file (typically
 #'   called `"input.dat"`), or `data.frame` containing planning unit
@@ -93,22 +93,31 @@ NULL
 #'   has an effect when argument to `x` is a `data.frame`. The
 #'   default argument is zero.
 #'
+#' @param symmetric `logical` does the boundary data (i.e., argument to
+#'   `bound`) describe symmetric relationships between planning units?
+#'    If the boundary data contain asymmetric connectivity data,
+#'    this parameter should be set to `FALSE`.
+#'    Defaults to `TRUE`.
+#'
 #' @param ... not used.
 #'
-#' @details This function is provided as a convenient wrapper for solving
-#'   *Marxan* problems using \pkg{prioritizr}.
+#' @details
+#' This function is provided as a convenient wrapper for solving
+#' *Marxan* problems using the \pkg{prioritizr} package.
+#' Please note that it requires installation of the \pkg{data.table} package
+#' to import *Marxan* data files.
 #'
 #' @section Notes:
-#' In early versions, this function could accommodate asymmetric connectivity
-#' data. This functionality is no longer supported. To specify asymmetric
-#' connectivity, please see the [add_connectivity_penalties()] function.
+#' In previous versions, this function could not accommodate asymmetric
+#' connectivity data. It has now been updated to handle asymmetric connectivity
+#' data.
 #'
 #' @seealso For more information on the correct format for
 #'   for *Marxan* input data, see the
 #'   [official *Marxan* website](https://marxansolutions.org) and Ball
 #'   *et al.* (2009).
 #'
-#' @return [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @return [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @references
 #' Ball IR, Possingham HP, and Watts M (2009) *Marxan and relatives:
@@ -122,17 +131,20 @@ NULL
 #'
 #' @examples
 #' # create Marxan problem using Marxan input file
+#' # (note this example requires the data.table package to be installed)
+#' \dontrun{
 #' input_file <- system.file("extdata/input.dat", package = "prioritizr")
 #' p1 <- marxan_problem(input_file) %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s1 <- solve(p1)
 #'
 #' # print solution
 #' head(s1)
-#' }
+#'
 #' # create Marxan problem using data.frames that have been loaded into R
+#' # (note this example also requires the data.table package to be installed)
 #' ## load in planning unit data
 #' pu_path <- system.file("extdata/input/pu.dat", package = "prioritizr")
 #' pu_dat <- data.table::fread(pu_path, data.table = FALSE)
@@ -157,18 +169,18 @@ NULL
 #' # create problem without the boundary data
 #' p2 <- marxan_problem(pu_dat, spec_dat, puvspr_dat) %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s2 <- solve(p2)
 #'
 #' # print solution
 #' head(s2)
-#' }
+#'
 #' # create problem with the boundary data and a boundary length modifier
 #' # set to 5
 #' p3 <- marxan_problem(pu_dat, spec_dat, puvspr_dat, bound_dat, 5) %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s3 <- solve(p3)
 #'
@@ -190,7 +202,7 @@ marxan_problem.default <- function(x, ...) {
 #' @method marxan_problem data.frame
 #' @export
 marxan_problem.data.frame <- function(x, spec, puvspr, bound = NULL,
-                                      blm = 0, ...) {
+                                      blm = 0, symmetric = TRUE, ...) {
   # assert arguments are valid
   assertthat::assert_that(no_extra_arguments(...))
   ## x
@@ -270,8 +282,23 @@ marxan_problem.data.frame <- function(x, spec, puvspr, bound = NULL,
   }
   ## blm
   assertthat::assert_that(assertthat::is.scalar(blm), is.finite(blm))
-  if (abs(blm) > 1e-50 && is.null(bound))
-    warning("no boundary data supplied so the blm argument has no effect")
+  if (abs(blm) > 1e-15 && is.null(bound)) {
+    warning(
+      "no boundary data supplied so the blm parameter has no effect",
+      call. = FALSE, immediate. = TRUE
+    )
+  }
+  ## symmetric
+  assertthat::assert_that(
+    assertthat::is.flag(symmetric),
+    assertthat::noNA(symmetric)
+  )
+  if (!isTRUE(symmetric) && is.null(bound)) {
+    warning(
+      "no boundary data supplied to the symmetric parameter has no effect",
+      call. = FALSE, immediate. = TRUE
+    )
+  }
   # create locked in data
   if (assertthat::has_name(x, "status")) {
     x$locked_in <- x$status == 2
@@ -297,8 +324,10 @@ marxan_problem.data.frame <- function(x, spec, puvspr, bound = NULL,
     p <- add_absolute_targets(p, "amount")
   }
   # add boundary data
-  if (!is.null(bound)) {
-      p <- add_boundary_penalties(p, blm, 1, data = bound)
+  if (!is.null(bound) && isTRUE(symmetric)) {
+    p <- add_boundary_penalties(p, penalty = blm, edge_factor = 1, data = bound)
+  } else if (!is.null(bound) && !isTRUE(symmetric)) {
+    p <- add_asym_connectivity_penalties(p, penalty = blm, data = bound)
   }
   # return problem
   return(p)
@@ -313,6 +342,11 @@ marxan_problem.character <- function(x, ...) {
     assertthat::is.string(x),
     assertthat::is.readable(x),
     no_extra_arguments(...))
+  if (!requireNamespace("data.table", quietly = TRUE)) {
+    # nocov start
+    stop("please install the \"data.table\" package to import Marxan data")
+    # nocov end
+  }
   # declare local functions
   parse_field <- function(field, lines) {
       x <- grep(field, lines, value = TRUE)
@@ -324,18 +358,21 @@ marxan_problem.character <- function(x, ...) {
   load_file <- function(field, lines, input_dir, force = TRUE) {
     x <- parse_field(field, lines)
     if (is.na(x)) {
-      if (force)
+      # nocov start
+      if (force) {
         stop("input file does not contain ", field, " field")
+      }
       return(NULL)
+      # nocov end
     }
     if (file.exists(x)) {
       return(data.table::fread(x, data.table = FALSE))
     } else if (file.exists(file.path(input_dir, x))) {
       return(data.table::fread(file.path(input_dir, x), data.table = FALSE))
-    } else if (force) {
-      stop("file path in ", field, " field does not exist")
+    } else if (force) { # nocov
+      stop("file path in ", field, " field does not exist") # nocov
     } else {
-      return(NULL)
+      return(NULL) # nocov
     }
   }
   # read marxan file
@@ -357,11 +394,13 @@ marxan_problem.character <- function(x, ...) {
   puvspr_data <- load_file("PUVSPRNAME", x, input_dir)
   bound_data <- load_file("BOUNDNAME", x, input_dir, force = FALSE)
   blm <- as.numeric(parse_field("BLM", x))
-  # check that asymmetric connectivity is not specified
-  asym <- as.logical(parse_field("ASYMMETRICCONNECTIVITY", x))
-  if (isTRUE(asym))
-   stop("marxan_problem function cannot accommodate asymmetric connectivity")
+  # check if connectivity data should be asymmetric
+  sym <- !isTRUE(as.logical(parse_field("ASYMMETRICCONNECTIVITY", x)))
+  if (is.null(bound_data)) {
+    sym <- TRUE # nocov
+  }
   # return problem
   marxan_problem(x = pu_data, spec = spec_data, puvspr = puvspr_data,
-                 bound = bound_data, blm = ifelse(is.na(blm), 0, blm))
+                 bound = bound_data, blm = ifelse(is.na(blm), 0, blm),
+                 symmetric = sym)
 }

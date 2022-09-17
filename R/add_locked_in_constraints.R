@@ -10,13 +10,13 @@ NULL
 #' solution fills in the gaps in the existing reserve network. If specific
 #' planning units should be locked out of a solution, use
 #' [add_locked_out_constraints()]. For problems with non-binary
-#' planning unit allocations (e.g. proportions), the
+#' planning unit allocations (e.g., proportions), the
 #' [add_manual_locked_constraints()] function can be used to lock
 #' planning unit allocations to a specific value.
 #'
 #' @usage add_locked_in_constraints(x, locked_in)
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param locked_in Object that determines which planning units that should be
 #'   locked in. See the Data format section for more information.
@@ -58,7 +58,7 @@ NULL
 #'   compatible if the planning units in the argument to `x` are a
 #'   [`Spatial-class`], [sf::sf()], or
 #'   `data.frame` object. The fields
-#'   (columns) must have `logical` (i.e. `TRUE` or `FALSE`)
+#'   (columns) must have `logical` (i.e., `TRUE` or `FALSE`)
 #'   values indicating if the planning unit is to be locked for the solution.
 #'   For problems that contain a single zone, the argument to `data` must
 #'   contain a single field name. Otherwise, for problems that
@@ -94,6 +94,7 @@ NULL
 #' @family constraints
 #'
 #' @examples
+#' \dontrun{
 #' # set seed for reproducibility
 #' set.seed(500)
 #'
@@ -119,7 +120,7 @@ NULL
 #' # create problem with added locked in constraints using spatial polygon data
 #' locked_in <- sim_pu_polygons[sim_pu_polygons$locked_in == 1, ]
 #' p5 <- p1 %>% add_locked_in_constraints(locked_in)
-#' \dontrun{
+#'
 #' # solve problems
 #' s1 <- solve(p1)
 #' s2 <- solve(p2)
@@ -146,7 +147,6 @@ NULL
 #'
 #' # reset plot
 #' par(mfrow = c(1, 1))
-#' }
 #'
 #' # create minimal multi-zone problem with spatial data
 #' p6 <- problem(sim_pu_zones_polygons, sim_features_zones,
@@ -163,7 +163,7 @@ NULL
 #' locked_matrix <- as.matrix(locked_matrix)
 #'
 #' p7 <- p6 %>% add_locked_in_constraints(locked_matrix)
-#' \dontrun{
+#'
 #' # solve problem
 #' s6 <- solve(p6)
 #'
@@ -176,10 +176,10 @@ NULL
 #'
 #' # plot solution
 #' spplot(s6, zcol = "solution", main = "solution", axes = FALSE, box = FALSE)
-#' }
+#'
 #' # create multi-zone problem with locked in constraints using field names
 #' p8 <- p6 %>% add_locked_in_constraints(c("locked_1", "locked_2", "locked_3"))
-#' \dontrun{
+#'
 #' # solve problem
 #' s8 <- solve(p8)
 #'
@@ -193,7 +193,7 @@ NULL
 #'
 #' # plot solution
 #' spplot(s8, zcol = "solution", main = "solution", axes = FALSE, box = FALSE)
-#' }
+#'
 #' # create multi-zone problem with raster planning units
 #' p9 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
 #'       add_min_set_objective() %>%
@@ -210,13 +210,10 @@ NULL
 #' locked_in_stack[[3]][3] <- 1
 #'
 #' # plot locked in stack
-#' \dontrun{
 #' plot(locked_in_stack)
-#' }
 #' # add locked in raster units to problem
 #' p9 <- p9 %>% add_locked_in_constraints(locked_in_stack)
 #'
-#' \dontrun{
 #' # solve problem
 #' s9 <- solve(p9)
 #'
@@ -281,13 +278,17 @@ methods::setMethod("add_locked_in_constraints",
   methods::signature("ConservationProblem", "matrix"),
   function(x, locked_in) {
     # assert valid arguments
-    assertthat::assert_that(inherits(x, "ConservationProblem"),
+    assertthat::assert_that(
+      inherits(x, "ConservationProblem"),
       inherits(locked_in, "matrix"),
       is.logical(locked_in),
       x$number_of_zones() == ncol(locked_in),
       x$number_of_total_units() == nrow(locked_in),
       all(is.finite(locked_in)),
       all(rowSums(locked_in) <= 1))
+    assertthat::assert_that(
+      sum(locked_in, na.rm = TRUE) > 0,
+      msg = "at least one planning unit must be locked in")
     # create data.frame with statuses
     ind <- which(locked_in, arr.ind = TRUE)
     y <- data.frame(pu = ind[, 1], zone = x$zone_names()[ind[, 2]], status = 1,

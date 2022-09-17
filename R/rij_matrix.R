@@ -21,7 +21,7 @@ NULL
 #' @param ... not used.
 #'
 #' @details
-#'   Generally, processing vector (i.e. [`Spatial-class`] or
+#'   Generally, processing vector (i.e., [`Spatial-class`] or
 #'   [sf::sf()]) data takes much
 #'   longer to process then [`Raster-class`] data,
 #'   so it is recommended to use [`Raster-class`] data
@@ -42,6 +42,7 @@ NULL
 #' @aliases rij_matrix,Raster,Raster-method rij_matrix,Spatial,Raster-method rij_matrix,sf,Raster-method
 #'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_pu_polygons, sim_pu_sf, sim_pu_zones_stack)
 #'
@@ -60,6 +61,7 @@ NULL
 #' # create rij matrix using raster stack planning units
 #' rij_zones_raster <- rij_matrix(sim_pu_zones_stack, sim_features)
 #' print(rij_zones_raster)
+#' }
 #' @export
 methods::setGeneric("rij_matrix",
                     signature = methods::signature("x", "y"),

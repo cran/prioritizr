@@ -7,10 +7,10 @@
 add_binary_decisions(x)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the decisions added
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the decisions added
 to it.
 }
 \description{
@@ -22,13 +22,14 @@ added to a problem then this decision class will be used by default.
 }
 \details{
 Conservation planning problems involve making decisions on planning
-units. These decisions are then associated with actions (e.g. turning a
+units. These decisions are then associated with actions (e.g., turning a
 planning unit into a protected area). Only a
 single decision should be added to a \code{ConservationProblem} object.
 Note that if multiple decisions are added to a problem object, then the
 last one to be added will be used.
 }
 \examples{
+\dontrun{
 # set seed for reproducibility
 set.seed(500)
 
@@ -41,13 +42,13 @@ p1 <- problem(sim_pu_raster, sim_features) \%>\%
       add_relative_targets(0.1) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s1 <- solve(p1)
 
 # plot solution
 plot(s1, main = "solution")
-}
+
 # build multi-zone conservation problem with binary decisions
 p2 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_min_set_objective() \%>\%
@@ -55,7 +56,7 @@ p2 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
                                   ncol = 3)) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve the problem
 s2 <- solve(p2)
 

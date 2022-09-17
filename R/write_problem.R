@@ -12,8 +12,8 @@ NULL
 #' @param path `character` file path to save the problem formulation.
 #' The argument should contain a `".lp"` or `.mps"` file extension
 #' to specify whether the problem formulation will be saved in the
-#' [LP](https://www.gurobi.com/documentation/9.1/refman/lp_format.html) or
-#' [MPS](https://www.gurobi.com/documentation/9.1/refman/mps_format.html)
+#' [LP](https://www.gurobi.com/documentation/9.5/refman/lp_format.html) or
+#' [MPS](https://www.gurobi.com/documentation/9.5/refman/mps_format.html)
 #' format (respectively).
 #'
 #' @return Invisible `TRUE` indicating success.
@@ -24,16 +24,23 @@ NULL
 #' set.seed(500)
 #'
 #' # load data
-#' data(sim_pu_raster, sim_features, sim_pu_zones_stack, sim_features_zones)
+#' data(sim_pu_raster, sim_features)
 #'
 #' # create minimal problem
-#' p <- problem(sim_pu_raster, sim_features) %>%
+#' p <- problem(sim_pu_sf[1:4, , drop = FALSE], sim_features,
+#'              cost_column = "cost") %>%
 #'      add_min_set_objective() %>%
 #'      add_relative_targets(0.1) %>%
 #'      add_binary_decisions()
 #'
+#' # specify file path to save problem formulation
+#' path <- file.path(tempdir(), "model.lp")
+#'
 #' # save problem to file (using the Rsymphony package)
-#' write_problem(p, "model.lp")
+#' write_problem(p, path)
+#'
+#' # print model file
+#' cat(readLines(path), sep = "\n")
 #' }
 #'
 #' @export

@@ -3,7 +3,7 @@ NULL
 
 #' Add a *SYMPHONY* solver with *Rsymphony*
 #'
-#' Specify that the [*SYMPHONY*](https://projects.coin-or.org/SYMPHONY)
+#' Specify that the [*SYMPHONY*](https://github.com/coin-or/SYMPHONY)
 #' software (Ralphs & Güzelsoy 2005) -- using the \pkg{Rsymphony} package --
 #' should be used to solve a conservation planning [problem()].
 #' This function can also be used to customize the behavior of the solver.
@@ -12,7 +12,7 @@ NULL
 #' @inheritParams add_gurobi_solver
 #'
 #' @details
-#' [*SYMPHONY*](https://projects.coin-or.org/SYMPHONY) is an
+#' [*SYMPHONY*](https://github.com/coin-or/SYMPHONY) is an
 #' open-source mixed integer programming solver that is part of the
 #' Computational
 #' Infrastructure for Operations Research (COIN-OR) project.
@@ -30,6 +30,8 @@ NULL
 #' See [solvers] for an overview of all functions for adding a solver.
 #'
 #' @family solvers
+#'
+#' @encoding UTF-8
 #'
 #' @references
 #' Ralphs TK and Güzelsoy M (2005) The SYMPHONY callable library for mixed

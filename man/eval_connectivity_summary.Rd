@@ -7,7 +7,7 @@
 \alias{eval_connectivity_summary,ConservationProblem,ANY,ANY,dgCMatrix-method}
 \alias{eval_connectivity_summary,ConservationProblem,ANY,ANY,data.frame-method}
 \alias{eval_connectivity_summary,ConservationProblem,ANY,ANY,array-method}
-\title{Evaluate solution connectivity}
+\title{Evaluate connectivity of solution}
 \usage{
 \S4method{eval_connectivity_summary}{ConservationProblem,ANY,ANY,matrix}(x, solution, zones, data)
 
@@ -20,7 +20,7 @@
 \S4method{eval_connectivity_summary}{ConservationProblem,ANY,ANY,array}(x, solution, zones, data)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{solution}{\code{numeric}, \code{matrix}, \code{data.frame},
 \code{\linkS4class{Raster}}, \code{\linkS4class{Spatial}},
@@ -37,13 +37,15 @@ of zones. Cell values along the diagonal of the matrix represent
 the level of connectivity between planning units allocated to the
 same zone. Cell values must lay between 1 and -1, where negative
 values favor solutions with weak connectivity. The default argument to
-\code{zones} is an identity matrix (i.e. a matrix with ones along the
+\code{zones} is an identity matrix (i.e., a matrix with ones along the
 matrix diagonal and zeros elsewhere), so that planning units are
 only considered to be connected when they are allocated to the same zone.
-This argument is required when the argument to \code{data} is a
-\code{matrix} or \code{Matrix} object. If the argument to \code{data} is
-an \code{array} or \code{data.frame} with zone data, this argument
-must explicitly be set to \code{NULL} otherwise an error will be thrown.}
+This argument is required when working with multiple zones and the
+argument to \code{data} is a \code{matrix} or \code{Matrix} object.
+If the argument to \code{data} is an \code{array} or \code{data.frame} with data for
+multiple zones (e.g., using the \code{"zone1"} and \code{"zone2"} column names),
+this argument must explicitly be set to \code{NULL} otherwise an error will be
+thrown.}
 
 \item{data}{\code{matrix}, \code{Matrix}, \code{data.frame}, or
 \code{array} object containing connectivity data. The connectivity values
@@ -80,13 +82,14 @@ Calculate the connectivity held within a solution to a conservation
 planning \code{\link[=problem]{problem()}}.
 This summary statistic evaluates the connectivity of a solution using
 pair-wise connectivity values between combinations of planning units.
+It is specifically designed for symmetric connectivity data.
 }
 \details{
 This summary statistic is comparable to the \code{Connectivity_In} metric
 reported by the
 \href{https://marxansolutions.org}{\emph{Marxan} software} (Ball \emph{et al.} 2009).
 It is calculated using the same equations used to penalize solutions
-with connectivity data (i.e. \code{\link[=add_connectivity_penalties]{add_connectivity_penalties()}}).
+with connectivity data (i.e., \code{\link[=add_connectivity_penalties]{add_connectivity_penalties()}}).
 Specifically, it is calculated as the sum of the pair-wise connectivity
 values in the argument to \code{data}, weighted by the value of the planning
 units in the solution.
@@ -172,8 +175,6 @@ values in the argument to \code{solution}.
 \section{Data format}{
 
 The argument to \code{data} can be specified using several different formats.
-These formats can be used to describe symmetric or
-asymmetric relationships between planning units.
 
 \describe{
 
@@ -189,13 +190,9 @@ allocated to different zones as having zero connectivity.}
 
 \item{\code{data} as a \code{data.frame} object}{containing the fields (columns)
 \code{"id1"}, \code{"id2"}, and \code{"boundary"}. Here, each row
-denotes the connectivity between two planning units following the
-\emph{Marxan} format. The data can be used to denote symmetric or
-asymmetric relationships between planning units. By default,
-input data is assumed to be symmetric unless asymmetric data is
-also included (e.g. if data is present for planning units 2 and 3, then
-the same amount of connectivity is expected for planning units 3 and 2,
-unless connectivity data is also provided for planning units 3 and 2).
+denotes the connectivity between a pair of planning units
+(per values in the \code{"id1"} and \code{"id2"} columns) following the
+\emph{Marxan} format.
 If the argument to \code{x} contains multiple zones, then the columns
 \code{"zone1"} and \code{"zone2"} can optionally be provided to manually
 specify the connectivity values between planning units when they are
@@ -207,7 +204,7 @@ allocated to specific zones. If the columns \code{"zone1"} and
 containing four-dimensions where cell values
 indicate the strength of connectivity between planning units
 when they are assigned to specific management zones. The first two
-dimensions (i.e. rows and columns) indicate the strength of
+dimensions (i.e., rows and columns) indicate the strength of
 connectivity between different planning units and the second two
 dimensions indicate the different management zones. Thus
 the \code{data[1, 2, 3, 4]} indicates the strength of
@@ -254,10 +251,13 @@ cm1 <- connectivity_matrix(sim_pu_raster, sim_pu_raster)
 r1 <- eval_connectivity_summary(p1, s1, data = cm1)
 print(r1)
 
-# build minimal conservation problem with polygon (sf) data
-p2 <- problem(sim_pu_sf, sim_features, cost_column = "cost") \%>\%
+
+# build multi-zone conservation problem with polygon (sf) data
+p2 <- problem(sim_pu_zones_sf, sim_features_zones,
+              cost_column = c("cost_1", "cost_2", "cost_3")) \%>\%
       add_min_set_objective() \%>\%
-      add_relative_targets(0.1) \%>\%
+      add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5,
+                                  ncol = 3)) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
 
@@ -267,54 +267,27 @@ s2 <- solve(p2)
 # print first six rows of the attribute table
 print(head(s2))
 
-# plot solution
-plot(s2[, "solution_1"])
-
-# simulate connectivity matrix
-# here, we will generate connectivity values randomly
-# between all pairs of planning units
-cm2 <- matrix(runif(nrow(sim_pu_sf) ^ 2), nrow = nrow(sim_pu_sf))
-
-# calculate connectivity associated with the solution
-r2 <- eval_connectivity_summary(p2, s2[, "solution_1"], data = cm2)
-print(r2)
-
-# build multi-zone conservation problem with polygon (sf) data
-p3 <- problem(sim_pu_zones_sf, sim_features_zones,
-              cost_column = c("cost_1", "cost_2", "cost_3")) \%>\%
-      add_min_set_objective() \%>\%
-      add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5,
-                                  ncol = 3)) \%>\%
-      add_binary_decisions() \%>\%
-      add_default_solver(verbose = FALSE)
-
-# solve the problem
-s3 <- solve(p3)
-
-# print first six rows of the attribute table
-print(head(s3))
-
 # create new column representing the zone id that each planning unit
 # was allocated to in the solution
-s3$solution <- category_vector(
-  s3[, c("solution_1_zone_1", "solution_1_zone_2", "solution_1_zone_3")])
-s3$solution <- factor(s3$solution)
+s2$solution <- category_vector(
+  s2[, c("solution_1_zone_1", "solution_1_zone_2", "solution_1_zone_3")])
+s2$solution <- factor(s2$solution)
 
 # plot solution
-plot(s3[, "solution"])
+plot(s2[, "solution"])
 
 # simulate connectivity matrix
 # here, we will add a new column to sim_pu_zones_sf with
 # randomly simulated values and create a connectivity matrix
 # based on the average simulated values of adjacent planning units
 sim_pu_zones_sf$con <- runif(nrow(sim_pu_zones_sf))
-cm3 <- connectivity_matrix(sim_pu_zones_sf, "con")
+cm2 <- connectivity_matrix(sim_pu_zones_sf, "con")
 
 # calculate connectivity associated with the solution
-r3 <- eval_connectivity_summary(
-  p3, s3[, c("solution_1_zone_1", "solution_1_zone_2", "solution_1_zone_3")],
-  data = cm3)
-print(r3)
+r2 <- eval_connectivity_summary(
+  p2, s2[, c("solution_1_zone_1", "solution_1_zone_2", "solution_1_zone_3")],
+  data = cm2)
+print(r2)
 
 }
 }
@@ -330,6 +303,7 @@ Also, see \code{\link[=add_connectivity_penalties]{add_connectivity_penalties()}
 connectivity.
 
 Other summaries: 
+\code{\link{eval_asym_connectivity_summary}()},
 \code{\link{eval_boundary_summary}()},
 \code{\link{eval_cost_summary}()},
 \code{\link{eval_feature_representation_summary}()},

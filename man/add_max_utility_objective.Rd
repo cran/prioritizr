@@ -7,7 +7,7 @@
 add_max_utility_objective(x, budget)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{budget}{\code{numeric} value specifying the maximum expenditure of
 the prioritization. For problems with multiple zones, the argument
@@ -16,7 +16,7 @@ for the entire solution or (ii) a \code{numeric} vector to specify
 a separate budget for each management zone.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the objective
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the objective
 added to it.
 }
 \description{
@@ -50,7 +50,7 @@ by \eqn{j}{j}) as:
 Maximize sum_i^I (-s * ci * xi) + sum_j^J (aj * wj) subject to
 aj = sum_i^I (xi * rij) for all j in J & sum_i^I (xi * ci) <= B}
 
-Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.
+Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.,
 specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 (0)), \eqn{r_{ij}}{rij} is the amount of feature \eqn{j}{j} in planning
 unit \eqn{i}{i}, \eqn{A_j}{Aj} is the amount of feature \eqn{j}{j}
@@ -72,6 +72,7 @@ confusion with existing terminology.
 }
 
 \examples{
+\dontrun{
 # load data
 data(sim_pu_raster, sim_pu_zones_stack, sim_features, sim_features_zones)
 
@@ -80,13 +81,12 @@ p1 <- problem(sim_pu_raster, sim_features) \%>\%
       add_max_utility_objective(5000) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(gap = 0, verbose = FALSE)
-\dontrun{
+
 # solve problem
 s1 <- solve(p1)
 
 # plot solution
 plot(s1, main = "solution", axes = FALSE, box = FALSE)
-}
 
 # create multi-zone problem with maximum utility objective that
 # has a single budget for all zones
@@ -94,13 +94,13 @@ p2 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_max_utility_objective(5000) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(gap = 0, verbose = FALSE)
-\dontrun{
+
 # solve problem
 s2 <- solve(p2)
 
 # plot solution
 plot(category_layer(s2), main = "solution", axes = FALSE, box = FALSE)
-}
+
 
 # create multi-zone problem with maximum utility objective that
 # has separate budgets for each zone
@@ -108,7 +108,7 @@ p3 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_max_utility_objective(c(1000, 2000, 3000)) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(gap = 0, verbose = FALSE)
-\dontrun{
+
 # solve problem
 s3 <- solve(p3)
 

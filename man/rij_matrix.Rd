@@ -44,13 +44,14 @@ Generate a matrix showing the amount of each feature in each planning
 unit (also known as an \emph{rij} matrix).
 }
 \details{
-Generally, processing vector (i.e. \code{\linkS4class{Spatial}} or
+Generally, processing vector (i.e., \code{\linkS4class{Spatial}} or
 \code{\link[sf:sf]{sf::sf()}}) data takes much
 longer to process then \code{\linkS4class{Raster}} data,
 so it is recommended to use \code{\linkS4class{Raster}} data
 for planning units where possible.
 }
 \examples{
+\dontrun{
 # load data
 data(sim_pu_raster, sim_pu_polygons, sim_pu_sf, sim_pu_zones_stack)
 
@@ -69,4 +70,5 @@ print(rij_sf)
 # create rij matrix using raster stack planning units
 rij_zones_raster <- rij_matrix(sim_pu_zones_stack, sim_features)
 print(rij_zones_raster)
+}
 }

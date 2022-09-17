@@ -12,7 +12,7 @@ NULL
 #' possible, and so often results in solutions that are heavily biased towards
 #' just a few features.
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param budget `numeric` value specifying the maximum expenditure of
 #'   the prioritization. For problems with multiple zones, the argument
@@ -40,7 +40,7 @@ NULL
 #' Maximize sum_i^I (-s * ci * xi) + sum_j^J (aj * wj) subject to
 #' aj = sum_i^I (xi * rij) for all j in J & sum_i^I (xi * ci) <= B}
 #'
-#' Here, \eqn{x_i}{xi} is the [decisions] variable (e.g.
+#' Here, \eqn{x_i}{xi} is the [decisions] variable (e.g.,
 #' specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 #' (0)), \eqn{r_{ij}}{rij} is the amount of feature \eqn{j}{j} in planning
 #' unit \eqn{i}{i}, \eqn{A_j}{Aj} is the amount of feature \eqn{j}{j}
@@ -67,6 +67,7 @@ NULL
 #' @family objectives
 #'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_pu_zones_stack, sim_features, sim_features_zones)
 #'
@@ -75,13 +76,12 @@ NULL
 #'       add_max_utility_objective(5000) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(gap = 0, verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s1 <- solve(p1)
 #'
 #' # plot solution
 #' plot(s1, main = "solution", axes = FALSE, box = FALSE)
-#' }
 #'
 #' # create multi-zone problem with maximum utility objective that
 #' # has a single budget for all zones
@@ -89,13 +89,13 @@ NULL
 #'       add_max_utility_objective(5000) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(gap = 0, verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s2 <- solve(p2)
 #'
 #' # plot solution
 #' plot(category_layer(s2), main = "solution", axes = FALSE, box = FALSE)
-#' }
+#'
 #'
 #' # create multi-zone problem with maximum utility objective that
 #' # has separate budgets for each zone
@@ -103,7 +103,7 @@ NULL
 #'       add_max_utility_objective(c(1000, 2000, 3000)) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(gap = 0, verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s3 <- solve(p3)
 #'

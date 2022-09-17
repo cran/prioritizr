@@ -9,16 +9,16 @@ NULL
 #' the planning unit to include in a protected area network. If no decision is
 #' added to a problem then this decision class will be used by default.
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @details Conservation planning problems involve making decisions on planning
-#'   units. These decisions are then associated with actions (e.g. turning a
+#'   units. These decisions are then associated with actions (e.g., turning a
 #'   planning unit into a protected area). Only a
 #'   single decision should be added to a `ConservationProblem` object.
 #'   Note that if multiple decisions are added to a problem object, then the
 #'   last one to be added will be used.
 #'
-#' @return Object (i.e. [`ConservationProblem-class`]) with the decisions added
+#' @return Object (i.e., [`ConservationProblem-class`]) with the decisions added
 #'   to it.
 #'
 #' @seealso
@@ -27,6 +27,7 @@ NULL
 #' @family decisions
 #'
 #' @examples
+#' \dontrun{
 #' # set seed for reproducibility
 #' set.seed(500)
 #'
@@ -39,13 +40,13 @@ NULL
 #'       add_relative_targets(0.1) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s1 <- solve(p1)
 #'
 #' # plot solution
 #' plot(s1, main = "solution")
-#' }
+#'
 #' # build multi-zone conservation problem with binary decisions
 #' p2 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
 #'       add_min_set_objective() %>%
@@ -53,7 +54,7 @@ NULL
 #'                                   ncol = 3)) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve the problem
 #' s2 <- solve(p2)
 #'

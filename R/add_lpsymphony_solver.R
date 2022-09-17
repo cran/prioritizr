@@ -3,7 +3,7 @@ NULL
 
 #' Add a *SYMPHONY* solver with *lpsymphony*
 #'
-#' Specify that the [*SYMPHONY*](https://projects.coin-or.org/SYMPHONY)
+#' Specify that the [*SYMPHONY*](https://github.com/coin-or/SYMPHONY)
 #' software (Ralphs & Güzelsoy 2005) -- using the \pkg{lpsymphony} package --
 #' should be used to solve a conservation planning [problem()].
 #' This function can also be used to customize the behavior of the solver.
@@ -13,7 +13,7 @@ NULL
 #' @inheritParams add_gurobi_solver
 #'
 #' @details
-#' [*SYMPHONY*](https://projects.coin-or.org/SYMPHONY) is an
+#' [*SYMPHONY*](https://github.com/coin-or/SYMPHONY) is an
 #' open-source mixed integer programming solver that is part of the
 #' Computational Infrastructure for Operations Research (COIN-OR) project.
 #' This solver is provided because it may be easier to install
@@ -45,6 +45,8 @@ NULL
 #' See [solvers] for an overview of all functions for adding a solver.
 #'
 #' @family solvers
+#'
+#' @encoding UTF-8
 #'
 #' @examples
 #' \dontrun{
@@ -78,8 +80,8 @@ add_lpsymphony_solver <- function(x, gap = 0.1,
                           assertthat::is.scalar(gap),
                           isTRUE(gap >= 0), isTRUE(all(is.finite(time_limit))),
                           assertthat::is.scalar(time_limit),
-                          assertthat::is.count(time_limit) || isTRUE(time_limit
-                            == -1),
+                          assertthat::is.count(time_limit) ||
+                            isTRUE(time_limit == -1),
                           assertthat::is.flag(verbose),
                           assertthat::is.flag(first_feasible),
                           assertthat::noNA(first_feasible),
@@ -107,7 +109,7 @@ add_lpsymphony_solver <- function(x, gap = 0.1,
       # create model
       model <- list(
         obj = x$obj(),
-        mat = methods::as(x$A(), "dgTMatrix"),
+        mat = as_Matrix(x$A(), "dgTMatrix"),
         dir = x$sense(),
         rhs = x$rhs(),
         types = x$vtype(),

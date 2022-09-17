@@ -12,14 +12,14 @@ NULL
 #' representation of some features over other features when making decisions
 #' about how the budget should be allocated.
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param weights `numeric` or `matrix` of weights.
 #'   See the Weights format section for more information.
 #'
 #' @details
 #' Weights can only be applied to problems that have an objective
-#' that is budget limited (e.g. [add_max_cover_objective()]).
+#' that is budget limited (e.g., [add_max_cover_objective()]).
 #' They can be applied to problems that aim to maximize phylogenetic
 #' representation ([add_max_phylo_div_objective()]) to favor the
 #' representation of specific features over the representation of
@@ -54,7 +54,7 @@ NULL
 #'
 #'   }
 #'
-#' @return Object (i.e. [`ConservationProblem-class`]) with the weights
+#' @return Object (i.e., [`ConservationProblem-class`]) with the weights
 #'  added to it.
 #'
 #' @seealso
@@ -63,7 +63,8 @@ NULL
 #' @family penalties
 #'
 #' @examples
-#' # load ape package
+#' \dontrun{
+#' # load package
 #' require(ape)
 #'
 #' # load data
@@ -88,24 +89,22 @@ NULL
 #'
 #' # create manually specified weights that assign higher importance to
 #' # certain features. These weights could be based on a pre-calculated index
-#' # (e.g. an index measuring extinction risk where higher values
+#' # (e.g., an index measuring extinction risk where higher values
 #' # denote higher extinction risk)
 #' w3 <- c(0, 0, 0, 100, 200)
 #' p3 <- p1 %>% add_feature_weights(w3)
-#' \dontrun{
+#'
 #' # solve problems
 #' s1 <- stack(solve(p1), solve(p2), solve(p3))
 #'
 #' # plot solutions
 #' plot(s1, main = c("equal weights", "rarity weights", "manual weights"),
 #'      axes = FALSE, box = FALSE)
-#' }
 #'
 #' # plot the example phylogeny
-#' \dontrun{
 #' par(mfrow = c(1, 1))
 #' plot(sim_phylogeny, main = "simulated phylogeny")
-#' }
+#'
 #' # create problem with a maximum phylogenetic diversity objective,
 #' # where each feature needs 10% of its distribution to be secured for
 #' # it to be adequately conserved and a total budget of 1900
@@ -114,7 +113,7 @@ NULL
 #'       add_relative_targets(0.1) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s4 <- solve(p4)
 #'
@@ -129,23 +128,23 @@ NULL
 #' plot(sim_phylogeny, main = "represented features",
 #'      tip.color = replace(rep("black", nlayers(sim_features)),
 #'                          which(r4$met), "red"))
-#' }
-#' # we can see here that the third feature ("layer.3", i.e.
+#'
+#' # we can see here that the third feature ("layer.3", i.e.,
 #' # sim_features[[3]]) is not represented in the solution. Let us pretend
 #' # that it is absolutely critical this feature is adequately conserved
 #' # in the solution. For example, this feature could represent a species
 #' # that plays important role in the ecosystem, or a species that is
-#' # important commercial activities (e.g. eco-tourism). So, to generate
+#' # important commercial activities (e.g., eco-tourism). So, to generate
 #' # a solution that conserves the third feature whilst also aiming to
 #' # maximize phylogenetic diversity, we will create a set of weights that
 #' # assign a particularly high weighting to the third feature
 #' w5 <- c(0, 0, 1000, 0, 0)
 #'
-#' # we can see that this weighting (i.e. w5[3]) has a much higher value than
+#' # we can see that this weighting (i.e., w5[3]) has a much higher value than
 #' # the branch lengths in the phylogeny so solutions that represent this
 #' # feature be much closer to optimality
 #' print(sim_phylogeny$edge.length)
-#' \dontrun{
+#'
 #' # create problem with high weighting for the third feature and solve it
 #' s5 <- p4 %>% add_feature_weights(w5) %>% solve()
 #'
@@ -164,7 +163,7 @@ NULL
 #' plot(sim_phylogeny, main = "represented features",
 #'      tip.color = replace(rep("black", nlayers(sim_features)),
 #'                          which(r5$met), "red"))
-#' }
+#'
 #' # create multi-zone problem with maximum features objective,
 #' # with 10% representation targets for each feature, and set
 #' # a budget such that the total maximum expenditure in all zones
@@ -185,7 +184,7 @@ NULL
 #'
 #' # create problem with weights
 #' p7 <- p6 %>% add_feature_weights(w7)
-#' \dontrun{
+#'
 #' # solve problems
 #' s6 <- solve(p6)
 #' s7 <- solve(p7)
@@ -193,7 +192,7 @@ NULL
 #' # plot solutions
 #' plot(stack(category_layer(s6), category_layer(s7)),
 #'      main = c("equal weights", "manual weights"), axes = FALSE, box = FALSE)
-#' }
+#'
 #' # create minimal problem to show the correct method for setting
 #' # weights for problems with manual targets
 #' p8 <- problem(sim_pu_raster, sim_features) %>%
@@ -204,7 +203,7 @@ NULL
 #'       add_feature_weights(matrix(c(1, 200), ncol = 1)) %>%
 #'       add_binary_decisions() %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s8 <- solve(p8)
 #'

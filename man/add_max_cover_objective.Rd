@@ -7,7 +7,7 @@
 add_max_cover_objective(x, budget)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{budget}{\code{numeric} value specifying the maximum expenditure of
 the prioritization. For problems with multiple zones, the argument
@@ -16,7 +16,7 @@ for the entire solution or a \code{numeric} vector to specify
 a budget for each each management zone.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the objective
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the objective
 added to it.
 }
 \description{
@@ -31,10 +31,10 @@ The maximum coverage objective seeks to find the set of planning units that
 maximizes the number of represented features, while keeping cost within a
 fixed budget. Here, features are treated as being represented if
 the reserve system contains at least a single instance of a feature
-(i.e. an amount greater than 1). This formulation has often been
+(i.e., an amount greater than 1). This formulation has often been
 used in conservation planning problems dealing with binary biodiversity
 data that indicate the presence/absence of suitable habitat
-(e.g. Church & Velle 1974). Additionally, weights can be used to favor the
+(e.g., Church & Velle 1974). Additionally, weights can be used to favor the
 representation of certain features over other features (see
 \code{\link[=add_feature_weights]{add_feature_weights()}}). Check out the
 \code{\link[=add_max_features_objective]{add_max_features_objective()}} for a more
@@ -58,7 +58,7 @@ Maximize sum_i^I (-s * ci * xi) + sum_j^J (yj * wj) subject to
 sum_i^I (xi * rij) >= (yj * 1) for all j in J &
 sum_i^I (xi * ci) <= B}
 
-Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.
+Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.,
 specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 (0)), \eqn{r_{ij}}{rij} is the amount of feature \eqn{j}{j} in planning
 unit \eqn{i}{i}, \eqn{y_j}{yj} indicates if the solution has meet
@@ -82,12 +82,13 @@ Church \emph{et al.} (1996). The old formulation is now provided by the
 }
 
 \examples{
+\dontrun{
 # load data
 data(sim_pu_raster, sim_pu_zones_stack, sim_features, sim_features_zones)
 
 # threshold the feature data to generate binary biodiversity data
 sim_binary_features <- sim_features
-thresholds <- raster::quantile(sim_features, probs = 0.95, names = FALSE,
+thresholds <- raster::quantile(sim_features, probs = 0.5, names = FALSE,
                                na.rm = TRUE)
 for (i in seq_len(raster::nlayers(sim_features)))
   sim_binary_features[[i]] <- as.numeric(raster::values(sim_features[[i]]) >
@@ -98,18 +99,17 @@ p1 <- problem(sim_pu_raster, sim_binary_features) \%>\%
       add_max_cover_objective(500) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s1 <- solve(p1)
 
 # plot solution
 plot(s1, main = "solution", axes = FALSE, box = FALSE)
-}
 
 # threshold the multi-zone feature data to generate binary biodiversity data
 sim_binary_features_zones <- sim_features_zones
 for (z in number_of_zones(sim_features_zones)) {
-  thresholds <- raster::quantile(sim_features_zones[[z]], probs = 0.95,
+  thresholds <- raster::quantile(sim_features_zones[[z]], probs = 0.5,
                                  names = FALSE, na.rm = TRUE)
   for (i in seq_len(number_of_features(sim_features_zones))) {
     sim_binary_features_zones[[z]][[i]] <- as.numeric(
@@ -123,13 +123,12 @@ p2 <- problem(sim_pu_zones_stack, sim_binary_features_zones) \%>\%
       add_max_cover_objective(800) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s2 <- solve(p2)
 
 # plot solution
 plot(category_layer(s2), main = "solution", axes = FALSE, box = FALSE)
-}
 
 # create multi-zone problem with maximum utility objective that
 # has separate budgets for each zone
@@ -137,7 +136,7 @@ p3 <- problem(sim_pu_zones_stack, sim_binary_features_zones) \%>\%
       add_max_cover_objective(c(400, 400, 400)) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s3 <- solve(p3)
 

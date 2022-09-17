@@ -7,10 +7,10 @@
 Conservation planning exercises rarely have access to all the
 data needed to identify the \emph{truly} perfect solution. This is because
 available data may lack important details
-(e.g. land acquisition costs may be unavailable), contain errors
-(e.g. species presence/absence data may have false positives),
+(e.g., land acquisition costs may be unavailable), contain errors
+(e.g., species presence/absence data may have false positives),
 or key objectives may not be formally incorporated into the
-prioritization process (e.g. future land use requirements).
+prioritization process (e.g., future land use requirements).
 As such, conservation planners can help decision makers by providing
 them with a portfolio of solutions to inform their decision.
 }
@@ -57,6 +57,7 @@ when the \emph{Gurobi} software is not available.}
 }
 }
 \examples{
+\dontrun{
 # load data
 data(sim_pu_raster, sim_features)
 
@@ -72,7 +73,7 @@ p1 <- p \%>\% add_cuts_portfolio(4)
 
 # create problem with shuffle portfolio with 4 solutions
 p2 <- p \%>\% add_shuffle_portfolio(4)
-\dontrun{
+
 # create problem with extra portfolio
 p3 <- p \%>\% add_extra_portfolio()
 
@@ -99,8 +100,8 @@ plot(stack(s[[4]]), axes = FALSE, box = FALSE)
 
 # plot solutions from shuffle portfolio
 plot(stack(s[[5]]), axes = FALSE, box = FALSE)
-
 }
+
 }
 \seealso{
 Other overviews: 

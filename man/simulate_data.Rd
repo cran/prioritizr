@@ -4,45 +4,51 @@
 \alias{simulate_data}
 \title{Simulate data}
 \usage{
-simulate_data(x, n, model, transform = identity, ...)
+simulate_data(
+  x,
+  n = 1,
+  scale = 0.5,
+  intensity = 0,
+  sd = 1,
+  transform = identity
+)
 }
 \arguments{
-\item{x}{\code{\linkS4class{RasterLayer}} object to use as
-a template.}
+\item{x}{\code{\link[raster:raster]{raster::raster()}} raster object to use as a template.}
 
-\item{n}{\code{integer} number of species to simulate.}
+\item{n}{\code{integer} number of layers to simulate.
+Defaults to 1.}
 
-\item{model}{\code{\link[RandomFields:RP]{RandomFields::RP()}} model object
-to use for simulating data.}
+\item{scale}{\code{numeric} parameter to control level of spatial
+auto-correlation.
+Defaults to 0.5.}
 
-\item{transform}{\code{function} to transform values output
-from the random fields simulation.}
+\item{intensity}{\code{numeric} average value of simulated data.
+Defaults to 0.}
 
-\item{...}{additional arguments passed to
-\code{\link[RandomFields:RFsimulate]{RandomFields::RFsimulate()}}.}
+\item{sd}{\code{numeric} standard deviation of simulated data.
+Defaults to 1.}
+
+\item{transform}{\code{function} transform values output from the simulation.
+Defaults to the \code{\link[=identity]{identity()}} function such that values remain the same
+following transformation.}
 }
 \value{
-\code{\linkS4class{RasterStack}} object with a
-layer for each species.
+\code{\link[raster:stack]{raster::stack()}} object.
 }
 \description{
-Simulate spatially auto-correlated data.
+Simulate spatially auto-correlated data using Gaussian random fields.
 }
 \examples{
 \dontrun{
 # create raster
-r <- raster(ncol=10, nrow=10, xmn=0, xmx=1, ymn=0, ymx=1)
+r <- raster(ncol = 10, nrow = 10, xmn = 0, xmx = 1, ymn = 0, ymx = 1)
 values(r) <- 1
 
 # simulate data using a Gaussian field
-# (note this requires the RandomFields package to be installed)
-d <- simulate_data(r, n = 1, model = RandomFields::RMgauss())
+x <- simulate_data(r, n = 1, scale = 0.2)
 
 # plot simulated data
-plot(d, main = "random Gaussian field")
+plot(x, main = "simulated data")
 }
-}
-\seealso{
-\code{\link[RandomFields:RFsimulate]{RandomFields::RFsimulate()}},
-\code{\link[=simulate_cost]{simulate_cost()}}, \code{\link[=simulate_species]{simulate_species()}}.
 }

@@ -7,7 +7,7 @@
 add_min_shortfall_objective(x, budget)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{budget}{\code{numeric} value specifying the maximum expenditure of
 the prioritization. For problems with multiple zones, the argument
@@ -16,7 +16,7 @@ for the entire solution or (ii) a \code{numeric} vector to specify
 a separate budget for each management zone.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the objective
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the objective
 added to it.
 }
 \description{
@@ -49,7 +49,7 @@ Minimize sum_j^J wj * (yj / tj) subject to
 sum_i^I (xi * rij) + yj >= tj for all j in J &
 sum_i^I (xi * ci) <= B}
 
-Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.
+Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.,
 specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 (0)), \eqn{r_{ij}}{rij} is the amount of feature \eqn{j}{j} in planning
 unit \eqn{i}{i}, \eqn{t_j}{tj} is the representation target for feature
@@ -64,6 +64,7 @@ for target \eqn{j}{j}.
 }
 
 \examples{
+\dontrun{
 # load data
 data(sim_pu_raster, sim_pu_zones_stack, sim_features, sim_features_zones)
 
@@ -73,13 +74,12 @@ p1 <- problem(sim_pu_raster, sim_features) \%>\%
       add_relative_targets(0.1) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s1 <- solve(p1)
 
 # plot solution
 plot(s1, main = "solution", axes = FALSE, box = FALSE)
-}
 
 # create multi-zone problem with minimum shortfall objective,
 # with 10\% representation targets for each feature, and set
@@ -90,13 +90,13 @@ p2 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_relative_targets(matrix(0.1, ncol = 3, nrow = 5)) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s2 <- solve(p2)
 
 # plot solution
 plot(category_layer(s2), main = "solution", axes = FALSE, box = FALSE)
-}
+
 # create multi-zone problem with minimum shortfall objective,
 # with 10\% representation targets for each feature, and set
 # separate budgets for each management zone
@@ -105,7 +105,7 @@ p3 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_relative_targets(matrix(0.1, ncol = 3, nrow = 5)) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s3 <- solve(p3)
 

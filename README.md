@@ -1,22 +1,22 @@
 
 <!--- README.md is generated from README.Rmd. Please edit that file -->
 
-# prioritizr: <img src="man/figures/logo.png" align="right" height="90px" />
+# prioritizr: <img src="man/figures/logo.png" align="right" style="height:90px!important;" />
 
 # Systematic Conservation Prioritization in R
 
 <!-- badges: start -->
 
 [![lifecycle](https://img.shields.io/badge/Lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![R-CMD-check-Ubuntu](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Ubuntu/master.svg?label=Ubuntu)](https://github.com/prioritizr/prioritizr/actions)
-[![R-CMD-check-Windows](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Windows/master.svg?label=Windows)](https://github.com/prioritizr/prioritizr/actions)
-[![R-CMD-check-Mac-OSX](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Mac%20OSX/master.svg?label=Mac%20OSX)](https://github.com/prioritizr/prioritizr/actions)
-[![Coverage
-Status](https://codecov.io/github/prioritizr/prioritizr/coverage.svg?branch=master)](https://codecov.io/github/prioritizr/prioritizr?branch=master)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/prioritizr)](https://CRAN.R-project.org/package=prioritizr)
+[![R-CMD-check-ubuntu](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Ubuntu/master.svg?label=Ubuntu)](https://github.com/prioritizr/prioritizr/actions)
+[![R-CMD-check-windows](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Windows/master.svg?label=Windows)](https://github.com/prioritizr/prioritizr/actions)
+[![R-CMD-check-macos](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/macOS/master.svg?label=macOS)](https://github.com/prioritizr/prioritizr/actions)
+[![Documentation](https://img.shields.io/github/workflow/status/prioritizr/prioritizr/Documentation/master.svg?label=Documentation)](https://github.com/prioritizr/prioritizr/actions)
+[![Coverage-Status](https://codecov.io/github/prioritizr/prioritizr/coverage.svg?branch=master)](https://codecov.io/github/prioritizr/prioritizr?branch=master)
+[![CRAN-Status-Badge](http://www.r-pkg.org/badges/version/prioritizr)](https://CRAN.R-project.org/package=prioritizr)
 <!-- badges: end -->
 
-The *prioritizr R* package uses integer linear programming (ILP)
+The *prioritizr R* package uses mixed integer linear programming (MILP)
 techniques to provide a flexible interface for building and solving
 conservation planning problems. It supports a broad range of objectives,
 constraints, and penalties that can be used to custom-tailor
@@ -61,15 +61,15 @@ Please cite the *prioritizr R* package when using it in publications. To
 cite the latest official version, please use:
 
 > Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Edwards BPM, Watts
-> ME, Arcese P, Bennett J, Possingham HP (2021). prioritizr: Systematic
-> Conservation Prioritization in R. R package version 7.1.1. Available
+> ME, Arcese P, Bennett J, Possingham HP (2022). prioritizr: Systematic
+> Conservation Prioritization in R. R package version 7.2.2. Available
 > at <https://CRAN.R-project.org/package=prioritizr>.
 
 Alternatively, to cite the latest development version, please use:
 
 > Hanson JO, Schuster R, Morrell N, Strimas-Mackey M, Edwards BPM, Watts
-> ME, Arcese P, Bennett J, Possingham HP (2021). prioritizr: Systematic
-> Conservation Prioritization in R. R package version 7.1.1. Available
+> ME, Arcese P, Bennett J, Possingham HP (2022). prioritizr: Systematic
+> Conservation Prioritization in R. R package version 7.2.2. Available
 > at <https://github.com/prioritizr/prioritizr>.
 
 Additionally, we keep a [record of
@@ -195,17 +195,17 @@ currently installed. **It is strongly encouraged to install the [Gurobi
 software suite and the *gurobi* *R* package to solve problems
 quickly](https://www.gurobi.com/), for more information on this please
 refer to the [Gurobi Installation
-Guide](https://prioritizr.net/articles/gurobi_installation.html)**
+Guide](https://prioritizr.net/articles/gurobi_installation_guide.html)**
 
 ``` r
 # solve the problem
 s1 <- solve(p1)
 ```
 
-    ## Gurobi Optimizer version 9.1.2 build v9.1.2rc0 (linux64)
+    ## Gurobi Optimizer version 9.5.2 build v9.5.2rc0 (linux64)
     ## Thread count: 4 physical cores, 8 logical processors, using up to 1 threads
     ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
-    ## Model fingerprint: 0x8f50132f
+    ## Model fingerprint: 0x53cdb40f
     ## Variable types: 0 continuous, 90 integer (90 binary)
     ## Coefficient statistics:
     ##   Matrix range     [2e-01, 9e-01]
@@ -216,60 +216,49 @@ s1 <- solve(p1)
     ## Presolve time: 0.00s
     ## Presolved: 5 rows, 90 columns, 450 nonzeros
     ## Variable types: 0 continuous, 90 integer (90 binary)
-    ## Presolved: 5 rows, 90 columns, 450 nonzeros
+    ## Found heuristic solution: objective 2929.4929229
+    ## Root relaxation presolved: 5 rows, 90 columns, 450 nonzeros
     ## 
     ## 
-    ## Root relaxation: objective 2.611170e+03, 13 iterations, 0.00 seconds
+    ## Root relaxation: objective 2.611170e+03, 13 iterations, 0.00 seconds (0.00 work units)
     ## 
     ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
     ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
     ## 
-    ##      0     0 2611.17006    0    4 3139.88803 2611.17006  16.8%     -    0s
+    ##      0     0 2611.17006    0    4 2929.49292 2611.17006  10.9%     -    0s
     ## H    0     0                    2780.0314635 2611.17006  6.07%     -    0s
     ## H    0     0                    2761.3302091 2611.17006  5.44%     -    0s
     ## H    0     0                    2747.3774616 2611.17006  4.96%     -    0s
     ##      0     0 2611.74321    0    5 2747.37746 2611.74321  4.94%     -    0s
-    ##      0     0 2611.83195    0    6 2747.37746 2611.83195  4.93%     -    0s
-    ##      0     0 2611.88195    0    7 2747.37746 2611.88195  4.93%     -    0s
-    ##      0     0 2611.94509    0    7 2747.37746 2611.94509  4.93%     -    0s
-    ##      0     0 2611.95916    0    8 2747.37746 2611.95916  4.93%     -    0s
-    ##      0     0 2611.98750    0    8 2747.37746 2611.98750  4.93%     -    0s
-    ##      0     0 2612.13884    0    9 2747.37746 2612.13884  4.92%     -    0s
-    ##      0     0 2612.17380    0    9 2747.37746 2612.17380  4.92%     -    0s
-    ##      0     0 2612.35043    0   10 2747.37746 2612.35043  4.91%     -    0s
-    ##      0     0 2612.36452    0   10 2747.37746 2612.36452  4.91%     -    0s
-    ##      0     0 2612.42169    0    9 2747.37746 2612.42169  4.91%     -    0s
-    ##      0     0 2612.45702    0    9 2747.37746 2612.45702  4.91%     -    0s
-    ##      0     0 2612.47359    0   10 2747.37746 2612.47359  4.91%     -    0s
-    ##      0     0 2612.47538    0   11 2747.37746 2612.47538  4.91%     -    0s
-    ##      0     0 2612.48905    0    9 2747.37746 2612.48905  4.91%     -    0s
-    ##      0     0 2612.52192    0    9 2747.37746 2612.52192  4.91%     -    0s
-    ##      0     0 2612.52381    0   10 2747.37746 2612.52381  4.91%     -    0s
-    ##      0     0 2612.57002    0    9 2747.37746 2612.57002  4.91%     -    0s
-    ##      0     0 2612.57755    0   10 2747.37746 2612.57755  4.91%     -    0s
-    ##      0     0 2612.59388    0   10 2747.37746 2612.59388  4.91%     -    0s
-    ##      0     0 2612.63348    0    9 2747.37746 2612.63348  4.90%     -    0s
-    ##      0     0 2612.64156    0   10 2747.37746 2612.64156  4.90%     -    0s
-    ##      0     0 2612.66269    0   10 2747.37746 2612.66269  4.90%     -    0s
-    ##      0     0 2612.72195    0    9 2747.37746 2612.72195  4.90%     -    0s
-    ##      0     0 2612.78753    0   10 2747.37746 2612.78753  4.90%     -    0s
-    ##      0     0 2612.78891    0   11 2747.37746 2612.78891  4.90%     -    0s
-    ##      0     0 2612.78990    0   11 2747.37746 2612.78990  4.90%     -    0s
-    ##      0     0 2612.80122    0   12 2747.37746 2612.80122  4.90%     -    0s
-    ##      0     0 2612.80272    0   11 2747.37746 2612.80272  4.90%     -    0s
-    ##      0     2 2612.91183    0   11 2747.37746 2612.91183  4.89%     -    0s
-    ## H76889  5280                    2627.6389306 2621.79315  0.22%   1.7    3s
+    ##      0     0 2611.77869    0    6 2747.37746 2611.77869  4.94%     -    0s
+    ##      0     0 2611.89458    0    7 2747.37746 2611.89458  4.93%     -    0s
+    ##      0     0 2611.92840    0    8 2747.37746 2611.92840  4.93%     -    0s
+    ##      0     0 2611.95890    0    8 2747.37746 2611.95890  4.93%     -    0s
+    ##      0     0 2611.99567    0    8 2747.37746 2611.99567  4.93%     -    0s
+    ##      0     0 2612.19459    0    8 2747.37746 2612.19459  4.92%     -    0s
+    ##      0     0 2612.26426    0    9 2747.37746 2612.26426  4.92%     -    0s
+    ##      0     0 2612.28612    0   10 2747.37746 2612.28612  4.92%     -    0s
+    ##      0     0 2612.30057    0   10 2747.37746 2612.30057  4.92%     -    0s
+    ##      0     0 2612.32679    0   10 2747.37746 2612.32679  4.92%     -    0s
+    ##      0     0 2612.33532    0   10 2747.37746 2612.33532  4.92%     -    0s
+    ##      0     0 2612.39836    0    9 2747.37746 2612.39836  4.91%     -    0s
+    ##      0     0 2612.42417    0   10 2747.37746 2612.42417  4.91%     -    0s
+    ##      0     0 2612.43417    0   11 2747.37746 2612.43417  4.91%     -    0s
+    ##      0     0 2612.49918    0   10 2747.37746 2612.49918  4.91%     -    0s
+    ##      0     0 2612.50875    0   10 2747.37746 2612.50875  4.91%     -    0s
+    ##      0     2 2612.81540    0   10 2747.37746 2612.81540  4.90%     -    0s
+    ##  24971 11696 2631.35266   51    3 2747.37746 2619.81462  4.64%   1.6    5s
+    ## H88635  5604                    2627.6389306 2622.33208  0.20%   1.6    8s
     ## 
     ## Cutting planes:
-    ##   Gomory: 7
-    ##   MIR: 66
-    ##   StrongCG: 39
-    ##   Flow cover: 10
+    ##   MIR: 6
+    ##   StrongCG: 2
+    ##   Flow cover: 3
     ## 
-    ## Explored 99210 nodes (201659 simplex iterations) in 4.36 seconds
+    ## Explored 108086 nodes (186594 simplex iterations) in 9.64 seconds (2.28 work units)
     ## Thread count was 1 (of 8 available processors)
     ## 
-    ## Solution count 5: 2627.64 2747.38 2761.33 ... 3139.89
+    ## Solution count 6: 2627.64 2747.38 2761.33 ... 3139.89
     ## 
     ## Optimal solution found (tolerance 0.00e+00)
     ## Best objective 2.627638930618e+03, best bound 2.627638930618e+03, gap 0.0000%
@@ -288,7 +277,7 @@ print(attr(s1, "runtime"))
 ```
 
     ## solution_1 
-    ##      4.385
+    ##      9.676
 
 ``` r
 # extract state message from the solver
@@ -358,10 +347,10 @@ p2 <- p1 %>%
 s2 <- solve(p2)
 ```
 
-    ## Gurobi Optimizer version 9.1.2 build v9.1.2rc0 (linux64)
+    ## Gurobi Optimizer version 9.5.2 build v9.5.2rc0 (linux64)
     ## Thread count: 4 physical cores, 8 logical processors, using up to 1 threads
     ## Optimize a model with 5 rows, 90 columns and 450 nonzeros
-    ## Model fingerprint: 0xb2af8965
+    ## Model fingerprint: 0x7d308c9f
     ## Variable types: 0 continuous, 90 integer (90 binary)
     ## Coefficient statistics:
     ##   Matrix range     [2e-01, 9e-01]
@@ -373,48 +362,60 @@ s2 <- solve(p2)
     ## Presolve time: 0.00s
     ## Presolved: 5 rows, 80 columns, 400 nonzeros
     ## Variable types: 0 continuous, 80 integer (80 binary)
-    ## Presolved: 5 rows, 80 columns, 400 nonzeros
+    ## Found heuristic solution: objective 3021.2805888
+    ## Root relaxation presolved: 5 rows, 80 columns, 400 nonzeros
     ## 
     ## 
-    ## Root relaxation: objective 2.754438e+03, 12 iterations, 0.00 seconds
+    ## Root relaxation: objective 2.754438e+03, 12 iterations, 0.00 seconds (0.00 work units)
     ## 
     ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
     ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
     ## 
-    ##      0     0 2754.43796    0    4 3027.69709 2754.43796  9.03%     -    0s
-    ## H    0     0                    2839.1208991 2754.43796  2.98%     -    0s
-    ##      0     0 2835.61695    0    3 2839.12090 2835.61695  0.12%     -    0s
-    ##      0     0 2835.66921    0    3 2839.12090 2835.66921  0.12%     -    0s
-    ##      0     0 2835.66921    0    3 2839.12090 2835.66921  0.12%     -    0s
-    ##      0     0 2835.66921    0    3 2839.12090 2835.66921  0.12%     -    0s
-    ##      0     0 2835.93929    0    4 2839.12090 2835.93929  0.11%     -    0s
-    ##      0     0 2836.06802    0    4 2839.12090 2836.06802  0.11%     -    0s
-    ##      0     0 2836.33448    0    5 2839.12090 2836.33448  0.10%     -    0s
-    ##      0     0 2836.49814    0    5 2839.12090 2836.49814  0.09%     -    0s
-    ##      0     0 2836.77716    0    6 2839.12090 2836.77716  0.08%     -    0s
-    ##      0     0 2836.82966    0    7 2839.12090 2836.82966  0.08%     -    0s
-    ##      0     0 2836.87897    0    7 2839.12090 2836.87897  0.08%     -    0s
-    ##      0     0 2836.88941    0    7 2839.12090 2836.88941  0.08%     -    0s
-    ##      0     0 2836.89042    0    8 2839.12090 2836.89042  0.08%     -    0s
-    ## H    0     0                    2838.2640999 2836.89042  0.05%     -    0s
-    ##      0     0 2836.99962    0    7 2838.26410 2836.99962  0.04%     -    0s
-    ##      0     0 2837.08985    0    7 2838.26410 2837.08985  0.04%     -    0s
-    ##      0     0 2837.24683    0    5 2838.26410 2837.24683  0.04%     -    0s
-    ##      0     0 2837.57052    0    7 2838.26410 2837.57052  0.02%     -    0s
-    ##      0     0 2837.63877    0    8 2838.26410 2837.63877  0.02%     -    0s
-    ##      0     0 2838.10881    0    2 2838.26410 2838.10881  0.01%     -    0s
-    ##      0     0     cutoff    0      2838.26410 2838.26410  0.00%     -    0s
+    ##      0     0 2754.43795    0    4 3021.28059 2754.43795  8.83%     -    0s
+    ## H    0     0                    2839.1208991 2754.43795  2.98%     -    0s
+    ##      0     0 2754.44157    0    5 2839.12090 2754.44157  2.98%     -    0s
+    ##      0     0 2758.48548    0    5 2839.12090 2758.48548  2.84%     -    0s
+    ##      0     0 2758.91527    0    6 2839.12090 2758.91527  2.83%     -    0s
+    ##      0     0 2759.22179    0    7 2839.12090 2759.22179  2.81%     -    0s
+    ##      0     0 2761.07832    0    6 2839.12090 2761.07832  2.75%     -    0s
+    ##      0     0 2761.43633    0    7 2839.12090 2761.43633  2.74%     -    0s
+    ##      0     0 2761.45454    0    8 2839.12090 2761.45454  2.74%     -    0s
+    ##      0     0 2761.46314    0    9 2839.12090 2761.46314  2.74%     -    0s
+    ##      0     0 2761.49423    0   10 2839.12090 2761.49423  2.73%     -    0s
+    ##      0     0 2761.65657    0   10 2839.12090 2761.65657  2.73%     -    0s
+    ##      0     0 2762.39851    0   10 2839.12090 2762.39851  2.70%     -    0s
+    ##      0     0 2762.63943    0    9 2839.12090 2762.63943  2.69%     -    0s
+    ##      0     0 2763.80043    0    7 2839.12090 2763.80043  2.65%     -    0s
+    ##      0     0 2763.80469    0    8 2839.12090 2763.80469  2.65%     -    0s
+    ##      0     0 2763.83234    0    8 2839.12090 2763.83234  2.65%     -    0s
+    ##      0     0 2763.88681    0    8 2839.12090 2763.88681  2.65%     -    0s
+    ##      0     0 2763.89889    0    9 2839.12090 2763.89889  2.65%     -    0s
+    ##      0     0 2764.42236    0    9 2839.12090 2764.42236  2.63%     -    0s
+    ##      0     0 2764.50511    0   10 2839.12090 2764.50511  2.63%     -    0s
+    ##      0     0 2764.71972    0   11 2839.12090 2764.71972  2.62%     -    0s
+    ##      0     0 2764.92447    0   11 2839.12090 2764.92447  2.61%     -    0s
+    ##      0     0 2765.35561    0   11 2839.12090 2765.35561  2.60%     -    0s
+    ##      0     0 2765.37938    0   12 2839.12090 2765.37938  2.60%     -    0s
+    ##      0     0 2765.56448    0   12 2839.12090 2765.56448  2.59%     -    0s
+    ##      0     0 2765.66439    0   13 2839.12090 2765.66439  2.59%     -    0s
+    ##      0     0 2765.95837    0   13 2839.12090 2765.95837  2.58%     -    0s
+    ##      0     0 2766.11567    0   13 2839.12090 2766.11567  2.57%     -    0s
+    ##      0     0 2766.24843    0   11 2839.12090 2766.24843  2.57%     -    0s
+    ##      0     0 2766.27073    0   12 2839.12090 2766.27073  2.57%     -    0s
+    ##      0     0 2766.27073    0   13 2839.12090 2766.27073  2.57%     -    0s
+    ##      0     0 2766.27073    0   13 2839.12090 2766.27073  2.57%     -    0s
+    ##      0     2 2766.27077    0   13 2839.12090 2766.27077  2.57%     -    0s
+    ## * 1023   390              42    2838.2640999 2786.00750  1.84%   2.6    0s
     ## 
     ## Cutting planes:
-    ##   Gomory: 1
-    ##   MIR: 5
-    ##   StrongCG: 2
-    ##   RLT: 1
+    ##   Gomory: 2
+    ##   MIR: 4
+    ##   Flow cover: 1
     ## 
-    ## Explored 1 nodes (58 simplex iterations) in 0.02 seconds
+    ## Explored 10370 nodes (24553 simplex iterations) in 2.71 seconds (1.01 work units)
     ## Thread count was 1 (of 8 available processors)
     ## 
-    ## Solution count 3: 2838.26 2839.12 3027.7 
+    ## Solution count 5: 2838.26 2839.12 3021.28 ... 3027.7
     ## 
     ## Optimal solution found (tolerance 0.00e+00)
     ## Best objective 2.838264099909e+03, best bound 2.838264099909e+03, gap 0.0000%
@@ -448,10 +449,10 @@ p3 <- p2 %>%
 s3 <- solve(p3)
 ```
 
-    ## Gurobi Optimizer version 9.1.2 build v9.1.2rc0 (linux64)
+    ## Gurobi Optimizer version 9.5.2 build v9.5.2rc0 (linux64)
     ## Thread count: 4 physical cores, 8 logical processors, using up to 1 threads
     ## Optimize a model with 293 rows, 234 columns and 1026 nonzeros
-    ## Model fingerprint: 0x517c913c
+    ## Model fingerprint: 0xf2e8dbb5
     ## Variable types: 0 continuous, 234 integer (234 binary)
     ## Coefficient statistics:
     ##   Matrix range     [2e-01, 1e+00]
@@ -461,38 +462,40 @@ s3 <- solve(p3)
     ## Found heuristic solution: objective 19567.196992
     ## Found heuristic solution: objective 4347.6970854
     ## Presolve removed 72 rows and 46 columns
-    ## Presolve time: 0.00s
+    ## Presolve time: 0.01s
     ## Presolved: 221 rows, 188 columns, 832 nonzeros
     ## Variable types: 0 continuous, 188 integer (188 binary)
-    ## Presolved: 221 rows, 188 columns, 832 nonzeros
+    ## Found heuristic solution: objective 4118.0739655
+    ## Root relaxation presolved: 221 rows, 188 columns, 832 nonzeros
     ## 
     ## 
-    ## Root relaxation: objective 3.862929e+03, 120 iterations, 0.00 seconds
+    ## Root relaxation: objective 3.862929e+03, 120 iterations, 0.00 seconds (0.00 work units)
     ## 
     ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
     ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
     ## 
-    ##      0     0 3862.92934    0   65 4347.69709 3862.92934  11.1%     -    0s
-    ## H    0     0                    4091.9945792 3862.92934  5.60%     -    0s
-    ## H    0     0                    4058.7498291 3862.92934  4.82%     -    0s
-    ## H    0     0                    3951.7528370 3862.92934  2.25%     -    0s
-    ##      0     0 3889.41281    0   41 3951.75284 3889.41281  1.58%     -    0s
-    ## H    0     0                    3939.6015361 3889.41281  1.27%     -    0s
-    ##      0     0 3892.64817    0   63 3939.60154 3892.64817  1.19%     -    0s
+    ##      0     0 3862.92935    0   65 4118.07397 3862.92935  6.20%     -    0s
+    ## H    0     0                    4045.3056552 3862.92935  4.51%     -    0s
+    ## H    0     0                    3951.7528370 3862.92935  2.25%     -    0s
+    ##      0     0 3889.41282    0   41 3951.75284 3889.41282  1.58%     -    0s
+    ## H    0     0                    3939.6015361 3889.41282  1.27%     -    0s
+    ##      0     0 3892.64818    0   63 3939.60154 3892.64818  1.19%     -    0s
     ##      0     0 3896.53163    0   85 3939.60154 3896.53163  1.09%     -    0s
     ##      0     0 3910.26013    0    8 3939.60154 3910.26013  0.74%     -    0s
     ##      0     0 3910.58042    0    9 3939.60154 3910.58042  0.74%     -    0s
-    ##      0     0 3915.80407    0    6 3939.60154 3915.80407  0.60%     -    0s
-    ##      0     0 3934.87486    0    4 3939.60154 3934.87486  0.12%     -    0s
+    ##      0     0 3915.80408    0    6 3939.60154 3915.80408  0.60%     -    0s
+    ##      0     0     cutoff    0      3939.60154 3939.60154  0.00%     -    0s
     ## 
     ## Cutting planes:
-    ##   Cover: 1
+    ##   Gomory: 1
+    ##   Cover: 2
     ##   GUB cover: 1
+    ##   Zero half: 1
     ## 
-    ## Explored 1 nodes (217 simplex iterations) in 0.02 seconds
+    ## Explored 1 nodes (220 simplex iterations) in 0.07 seconds (0.02 work units)
     ## Thread count was 1 (of 8 available processors)
     ## 
-    ## Solution count 6: 3939.6 3951.75 4058.75 ... 19567.2
+    ## Solution count 7: 3939.6 3943.85 3951.75 ... 19567.2
     ## 
     ## Optimal solution found (tolerance 0.00e+00)
     ## Best objective 3.939601536145e+03, best bound 3.939601536145e+03, gap 0.0000%
@@ -522,47 +525,40 @@ p4 <- p3 %>%
 s4 <- solve(p4)
 ```
 
-    ## Gurobi Optimizer version 9.1.2 build v9.1.2rc0 (linux64)
+    ## Gurobi Optimizer version 9.5.2 build v9.5.2rc0 (linux64)
     ## Thread count: 4 physical cores, 8 logical processors, using up to 1 threads
     ## Optimize a model with 654 rows, 506 columns and 2292 nonzeros
-    ## Model fingerprint: 0x1ced3129
+    ## Model fingerprint: 0xa7ea9b38
     ## Variable types: 0 continuous, 506 integer (506 binary)
     ## Coefficient statistics:
     ##   Matrix range     [2e-01, 1e+00]
     ##   Objective range  [6e+01, 3e+02]
     ##   Bounds range     [1e+00, 1e+00]
     ##   RHS range        [1e+00, 1e+01]
-    ## Presolve removed 340 rows and 252 columns
-    ## Presolve time: 0.01s
-    ## Presolved: 314 rows, 254 columns, 702 nonzeros
-    ## Variable types: 0 continuous, 254 integer (254 binary)
-    ## Found heuristic solution: objective 7270.1195351
+    ## Presolve removed 352 rows and 261 columns
+    ## Presolve time: 0.03s
+    ## Presolved: 302 rows, 245 columns, 678 nonzeros
+    ## Variable types: 0 continuous, 245 integer (245 binary)
+    ## Found heuristic solution: objective 7330.4055047
     ## Found heuristic solution: objective 6070.2074533
-    ## Presolved: 314 rows, 254 columns, 702 nonzeros
+    ## Root relaxation presolved: 302 rows, 245 columns, 678 nonzeros
     ## 
     ## 
-    ## Root relaxation: objective 5.489159e+03, 69 iterations, 0.00 seconds
+    ## Root relaxation: objective 5.489159e+03, 68 iterations, 0.00 seconds (0.00 work units)
     ## 
     ##     Nodes    |    Current Node    |     Objective Bounds      |     Work
     ##  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
     ## 
     ##      0     0 5489.15943    0   59 6070.20745 5489.15943  9.57%     -    0s
-    ## H    0     0                    5859.8468810 5489.15943  6.33%     -    0s
-    ##      0     0 5738.84421    0   49 5859.84688 5738.84421  2.06%     -    0s
-    ##      0     0 5738.84421    0   29 5859.84688 5738.84421  2.06%     -    0s
-    ## H    0     0                    5858.4184908 5738.84421  2.04%     -    0s
-    ##      0     0 5814.59442    0   24 5858.41849 5814.59442  0.75%     -    0s
-    ##      0     0     cutoff    0      5858.41849 5858.41849  0.00%     -    0s
+    ## H    0     0                    5858.4184908 5489.15943  6.30%     -    0s
+    ##      0     0 5738.84421    0   49 5858.41849 5738.84421  2.04%     -    0s
+    ##      0     0 5829.13269    0    8 5858.41849 5829.13269  0.50%     -    0s
+    ##      0     0 infeasible    0      5858.41849 5858.41849  0.00%     -    0s
     ## 
-    ## Cutting planes:
-    ##   Gomory: 5
-    ##   Zero half: 5
-    ##   RLT: 6
-    ## 
-    ## Explored 1 nodes (236 simplex iterations) in 0.02 seconds
+    ## Explored 1 nodes (193 simplex iterations) in 0.06 seconds (0.02 work units)
     ## Thread count was 1 (of 8 available processors)
     ## 
-    ## Solution count 4: 5858.42 5859.85 6070.21 7270.12 
+    ## Solution count 4: 5858.42 5859.21 6070.21 7330.41 
     ## 
     ## Optimal solution found (tolerance 0.00e+00)
     ## Best objective 5.858418490821e+03, best bound 5.858418490821e+03, gap 0.0000%
@@ -613,36 +609,64 @@ spplot(rc, "rc", main = "Irreplaceability", xlim = c(-0.1, 1.1),
 <img src="man/figures/README-replacement_cost-1.png" width="400" style="display: block; margin: auto;" />
 
 This short example demonstrates how the *prioritizr R* package can be
-used to build a minimal conservation problem, how constraints and
-penalties can be iteratively added to the problem to obtain a solution,
-and how importance scores can be calculated for the solution to identify
-critical places. Although we explored just a few different functions for
-modifying the a conservation problem, the *prioritizr R* package
-provides many functions for specifying objectives, constraints,
-penalties, and decision variables, so that you can build and
-custom-tailor a conservation planning problem to suit your exact
-planning scenario.
+used to build and customize conservation problems, and then solve them
+to generate solutions. Although we explored just a few different
+functions for modifying a conservation problem, the package provides
+many functions for specifying objectives, constraints, penalties, and
+decision variables, so that you can build and custom-tailor conservation
+planning problems to suit your planning scenario.
+
+## Learning resources
+
+The [package website](https://prioritizr.net/index.html) contains
+information on the *prioritizr R* package. Here you can find
+[documentation for every function and built-in
+dataset](https://prioritizr.net/reference/index.html), and [news
+describing the updates in each package
+version](https://prioritizr.net/news/index.html). It also contains the
+following articles and tutorials.
+
+-   [**Getting
+    started**](https://prioritizr.net/articles/prioritizr.html): Short
+    tutorial on using the package.
+-   [**Package
+    overview**](https://prioritizr.net/articles/package_overview.html):
+    Introduction to systematic conservation planning and a comprehensive
+    overview of the package.
+-   [**Connectivity
+    tutorial**](https://prioritizr.net/articles/connectivity_tutorial.html):
+    Tutorial on incorporating connectivity into prioritizations.
+-   [**Calibrating trade-offs
+    tutorial**](https://prioritizr.net/articles/calibrating_trade-offs_tutorial.html):
+    Tutorial on running calibration analyses to satisfy multiple
+    criteria.
+-   [**Management zones
+    tutorial**](https://prioritizr.net/articles/management_zones_tutorial.html):
+    Tutorial on incorporating multiple management zones and actions into
+    prioritizations.
+-   [**Gurobi installation
+    guide**](https://prioritizr.net/articles/gurobi_installation_guide.html):
+    Instructions for installing the *Gurobi* optimization suite for
+    generating prioritizations.
+-   [**Solver
+    benchmarks**](https://prioritizr.net/articles/solver_benchmarks.html):
+    Performance comparison of optimization solvers for generating
+    prioritizations.
+-   [**Publication
+    record**](https://prioritizr.net/articles/publication_record.html):
+    List of publications that have cited the package.
+
+Additional resources can also be found in [online repositories under the
+*prioritizr* organization](https://github.com/prioritizr). These
+resources include [slides for talks and seminars about the
+package](https://github.com/prioritizr/teaching). Additionally, workshop
+materials are available too (e.g., the [Massey University 2021
+workshop](https://prioritizr.github.io/massey-workshop/) and the
+[PacMara 2019
+workshop](https://prioritizr.github.io/PacMara_workshop/)).
 
 ## Getting help
 
-Please refer to the [package website](https://prioritizr.net/index.html)
-for more information on the *prioritizr R* package. This website
-contains [a comprehensive tutorial on the
-package](https://prioritizr.net/articles/prioritizr.html), [instructions
-for installing the *Gurobi* software suite to solve large-scale and
-complex conservation planning
-problems](https://prioritizr.net/articles/gurobi_installation.html), and
-[a tutorial on solving problems with multiple management
-zones](https://prioritizr.net/articles/zones.html). It also provides two
-worked examples that involve real-world data from [Tasmania,
-Australia](https://prioritizr.net/articles/tasmania.html) and [Salt
-Spring Island, Canada](https://prioritizr.net/articles/saltspring.html).
-Additionally, slides for previous seminars about the package can be
-found in [teaching repository](https://github.com/prioritizr/teaching).
-Furthermore, materials accompanying previous workshops are also
-available online too (i.e. the [CIBIO 2019
-workshop](https://prioritizr.github.io/cibio-workshop/) and the [PacMara
-2019 workshop](https://prioritizr.github.io/PacMara_workshop/)). If you
-have any questions about using the *prioritizr R* package or suggestions
-for improving it, please [file an issue at the package’s online code
+If you have any questions about the *prioritizr R* package or
+suggestions for improving it, please [post an issue on the code
 repository](https://github.com/prioritizr/prioritizr/issues/new).

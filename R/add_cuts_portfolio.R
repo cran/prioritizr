@@ -9,7 +9,7 @@ NULL
 #'  [add_gap_portfolio()] when the *Gurobi* software is not
 #'  available.
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param number_solutions `integer` number of attempts to generate
 #'   different solutions. Defaults to 10.
@@ -22,11 +22,11 @@ NULL
 #
 #' @section Notes:
 #' In early versions (< 4.0.1), this function was only compatible with
-#' *Gurobi* (i.e. [add_gurobi_solver()]). To provide functionality with
+#' *Gurobi* (i.e., [add_gurobi_solver()]). To provide functionality with
 #' exact algorithm solvers, this function now adds constraints to the
 #' problem formulation to generate multiple solutions.
 #'
-#' @return Object (i.e. [`ConservationProblem-class`]) with the portfolio
+#' @return Object (i.e., [`ConservationProblem-class`]) with the portfolio
 #'  added to it.
 #'
 #' @seealso
@@ -40,6 +40,7 @@ NULL
 #' more complex conservation problems. *Ecography*, 23: 565--574.
 #'
 #' @examples
+#' \dontrun{
 #' # set seed for reproducibility
 #' set.seed(500)
 #'
@@ -53,13 +54,13 @@ NULL
 #'       add_cuts_portfolio(10) %>%
 #'       add_default_solver(gap = 0.2, verbose = FALSE)
 #'
-#' \dontrun{
+#'
 #' # solve problem and generate 10 solutions within 20% of optimality
 #' s1 <- solve(p1)
 #'
 #' # plot solutions in portfolio
 #' plot(stack(s1), axes = FALSE, box = FALSE)
-#' }
+#'
 #' # build multi-zone conservation problem with cuts portfolio
 #' p2 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
 #'       add_min_set_objective() %>%
@@ -69,7 +70,6 @@ NULL
 #'       add_cuts_portfolio(10) %>%
 #'       add_default_solver(gap = 0.2, verbose = FALSE)
 #'
-#' \dontrun{
 #' # solve the problem
 #' s2 <- solve(p2)
 #'
@@ -77,8 +77,8 @@ NULL
 #' str(s2, max.level = 1)
 #'
 #' # plot solutions in portfolio
-#' plot(stack(lapply(s2, category_layer)), main = "solution", axes = FALSE,
-#'      box = FALSE)
+#' plot(stack(lapply(s2, category_layer)),
+#'      main = "solution", axes = FALSE, box = FALSE)
 #' }
 #' @name add_cuts_portfolio
 NULL

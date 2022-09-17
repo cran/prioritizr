@@ -11,14 +11,14 @@ NULL
 #' function except that it has an upper bound parameter. By default, the
 #' decision can range from prioritizing none (0%) to all (100%) of a
 #' planning unit. However, an upper bound can be specified to ensure that at
-#' most only a fraction (e.g. 80%) of a planning unit can be preserved. This
+#' most only a fraction (e.g., 80%) of a planning unit can be preserved. This
 #' type of decision may be useful when it is not practical to conserve entire
 #' planning units.
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param upper_limit `numeric` value specifying the maximum proportion
-#'   of a planning unit that can be reserved (e.g. set to 0.8 for 80%).
+#'   of a planning unit that can be reserved (e.g., set to 0.8 for 80%).
 #'
 #' @inherit add_binary_decisions details return
 #'
@@ -28,6 +28,7 @@ NULL
 #' @family decisions
 #'
 #' @examples
+#' \dontrun{
 #' # set seed for reproducibility
 #' set.seed(500)
 #'
@@ -40,13 +41,13 @@ NULL
 #'       add_relative_targets(0.1) %>%
 #'       add_semicontinuous_decisions(0.5) %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve problem
 #' s1 <- solve(p1)
 #'
 #' # plot solutions
 #' plot(s1, main = "solution")
-#' }
+#'
 #' # build multi-zone conservation problem with semi-continuous decisions
 #' p2 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
 #'       add_min_set_objective() %>%
@@ -54,7 +55,7 @@ NULL
 #'                                   ncol = 3)) %>%
 #'       add_semicontinuous_decisions(0.5) %>%
 #'       add_default_solver(verbose = FALSE)
-#' \dontrun{
+#'
 #' # solve the problem
 #' s2 <- solve(p2)
 #'

@@ -7,7 +7,7 @@ NULL
 #' that all selected planning units in the solution have at least a certain
 #' number of neighbors that are also selected in the solution.
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param k `integer` minimum number of neighbors for selected
 #'   planning units in the solution. For problems with multiple zones,
@@ -16,13 +16,13 @@ NULL
 #' @param zones `matrix` or `Matrix` object describing the
 #'   neighborhood scheme for different zones. Each row and column corresponds
 #'   to a different zone in the argument to `x`, and cell values must
-#'   contain binary `numeric` values (i.e. one or zero) that indicate
+#'   contain binary `numeric` values (i.e., one or zero) that indicate
 #'   if neighboring planning units (as specified in the argument to
 #'   `data`) should be considered neighbors if they are allocated to
 #'   different zones. The cell values along the diagonal
 #'   of the matrix indicate if planning units that are allocated to the same
 #'   zone should be considered neighbors or not. The default argument to
-#'   `zones` is an identity matrix (i.e. a matrix with ones along the
+#'   `zones` is an identity matrix (i.e., a matrix with ones along the
 #'   matrix diagonal and zeros elsewhere), so that planning units are
 #'   only considered neighbors if they are both allocated to the same zone.
 #'
@@ -48,13 +48,13 @@ NULL
 #'   using the [adjacency_matrix()] function. This is the default
 #'   argument. Note that the neighborhood data must be manually defined
 #'   using one of the other formats below when the planning unit data
-#'   in the argument to `x` is not spatially referenced (e.g.
+#'   in the argument to `x` is not spatially referenced (e.g.,
 #'   in `data.frame` or `numeric` format).}
 #'
 #' \item{`data` as a `matrix`/`Matrix` object}{where rows and columns represent
 #'   different planning units and the value of each cell indicates if the
 #'   two planning units are neighbors or not. Cell values should be binary
-#'   `numeric` values (i.e. one or zero). Cells that occur along the
+#'   `numeric` values (i.e., one or zero). Cells that occur along the
 #'   matrix diagonal have no effect on the solution at all because each
 #'   planning unit cannot be a neighbor with itself.}
 #'
@@ -67,7 +67,7 @@ NULL
 #'   or not. This data can be used to describe symmetric or
 #'   asymmetric relationships between planning units. By default,
 #'   input data is assumed to be symmetric unless asymmetric data is
-#'   also included (e.g. if data is present for planning units 2 and 3, then
+#'   also included (e.g., if data is present for planning units 2 and 3, then
 #'   the same amount of connectivity is expected for planning units 3 and 2,
 #'   unless connectivity data is also provided for planning units 3 and 2).
 #'   If the argument to `x` contains multiple zones, then the columns
@@ -81,7 +81,7 @@ NULL
 #'   `numeric` values indicate if planning unit should be treated
 #'   as being neighbors with every other planning unit when they
 #'   are allocated to every combination of management zone. The first two
-#'   dimensions (i.e. rows and columns) correspond to the planning units,
+#'   dimensions (i.e., rows and columns) correspond to the planning units,
 #'   and second two dimensions correspond to the management zones. For
 #'   example, if the argument to `data` had a value of 1 at the index
 #'   `data[1, 2, 3, 4]` this would indicate that planning unit 1 and
@@ -101,7 +101,10 @@ NULL
 #' conservation. *European Journal of Operational Research*, 231:
 #' 514--534.
 #'
+#' @family constraints
+#'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_features, sim_pu_zones_stack, sim_features_zones)
 #'
@@ -124,14 +127,13 @@ NULL
 #' p4 <- p1 %>% add_neighbor_constraints(3,
 #'                data = adjacency_matrix(sim_pu_raster, directions = 8))
 #'
-#' \dontrun{
 #' # solve problems
 #' s1 <- stack(list(solve(p1), solve(p2), solve(p3), solve(p4)))
 #'
 #' # plot solutions
 #' plot(s1, box = FALSE, axes = FALSE,
 #'      main = c("basic solution", "1 neighbor", "2 neighbors", "3 neighbors"))
-#' }
+#'
 #' # create minimal problem with multiple zones
 #' p5 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
 #'       add_min_set_objective() %>%
@@ -161,7 +163,7 @@ NULL
 #' z8[2, 1] <- 1
 #' print(z8)
 #' p8 <- p5 %>% add_neighbor_constraints(c(0, 1, 2), z8)
-#' \dontrun{
+#'
 #' # solve problems
 #' s2 <- list(p5, p6, p7, p8)
 #' s2 <- lapply(s2, solve)
@@ -199,10 +201,10 @@ methods::setMethod("add_neighbor_constraints",
      inherits(data, c("NULL", "Matrix")))
     if (!is.null(data)) {
       # check argument to data if not NULL
-      assertthat::assert_that(all(methods::as(data, "dgCMatrix")@x %in%
+      assertthat::assert_that(all(as_Matrix(data, "dgCMatrix")@x %in%
                                   c(0, 1, NA)),
         ncol(data) == nrow(data), number_of_total_units(x) == ncol(data),
-        sum(!is.finite(methods::as(data, "dgCMatrix")@x)) == 0)
+        sum(!is.finite(as_Matrix(data, "dgCMatrix")@x)) == 0)
       d <- list(matrix = data)
     } else {
       # check that planning unit data is spatially referenced
@@ -243,7 +245,7 @@ methods::setMethod("add_neighbor_constraints",
           # create matrix
           data <- adjacency_matrix(x$data$cost)
           # coerce matrix to full matrix
-          data <- methods::as(data, "dgCMatrix")
+          data <- as_Matrix(data, "dgCMatrix")
           # store data
           self$set_data("matrix", data)
         }
@@ -264,7 +266,7 @@ methods::setMethod("add_neighbor_constraints",
           for (z1 in seq_len(ncol(z))) {
             m[[z1]] <- list()
             for (z2 in seq_len(nrow(z))) {
-              m[[z1]][[z2]] <- methods::as(d * z[z1, z2], "dgCMatrix")
+              m[[z1]][[z2]] <- as_Matrix(d * z[z1, z2], "dgCMatrix")
             }
           }
           # apply constraints
@@ -292,7 +294,7 @@ methods::setMethod("add_neighbor_constraints",
   methods::signature("ConservationProblem", "ANY", "ANY", "matrix"),
   function(x, k, zones, data) {
     # add constraints
-    add_neighbor_constraints(x, k, zones, methods::as(data, "dgCMatrix"))
+    add_neighbor_constraints(x, k, zones, as_Matrix(data, "dgCMatrix"))
 })
 
 #' @name add_neighbor_constraints
@@ -328,8 +330,7 @@ methods::setMethod("add_neighbor_constraints",
     for (z1 in seq_len(dim(data)[3])) {
       m[[z1]] <- list()
       for (z2 in seq_len(dim(data)[4])) {
-        m[[z1]][[z2]] <- methods::as(data[indices, indices, z1, z2],
-                                     "dgCMatrix")
+        m[[z1]][[z2]] <- as_Matrix(data[indices, indices, z1, z2], "dgCMatrix")
       }
     }
     # add the constraint

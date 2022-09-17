@@ -2,12 +2,12 @@
 % Please edit documentation in R/marxan_boundary_data_to_matrix.R
 \name{marxan_boundary_data_to_matrix}
 \alias{marxan_boundary_data_to_matrix}
-\title{Convert \emph{Marxan} boundary data to a matrix format}
+\title{Convert \emph{Marxan} boundary data to matrix format}
 \usage{
 marxan_boundary_data_to_matrix(x, data)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object that
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object that
 contains planning unit and zone data to ensure that the argument to
 \code{data} is converted correctly. This argument can be set to
 \code{NULL} if checks are not required (not recommended).}
@@ -18,15 +18,17 @@ contains planning unit and zone data to ensure that the argument to
 }
 \value{
 \code{array} or \code{\linkS4class{dgCMatrix}} sparse matrix object.
+If the argument to \code{data} corresponds to a single zone,
+then a \code{\linkS4class{dgCMatrix}}
+matrix is returned. Otherwise, if the argument to \code{data}
+corresponds to multiple zones, then an \code{array} is returned.
 }
 \description{
-Convert a \code{data.frame} object that follows the \emph{Marxan} format
-to a matrix format. This function is useful for converting
-\code{data.frame} objects to \code{matrix} or \code{array} objects that
-are used by the various \link{penalties} and
-\link{constraints} functions. If the boundary data contains data for
-a single zone, then a matrix object is returned. Otherwise if the boundary
-data contains data for multiple zones, then an array is returned.
+Convert a \code{data.frame} object containing \emph{Marxan} boundary data
+to matrix format. This function is designed specifically for
+boundary data (not connectivity data).
+It ensures that the output matrix correctly specifies
+symmetric spatial relationships between planning units.
 }
 \examples{
 # create marxan boundary with four planning units and one zone

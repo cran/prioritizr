@@ -13,13 +13,13 @@ NULL
 #' feature to ensure that all features can disperse through out the areas
 #' designated for their conservation.
 #'
-#' @param x [problem()] (i.e. [`ConservationProblem-class`]) object.
+#' @param x [problem()] (i.e., [`ConservationProblem-class`]) object.
 #'
 #' @param zones `matrix`, `Matrix` or `list` object describing
 #'   the connection scheme for different zones. For `matrix` or
 #'   and `Matrix` arguments, each row and column corresponds
 #'   to a different zone in the argument to `x`, and cell values must
-#'   contain binary `numeric` values (i.e. one or zero) that indicate
+#'   contain binary `numeric` values (i.e., one or zero) that indicate
 #'   if connected planning units (as specified in the argument to
 #'   `data`) should be still considered connected if they are allocated to
 #'   different zones. The cell values along the diagonal
@@ -32,7 +32,7 @@ NULL
 #'   be a `list` of `matrix` or `Matrix` objects that shows the
 #'   specific scheme for each feature using the conventions described above.
 #'   The default argument to `zones` is an identity
-#'   matrix (i.e. a matrix with ones along the matrix diagonal and zeros
+#'   matrix (i.e., a matrix with ones along the matrix diagonal and zeros
 #'   elsewhere), so that planning units are only considered connected if they
 #'   are both allocated to the same zone.
 #'
@@ -73,13 +73,13 @@ NULL
 #'   as potentially dispersible for all features.
 #'   Note that the connection data must be manually defined
 #'   using one of the other formats below when the planning unit data
-#'   in the argument to `x` is not spatially referenced (e.g.
+#'   in the argument to `x` is not spatially referenced (e.g.,
 #'   in `data.frame` or `numeric` format).}
 #'
 #' \item{`data` as a`matrix`/`Matrix` object}{where rows and columns represent
 #'   different planning units and the value of each cell indicates if the
 #'   two planning units are connected or not. Cell values should be binary
-#'   `numeric` values (i.e. one or zero). Cells that occur along the
+#'   `numeric` values (i.e., one or zero). Cells that occur along the
 #'   matrix diagonal have no effect on the solution at all because each
 #'   planning unit cannot be a connected with itself. Note that pairs
 #'   of connected planning units are treated as being potentially dispersible
@@ -94,7 +94,7 @@ NULL
 #'   or not. This data can be used to describe symmetric or
 #'   asymmetric relationships between planning units. By default,
 #'   input data is assumed to be symmetric unless asymmetric data is
-#'   also included (e.g. if data is present for planning units 2 and 3, then
+#'   also included (e.g., if data is present for planning units 2 and 3, then
 #'   the same amount of connectivity is expected for planning units 3 and 2,
 #'   unless connectivity data is also provided for planning units 3 and 2).
 #'   Note that pairs of connected planning units are treated as being
@@ -120,6 +120,8 @@ NULL
 #' @section Notes:
 #' In early versions, it was named as the `add_corridor_constraints` function.
 #'
+#' @encoding UTF-8
+#'
 #' @references
 #' Önal H and Briers RA (2006) Optimal selection of a connected
 #' reserve network. *Operations Research*, 54: 379--388.
@@ -133,6 +135,7 @@ NULL
 #' *Journal of Applied Ecology*, 56: 913--922.
 #'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_pu_zones_stack, sim_features, sim_features_zones)
 #'
@@ -156,17 +159,15 @@ NULL
 #' cm4 <- lapply(seq_len(nlayers(sim_features)), function(i) {
 #'   # create connectivity matrix using the i'th feature's habitat data
 #'   m <- connectivity_matrix(sim_pu_raster, sim_features[[i]])
-#'   # convert matrix to TRUE/FALSE values in top 20th percentile
-#'   m <- m > quantile(as.vector(m), 1 - 0.015, names = FALSE)
-#'   # convert matrix from TRUE/FALSE to sparse matrix with 0/1s
-#'   m <- as(m, "dgCMatrix")
+#'   # convert matrix to 0/1 values denoting values in top 20th percentile
+#'   m <- round(m > quantile(as.vector(m), 1 - 0.015, names = FALSE))
 #'   # remove 0s from the sparse matrix
 #'   m <- Matrix::drop0(m)
 #'   # return matrix
 #'   m
 #' })
 #' p4 <- p1 %>% add_feature_contiguity_constraints(data = cm4)
-#' \dontrun{
+#'
 #' # solve problems
 #' s1 <- stack(solve(p1), solve(p2), solve(p3), solve(p4))
 #'
@@ -175,7 +176,7 @@ NULL
 #'      main = c("basic solution", "contiguity constraints",
 #'               "feature contiguity constraints",
 #'               "feature contiguity constraints with data"))
-#' }
+#'
 #' # create minimal problem with multiple zones, and limit the solver to
 #' # 30 seconds to obtain solutions in a feasible period of time
 #' p5 <- problem(sim_pu_zones_stack, sim_features_zones) %>%
@@ -207,7 +208,7 @@ NULL
 #'   matrix(ifelse(i == 1, 1, 0), ncol = 3, nrow = 3))
 #' print(zm8)
 #' p8 <- p5 %>% add_feature_contiguity_constraints(zm8)
-#' \dontrun{
+#'
 #' # solve problems
 #' s2 <- lapply(list(p5, p6, p7, p8), solve)
 #' s2 <- stack(lapply(s2, category_layer))
@@ -265,7 +266,7 @@ methods::setMethod("add_feature_contiguity_constraints",
   methods::signature("ConservationProblem", "ANY", "matrix"),
   function(x, zones, data) {
     # add constraints
-    add_feature_contiguity_constraints(x, zones, methods::as(data, "dgCMatrix"))
+    add_feature_contiguity_constraints(x, zones, as_Matrix(data, "dgCMatrix"))
 })
 
 #' @name add_feature_contiguity_constraints
@@ -296,7 +297,7 @@ methods::setMethod("add_feature_contiguity_constraints",
             "or data.frame"))
         # coerce to correct format
         if (is.matrix(data[[i]]))
-          data[[i]] <- methods::as(data, "dgCMatrix")
+          data[[i]] <- as_Matrix(data, "dgCMatrix")
         if (is.data.frame(data[[i]]))
           data[[i]] <- marxan_boundary_data_to_matrix(x, data[[i]])
         # run checks
@@ -346,7 +347,7 @@ methods::setMethod("add_feature_contiguity_constraints",
         # create matrix
         data <- adjacency_matrix(x$data$cost)
         # coerce matrix to full matrix
-        data <- methods::as(data, "dgCMatrix")
+        data <- as_Matrix(data, "dgCMatrix")
         # create list for each feature
         data <- list(data)[rep(1, number_of_features(x))]
         # store data
@@ -375,7 +376,8 @@ methods::setMethod("add_feature_contiguity_constraints",
         })
         # convert d to lower triangle sparse matrix
         d <- lapply(d, Matrix::forceSymmetric, uplo = "L")
-        d <- lapply(d, `class<-`, "dgCMatrix")
+        d <- lapply(d, Matrix::tril)
+        d <- lapply(d, as_Matrix, "dgCMatrix")
         # apply the constraints
         if (max(vapply(z_cl, max, numeric(1))) > 0)
           rcpp_apply_feature_contiguity_constraints(x$ptr, d, z_cl)

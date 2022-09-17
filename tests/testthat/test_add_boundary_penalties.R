@@ -14,21 +14,18 @@ test_that("minimum set objective (compile, single zone)", {
   n_pu <- p$number_of_planning_units()
   # number of features
   n_f <- p$number_of_features()
-  pu_indices <- p$planning_unit_indices()
-  b_data <- boundary_matrix(p$data$cost)[pu_indices, pu_indices]
+  # prepare boundary calculations
+  b_data <- boundary_matrix(p$data$cost)
   b_data <- b_data * 3
   Matrix::diag(b_data) <- Matrix::diag(b_data) * 0.5
+  b_data <- prioritizr:::filter_planning_units_in_boundary_matrix(
+    p$planning_unit_indices(), b_data
+  )
   # total boundary for each planning unit
   b_total_boundary <- colSums(b_data)
-  class(b_data) <- "dgCMatrix"
+  # remove diagonals
   Matrix::diag(b_data) <- 0
-  # i,j,x matrix for planning unit boundaries
-  b_data <- as(b_data, "dgTMatrix")
-  b_data <- triplet_sparse_matrix(
-    i = b_data@i[b_data@x != 0],
-    j = b_data@j[b_data@x != 0],
-    x = b_data@x[b_data@x != 0],
-    index1 = FALSE)
+  b_data <- as_Matrix(Matrix::tril(Matrix::drop0(b_data)), "dgTMatrix")
   # objectives for boundary decision variables
   b_obj <- o$obj()[n_pu + seq_len(length(b_data@i))]
   # lower bound for boundary decision variables
@@ -57,17 +54,18 @@ test_that("minimum set objective (compile, single zone)", {
   expect_equal(b_sense, rep(c("<=", "<="), length(b_data@i)))
   expect_equal(b_rhs, rep(c(0, 0), length(b_data@i)))
   counter <- n_f
-  for (i in seq_along(length(b_data@i))) {
+  oA <- o$A()
+  for (i in seq_along(b_data@i)) {
     counter <- counter + 1
-    expect_true(o$A()[counter, n_pu + i] == 1)
-    expect_true(o$A()[counter, b_data@j[i] + 1] == -1)
+    expect_true(oA[counter, n_pu + i] == 1)
+    expect_true(oA[counter, b_data@i[i] + 1] == -1)
     counter <- counter + 1
-    expect_true(o$A()[counter, n_pu + i] == 1)
-    expect_true(o$A()[counter, b_data@i[i] + 1] == -1)
+    expect_true(oA[counter, n_pu + i] == 1)
+    expect_true(oA[counter, b_data@j[i] + 1] == -1)
   }
 })
 
-test_that("minimum set objective (compile, single zone)", {
+test_that("alternative data formats (single zone)", {
   # load data
   data(sim_pu_raster, sim_features)
   bm <- boundary_matrix(sim_pu_raster)
@@ -102,6 +100,7 @@ test_that("minimum set objective (solve, single zone)", {
   skip_if_no_fast_solvers_installed()
   # check that solution is feasible
   data(sim_pu_raster, sim_features)
+  b <- raster::cellStats(sim_pu_raster, "sum") * 0.3
   p1 <- problem(sim_pu_raster, sim_features) %>%
         add_min_set_objective() %>%
         add_relative_targets(0.1) %>%
@@ -111,10 +110,10 @@ test_that("minimum set objective (solve, single zone)", {
   s1_1 <- solve(p1)
   s1_2 <- solve(p1)
   p2 <- problem(sim_pu_raster, sim_features) %>%
-        add_min_set_objective() %>%
+        add_min_shortfall_objective(budget = b) %>%
         add_relative_targets(0.1) %>%
         add_binary_decisions() %>%
-        add_boundary_penalties(-10000, 0.5) %>%
+        add_boundary_penalties(-10000000, 0.5) %>%
         add_default_solver(time_limit = 5, verbose = FALSE)
   expect_warning(s2_1 <- solve(p2, force = TRUE))
   expect_warning(s2_2 <- solve(p2, force = TRUE))
@@ -265,12 +264,14 @@ test_that("minimum set objective (compile, multiple zones)", {
   expect_equal(o$rhs(), c(rep(0.1, n_f * n_z), rep(1, n_pu),
                           rep(c(0, 0), n_z_p)))
   # check model matrix is defined correctly
+  oA <- o$A()
   ## targets
   for (z in seq_len(n_z)) {
     for (i in seq_len(n_f)) {
       curr_amount <- rep(0, (n_pu * n_z) + n_z_p)
-      curr_amount[((z - 1) * n_pu) + seq_len(n_pu)] <- p$data$rij_matrix[[z]][i, ]
-      expect_equal(o$A()[((z - 1) * n_f) + i, ], curr_amount)
+      curr_amount[((z - 1) * n_pu) + seq_len(n_pu)] <-
+        p$data$rij_matrix[[z]][i, ]
+      expect_equal(oA[((z - 1) * n_f) + i, ], curr_amount)
     }
   }
   ## zone constraints
@@ -280,7 +281,7 @@ test_that("minimum set objective (compile, multiple zones)", {
     curr_vec <- rep(0, (n_pu * n_z) + n_z_p)
     for (z in seq_len(n_z))
       curr_vec[((z - 1) * n_pu) + j] <- 1
-    expect_equal(o$A()[counter, ], curr_vec)
+    expect_equal(oA[counter, ], curr_vec)
   }
   ## penalty variable constraints
   for (i in seq_along(n_z_p)) {
@@ -288,16 +289,16 @@ test_that("minimum set objective (compile, multiple zones)", {
     curr_vec <- rep(0, (n_pu * n_z) + n_z_p)
     curr_vec[b_vars_i[i]] <- -1
     curr_vec[(n_z * n_pu) + i] <- 1
-    expect_equal(o$A()[counter, ], curr_vec)
+    expect_equal(oA[counter, ], curr_vec)
     counter <- counter + 1
     curr_vec <- rep(0, (n_pu * n_z) + n_z_p)
     curr_vec[b_vars_j[i]] <- -1
     curr_vec[(n_z * n_pu) + i] <- 1
-    expect_equal(o$A()[counter, ], curr_vec)
+    expect_equal(oA[counter, ], curr_vec)
   }
 })
 
-test_that("minimum set objective (compile, multiple zones)", {
+test_that("alternative data formats (multiple zones)", {
   # load data
   data(sim_pu_zones_polygons, sim_features_zones)
   p_zones <- matrix(0, ncol = 3, nrow = 3)

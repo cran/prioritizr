@@ -17,7 +17,7 @@ test_that("single zone (x=NULL)", {
   x2[4, 4] <- 0.5
   # tests
   expect_is(x, "dsCMatrix")
-  expect_equal(x, as(x2, "dsCMatrix"))
+  expect_equal(x, as_Matrix(x2, "dsCMatrix"))
 })
 
 test_that("multiple zones (x = NULL)", {
@@ -65,10 +65,10 @@ test_that("single zone (x=ConservationProblem)", {
   x2[4, 4] <- 0.5
   # tests
   expect_is(x, "dsCMatrix")
-  expect_equal(x, as(x2, "dsCMatrix"))
+  expect_equal(x, as_Matrix(x2, "dsCMatrix"))
 })
 
-test_that("multiple zones (x = ConservationProblem)", {
+test_that("multiple zones (x=ConservationProblem)", {
   # create data
   d <- data.frame(
     id1 = c(1, 2, 3, 4, 1, 2),

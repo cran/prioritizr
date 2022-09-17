@@ -7,7 +7,7 @@
 add_max_phylo_end_objective(x, budget, tree)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{budget}{\code{numeric} value specifying the maximum expenditure of
 the prioritization. For problems with multiple zones, the argument
@@ -19,7 +19,7 @@ a separate budget for each management zone.}
 for the conservation features.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the objective
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the objective
 added to it.
 }
 \description{
@@ -75,7 +75,7 @@ Maximize sum_i^I (-s * ci * xi) + sum_j^J (mb * lb * (1 / ab))
 subject to sum_i^I (xi * rij) >= (yj * tj) for all j in J &
 mb <= yj for all j in T(b) & sum_i^I (xi * ci) <= B}
 
-Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.
+Here, \eqn{x_i}{xi} is the \link{decisions} variable (e.g.,
 specifying whether planning unit \eqn{i}{i} has been selected (1) or not
 (0)), \eqn{r_{ij}}{rij} is the amount of feature \eqn{j}{j} in planning
 unit \eqn{i}{i}, \eqn{t_j}{tj} is the representation target for feature
@@ -99,6 +99,7 @@ represent the same amount of all features within the budget.
 }
 
 \examples{
+\dontrun{
 # load ape package
 require(ape)
 
@@ -107,10 +108,9 @@ data(sim_pu_raster, sim_features, sim_phylogeny, sim_pu_zones_stack,
      sim_features_zones)
 
 # plot the simulated phylogeny
-\dontrun{
 par(mfrow = c(1, 1))
 plot(sim_phylogeny, main = "phylogeny")
-}
+
 # create problem with a maximum phylogenetic endemism objective,
 # where each feature needs 10\% of its distribution to be secured for
 # it to be adequately conserved and a total budget of 1900
@@ -119,7 +119,7 @@ p1 <- problem(sim_pu_raster, sim_features) \%>\%
       add_relative_targets(0.1) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s1 <- solve(p1)
 
@@ -136,7 +136,7 @@ plot(sim_phylogeny, main = "adequately represented features",
        rep("black", nlayers(sim_features)),
        sim_phylogeny$tip.label \%in\% r1$feature[r1$met],
        "red"))
-}
+
 # rename the features in the example phylogeny for use with the
 # multi-zone data
 sim_phylogeny$tip.label <- feature_names(sim_features_zones)
@@ -158,7 +158,7 @@ p2 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_manual_targets(targets) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s2 <- solve(p2)
 
@@ -173,7 +173,7 @@ print(r2, width = Inf)
 plot(sim_phylogeny, main = "adequately represented features",
      tip.color = replace(rep("black", nlayers(sim_features)),
                          which(r2$met), "red"))
-}
+
 # create a multi-zone problem with a maximum phylogenetic endemism
 # objective, where each zone has a separate budget.
 p3 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
@@ -181,7 +181,7 @@ p3 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_manual_targets(targets) \%>\%
       add_binary_decisions() \%>\%
       add_default_solver(verbose = FALSE)
-\dontrun{
+
 # solve problem
 s3 <- solve(p3)
 

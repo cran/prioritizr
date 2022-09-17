@@ -32,12 +32,12 @@ NULL
 #' (see Examples section below for details).
 #' For example, these constraints can be used to add multiple budgets.
 #' They can also be used to ensure that the total number of planning units
-#' allocated to a certain administrative area (e.g. country) does not exceed
-#' a certain threshold (e.g. 30% of its total area). Furthermore,
+#' allocated to a certain administrative area (e.g., country) does not exceed
+#' a certain threshold (e.g., 30% of its total area). Furthermore,
 #' they can also be used to ensure that features have a minimal level
-#' of representation (e.g. 30%) when using an objective
+#' of representation (e.g., 30%) when using an objective
 #' function that aims to enhance feature representation given a budget
-#' (e.g. [add_min_shortfall_objective()]).
+#' (e.g., [add_min_shortfall_objective()]).
 #'
 #' @section Mathematical formulation:
 #' The linear constraints are implemented using the following
@@ -45,13 +45,13 @@ NULL
 #' Let \eqn{I} denote the set of planning units
 #' (indexed by \eqn{i}), \eqn{Z} the set of management zones (indexed by
 #' \eqn{z}), and \eqn{X_{iz}}{Xiz} the decision variable for allocating
-#' planning unit \eqn{i} to zone \eqn{z} (e.g. with binary
+#' planning unit \eqn{i} to zone \eqn{z} (e.g., with binary
 #' values indicating if each planning unit is allocated or not). Also, let
 #' \eqn{D_{iz}}{Diz} denote the constraint data associated with
 #' planning units \eqn{i \in I}{i in I} for zones \eqn{z \in Z}{z in Z}
 #' (argument to `data`, if supplied as a `matrix` object),
 #' \eqn{\theta} denote the constraint sense
-#' (argument to `sense`, e.g. \eqn{<=}), and \eqn{t} denote the constraint
+#' (argument to `sense`, e.g., \eqn{<=}), and \eqn{t} denote the constraint
 #' threshold (argument to `threshold`).
 #'
 #' \deqn{
@@ -66,10 +66,10 @@ NULL
 #' @family constraints
 #'
 #' @examples
+#' \dontrun{
 #' # load data
 #' data(sim_pu_raster, sim_features)
 #'
-#' \dontrun{
 #' # create a baseline problem with minimum shortfall objective
 #' p0 <- problem(sim_pu_raster, sim_features) %>%
 #'       add_min_shortfall_objective(1800) %>%
@@ -90,7 +90,6 @@ NULL
 #' # an additional budget of 1600 based on a secondary cost dataset
 #'
 #' # create a secondary cost dataset by simulating values
-#' # (note this requires the RandomFields package to be installed)
 #' sim_pu_raster2 <- simulate_cost(sim_pu_raster)
 #'
 #' # plot the primary cost dataset (sim_pu_raster) and
@@ -149,7 +148,7 @@ NULL
 #' # third, let's create a modified version of p0 that contains
 #' # additional constraints to ensure that the solution equitably
 #' # distributes conservation effort across different administrative areas
-#' # (e.g. countries) within the study region
+#' # (e.g., countries) within the study region
 #'
 #' # to begin with, we will simulate a dataset describing the spatial extent of
 #' # four different administrative areas across the study region
@@ -293,7 +292,7 @@ methods::setMethod("add_linear_constraints",
       assertthat::noNA(c(data)),
       number_of_total_units(x) == nrow(data),
       number_of_zones(x) == ncol(data))
-    add_linear_constraints(x, threshold, sense, methods::as(data, "dgCMatrix"))
+    add_linear_constraints(x, threshold, sense, as_Matrix(data, "dgCMatrix"))
 })
 
 #' @name add_linear_constraints
@@ -311,7 +310,7 @@ methods::setMethod("add_linear_constraints",
       assertthat::noNA(c(data)),
       number_of_total_units(x) == nrow(data),
       number_of_zones(x) == ncol(data))
-    add_linear_constraints(x, threshold, sense, methods::as(data, "dgCMatrix"))
+    add_linear_constraints(x, threshold, sense, as_Matrix(data, "dgCMatrix"))
 })
 
 #' @name add_linear_constraints
@@ -340,7 +339,7 @@ methods::setMethod("add_linear_constraints",
     }
     d[is.na(d)] <- 0
     # add constraints
-    add_linear_constraints(x, threshold, sense, methods::as(d, "dgCMatrix"))
+    add_linear_constraints(x, threshold, sense, as_Matrix(d, "dgCMatrix"))
 })
 
 #' @name add_linear_constraints

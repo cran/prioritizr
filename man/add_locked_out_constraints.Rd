@@ -28,13 +28,13 @@ add_locked_out_constraints(x, locked_out)
 \S4method{add_locked_out_constraints}{ConservationProblem,Raster}(x, locked_out)
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e. \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
 
 \item{locked_out}{Object that determines which planning units that should be
 locked out. See the Data format section for more information.}
 }
 \value{
-Object (i.e. \code{\linkS4class{ConservationProblem}}) with the constraints
+Object (i.e., \code{\linkS4class{ConservationProblem}}) with the constraints
 added to it.
 }
 \description{
@@ -44,7 +44,7 @@ that specific planning units are not selected
 useful to lock out planning units that have been degraded and are not
 suitable for conserving species. If specific planning units should be locked
 in to the solution, use \code{\link[=add_locked_out_constraints]{add_locked_out_constraints()}}. For
-problems with non-binary planning unit allocations (e.g. proportions), the
+problems with non-binary planning unit allocations (e.g., proportions), the
 \code{\link[=add_manual_locked_constraints]{add_manual_locked_constraints()}} function can be used to lock
 planning unit allocations to a specific value.
 }
@@ -86,7 +86,7 @@ This format is only
 compatible if the planning units in the argument to \code{x} are a
 \code{\linkS4class{Spatial}}, \code{\link[sf:sf]{sf::sf()}}, or
 \code{data.frame} object. The fields
-(columns) must have \code{logical} (i.e. \code{TRUE} or \code{FALSE})
+(columns) must have \code{logical} (i.e., \code{TRUE} or \code{FALSE})
 values indicating if the planning unit is to be locked for the solution.
 For problems that contain a single zone, the argument to \code{data} must
 contain a single field name. Otherwise, for problems that
@@ -116,6 +116,7 @@ should also have \code{NA} values in the locked data.}
 }
 
 \examples{
+\dontrun{
 # set seed for reproducibility
 set.seed(500)
 
@@ -141,7 +142,7 @@ p4 <- p1 \%>\% add_locked_out_constraints(sim_locked_out_raster)
 # create problem with added locked out constraints using spatial polygon data
 locked_out <- sim_pu_polygons[sim_pu_polygons$locked_out == 1, ]
 p5 <- p1 \%>\% add_locked_out_constraints(locked_out)
-\dontrun{
+
 # solve problems
 s1 <- solve(p1)
 s2 <- solve(p2)
@@ -168,7 +169,6 @@ plot(s5[s5$solution_1 == 1, ], col = "darkgreen", add = TRUE)
 
 # reset plot
 par(mfrow = c(1, 1))
-}
 
 # create minimal multi-zone problem with spatial data
 p6 <- problem(sim_pu_zones_polygons, sim_features_zones,
@@ -184,7 +184,7 @@ locked_matrix <- sim_pu_zones_polygons@data[, c("locked_1", "locked_2",
 locked_matrix <- as.matrix(locked_matrix)
 
 p7 <- p6 \%>\% add_locked_out_constraints(locked_matrix)
-\dontrun{
+
 # solve problem
 s6 <- solve(p6)
 
@@ -197,11 +197,11 @@ s6$solution <- factor(s6$solution)
 
 # plot solution
 spplot(s6, zcol = "solution", main = "solution", axes = FALSE, box = FALSE)
-}
+
 # create multi-zone problem with locked out constraints using field names
 p8 <- p6 \%>\% add_locked_out_constraints(c("locked_1", "locked_2",
                                           "locked_3"))
-\dontrun{
+
 # solve problem
 s8 <- solve(p8)
 
@@ -215,7 +215,7 @@ s8$solution <- factor(s8$solution)
 
 # plot solution
 spplot(s8, zcol = "solution", main = "solution", axes = FALSE, box = FALSE)
-}
+
 # create multi-zone problem with raster planning units
 p9 <- problem(sim_pu_zones_stack, sim_features_zones) \%>\%
       add_min_set_objective() \%>\%
@@ -232,13 +232,12 @@ locked_out_stack[[2]][2] <- 1
 locked_out_stack[[3]][3] <- 1
 
 # plot locked out stack
-\dontrun{
+
 plot(locked_out_stack)
-}
+
 # add locked out raster units to problem
 p9 <- p9 \%>\% add_locked_out_constraints(locked_out_stack)
 
-\dontrun{
 # solve problem
 s9 <- solve(p9)
 
@@ -256,6 +255,7 @@ Other constraints:
 \code{\link{add_locked_in_constraints}()},
 \code{\link{add_mandatory_allocation_constraints,ConservationProblem-method}},
 \code{\link{add_manual_bounded_constraints}()},
-\code{\link{add_manual_locked_constraints}()}
+\code{\link{add_manual_locked_constraints}()},
+\code{\link{add_neighbor_constraints}()}
 }
 \concept{constraints}
