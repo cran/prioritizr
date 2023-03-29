@@ -1,15 +1,7 @@
 #' @include internal.R
 NULL
 
-#' @import raster
-#' @import sp
-#' @import proto
-#' @import sf
 #' @useDynLib prioritizr, .registration = TRUE
-NULL
-
-#' @importMethodsFrom fasterize raster
-#' @export
 NULL
 
 #' prioritizr: Systematic Conservation Prioritization in R
@@ -93,3 +85,7 @@ NULL
 # avoid false positive NOTES
 #' @importFrom exactextractr exact_extract
 NULL
+
+# avoid CRAN check NOTES due to R6 classes
+# see: https://github.com/r-lib/R6/issues/230
+if (getRversion() >= "2.15.1")  utils::globalVariables(c("self"))

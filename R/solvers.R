@@ -1,10 +1,10 @@
-#' @include Solver-proto.R
+#' @include Solver-class.R
 NULL
 
-#' Problem solvers
+#' Add solvers
 #'
 #' Specify the software and configuration used to solve a conservation planning
-#' [problem()]. By default, the best available
+#' problem. By default, the best available
 #' software currently installed on the system will be used.
 #' For information on the performance of different solvers,
 #' please see Schuster _et al._ (2020) for benchmarks comparing the
@@ -28,7 +28,7 @@ NULL
 #'     \pkg{gurobi} package is distributed with the *Gurobi* software
 #'     suite. This solver uses the \pkg{gurobi} package to solve problems.}
 #'
-#'   \item{[add_cplex_solver()]}{[*IBM CPLEX*](https://www.ibm.com/analytics/cplex-optimizer)
+#'   \item{[add_cplex_solver()]}{[*IBM CPLEX*](  https://www.ibm.com/products/ilog-cplex-optimization-studio/cplex-optimizer)
 #'     is a commercial optimization software. It is faster than the open
 #'     source solvers available for generating prioritizations, however, it
 #'     is not freely available.
@@ -48,6 +48,14 @@ NULL
 #'     [GitHub](https://github.com/dirkschumacher/rcbc).
 #'  }
 #'
+#'  \item{[add_highs_solver()]}{[*HiGHS*](https://highs.dev/) is an open
+#'    source optimization software. Although this solver can have
+#'    comparable performance to the *CBC* solver for particular problems and is
+#'    generally faster than the *SYMPHONY* based solvers (see below), it
+#'    sometimes can take much longer than the *CBC* solver for particular
+#'    problems.
+#'  }
+#'
 #'   \item{[add_lpsymphony_solver()]}{
 #'     [*SYMPHONY*](https://github.com/coin-or/SYMPHONY) is an
 #'     open-source mixed integer programming solver that is also part of the
@@ -56,7 +64,8 @@ NULL
 #'     The \pkg{lpsymphony} package provides an interface to the *SYMPHONY*
 #'     software, and is distributed through
 #'     [Bioconductor](https://doi.org/doi:10.18129/B9.bioc.lpsymphony).
-#'     We recommend using this solver if the CBC solver cannot be installed.
+#'     We recommend using this solver if the *CBC* and *HiGHS* solvers cannot
+#'     be installed.
 #'     This solver can use parallel processing to solve problems, so it is
 #'     faster than \pkg{Rsymphony} package interface (see below).
 #'  }
@@ -83,57 +92,67 @@ NULL
 #' @examples
 #' \dontrun{
 #' # load data
-#' data(sim_pu_raster, sim_features)
+#' sim_pu_raster <- get_sim_pu_raster()
+#' sim_features <- get_sim_features()
 #'
 #' # create basic problem
-#' p <- problem(sim_pu_raster, sim_features) %>%
+#' p <-
+#'   problem(sim_pu_raster, sim_features) %>%
 #'   add_min_set_objective() %>%
 #'   add_relative_targets(0.1) %>%
 #'   add_proportion_decisions()
 #'
-#' # create vector to store plot titles
-#' titles <- c()
+#' # create vector to store plot names
+#' n <- c()
 #'
-#' # create empty stack to store solutions
-#' s <- stack()
+#' # create empty list to store solutions
+#' s <- c()
 #'
 #' # if gurobi is installed: create problem with added gurobi solver
 #' if (require("gurobi")) {
-#'   titles <- c(titles, "gurobi")
-#'   p3 <- p %>% add_gurobi_solver(verbose = FALSE)
-#'   s <- addLayer(s, solve(p3))
+#'   p1 <- p %>% add_gurobi_solver(verbose = FALSE)
+#'   n <- c(n, "gurobi")
+#'   s <- c(s, solve(p1))
 #' }
 #'
 #' # if cplexAPI is installed: create problem with added CPLEX solver
 #' if (require("cplexAPI")) {
-#'   titles <- c(titles, "CPLEX")
-#'   p4 <- p %>% add_cplex_solver(verbose = FALSE)
-#'   s <- addLayer(s, solve(p4))
+#'   p2 <- p %>% add_cplex_solver(verbose = FALSE)
+#'   n <- c(n, "CPLEX")
+#'   s <- c(s, solve(p2))
 #' }
 #'
-#' # if rcbc is installed: create problem with added cbc solver
+#' # if rcbc is installed: create problem with added CBC solver
 #' if (require("rcbc")) {
-#'   titles <- c(titles, "CBC")
-#'   p6 <- p %>% add_cbc_solver(verbose = FALSE)
-#'   s <- addLayer(s, solve(p6))
+#'   p3 <- p %>% add_cbc_solver(verbose = FALSE)
+#'   n <- c(n, "CBC")
+#'   s <- c(s, solve(p3))
+#' }
+#'
+#' # if highs is installed: create problem with added HiGHs solver
+#' if (require("highs")) {
+#'   p4 <- p %>% add_highs_solver(verbose = FALSE)
+#'   n <- c(n, "HiGHS")
+#'   s <- c(s, solve(p4))
 #' }
 #'
 #' # create problem with added rsymphony solver
 #' if (require("Rsymphony")) {
-#'   titles <- c(titles, "Rsymphony")
-#'   p2 <- p %>% add_rsymphony_solver(verbose = FALSE)
-#'   s <- addLayer(s, solve(p2))
+#'   p5 <- p %>% add_rsymphony_solver(verbose = FALSE)
+#'   n <- c(n, "Rsymphony")
+#'   s <- c(s, solve(p5))
 #' }
 #'
 #' # if lpsymphony is installed: create problem with added lpsymphony solver
 #' if (require("lpsymphony")) {
-#'   titles <- c(titles, "lpsymphony")
-#'   p5 <- p %>% add_lpsymphony_solver(verbose = FALSE)
-#'   s <- addLayer(s, solve(p5))
+#'   p6 <- p %>% add_lpsymphony_solver(verbose = FALSE)
+#'   n <- c(n, "lpsymphony")
+#'   s <- c(s, solve(p6))
 #' }
 #'
 #' # plot solutions
-#' plot(s, main = titles, axes = FALSE, box = FALSE)
+#' names(s) <- n
+#' plot(terra::rast(s), axes = FALSE)
 #' }
 #'
 NULL

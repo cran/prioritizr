@@ -14,7 +14,7 @@ add_cplex_solver(
 )
 }
 \arguments{
-\item{x}{\code{\link[=problem]{problem()}} (i.e., \code{\linkS4class{ConservationProblem}}) object.}
+\item{x}{\code{\link[=problem]{problem()}} object.}
 
 \item{gap}{\code{numeric} gap to optimality. This gap is relative
 and expresses the acceptable deviance from the optimal objective.
@@ -40,19 +40,18 @@ optimization algorithm. The default value is 1.}
 optimization problems? Defaults to \code{TRUE}.}
 }
 \value{
-Object (i.e., \code{\linkS4class{ConservationProblem}}) with the solver
-added to it.
+An updated \code{\link[=problem]{problem()}} object with the solver added to it.
 }
 \description{
 Specify that the
-\href{https://www.ibm.com/analytics/cplex-optimizer}{\emph{IBM CPLEX}} software
-(IBM 2017) should be used to solve a conservation planning \code{\link[=problem]{problem()}}.
+\href{https://www.ibm.com/products/ilog-cplex-optimization-studio/cplex-optimizer}{\emph{IBM CPLEX}} software
+should be used to solve a conservation planning problem (IBM 2017) .
 This function can also be used to customize the behavior of the solver.
 It requires the \pkg{cplexAPI} package to be installed
 (see below for installation instructions).
 }
 \details{
-\href{https://www.ibm.com/analytics/cplex-optimizer}{\emph{IBM CPLEX}} is a
+\href{https://www.ibm.com/products/ilog-cplex-optimization-studio/cplex-optimizer}{\emph{IBM CPLEX}} is a
 commercial optimization software. It is faster than
 the available open source solvers (e.g., \code{\link[=add_lpsymphony_solver]{add_lpsymphony_solver()}} and
 \code{\link[=add_rsymphony_solver]{add_rsymphony_solver()}}.
@@ -62,13 +61,13 @@ analyses suggest that it performs slightly slower than the \emph{Gurobi}
 solver (i.e., \code{\link[=add_gurobi_solver]{add_gurobi_solver()}}).
 We recommend using this solver if the \emph{Gurobi} solver is not available.
 Licenses are available for the \emph{IBM CPLEX} software to academics at no cost
-(see \url{https://www.ibm.com/products/ilog-cplex-optimization-studio}).
+(see <  https://www.ibm.com/products/ilog-cplex-optimization-studio/cplex-optimizer>).
 }
 \section{Installation}{
 
 The \pkg{cplexAPI} package is used to interface with \emph{IBM CPLEX} software.
 To install the package, the \emph{IBM CPLEX} software must be installed
-(see \url{https://www.ibm.com/analytics/cplex-optimizer}). Next, the \code{CPLEX_BIN}
+(see \url{https://www.ibm.com/products/ilog-cplex-optimization-studio/cplex-optimizer}). Next, the \code{CPLEX_BIN}
 environmental variable must be set to specify the file path for the
 \emph{IBM CPLEX} software. For example, on a Linux system,
 this variable can be specified by adding the following text to the
@@ -96,20 +95,22 @@ For further details on installing this package, please consult the
 \examples{
 \dontrun{
 # load data
-data(sim_pu_raster, sim_features)
+sim_pu_raster <- get_sim_pu_raster()
+sim_features <- get_sim_features()
 
 # create problem
-p <- problem(sim_pu_raster, sim_features) \%>\%
-     add_min_set_objective() \%>\%
-     add_relative_targets(0.1) \%>\%
-     add_binary_decisions() \%>\%
-     add_cplex_solver(gap = 0.1, time_limit = 5, verbose = FALSE)
+p <-
+  problem(sim_pu_raster, sim_features) \%>\%
+  add_min_set_objective() \%>\%
+  add_relative_targets(0.1) \%>\%
+  add_binary_decisions() \%>\%
+  add_cplex_solver(gap = 0.1, time_limit = 5, verbose = FALSE)
 
 # generate solution
 s <- solve(p)
 
 # plot solution
-plot(s, main = "solution", axes = FALSE, box = FALSE)
+plot(s, main = "solution", axes = FALSE)
 }
 }
 \references{
@@ -117,12 +118,11 @@ IBM (2017) IBM ILOG CPLEX Optimization Studio CPLEX User's Manual.
 Version 12 Release 8. IBM ILOG CPLEX Division, Incline Village, NV.
 }
 \seealso{
-See \link{solvers} for an overview of all functions for adding a solver.
-
 Other solvers: 
 \code{\link{add_cbc_solver}()},
 \code{\link{add_default_solver}()},
 \code{\link{add_gurobi_solver}()},
+\code{\link{add_highs_solver}()},
 \code{\link{add_lsymphony_solver}},
 \code{\link{add_rsymphony_solver}()}
 }
