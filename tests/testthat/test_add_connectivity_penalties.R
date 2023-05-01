@@ -1,5 +1,3 @@
-context("add_connectivity_penalties")
-
 test_that("minimum set objective (compile, single zone)", {
   # import data
   sim_pu_raster <- get_sim_pu_raster()
@@ -91,13 +89,13 @@ test_that("minimum set objective (solve, single zone)", {
   s2_1 <- solve(p2)
   s2_2 <- solve(p2)
   # tests
-  expect_is(s1_1, "SpatRaster")
-  expect_is(s1_2, "SpatRaster")
+  expect_inherits(s1_1, "SpatRaster")
+  expect_inherits(s1_2, "SpatRaster")
   expect_true(all_binary(terra::values(s1_1)))
   expect_true(is_single_patch_raster(s1_1))
   expect_equal(terra::values(s1_1), terra::values(s1_2))
-  expect_is(s2_1, "SpatRaster")
-  expect_is(s2_2, "SpatRaster")
+  expect_inherits(s2_1, "SpatRaster")
+  expect_inherits(s2_2, "SpatRaster")
   expect_true(all_binary(s2_1))
   expect_true(is_checkerboard_raster(s2_1))
   expect_equal(terra::values(s2_1), terra::values(s2_2))
@@ -115,10 +113,10 @@ test_that("invalid inputs (single zone)", {
     add_relative_targets(0.1) %>%
     add_binary_decisions()
   # tests
-  expect_tidy_error(add_connectivity_penalties(p, NA_real_, data = c_data))
-  expect_tidy_error(add_connectivity_penalties(p, 1, 0, data = c_data))
-  expect_tidy_error(add_connectivity_penalties(p, 5, data = c_data[, -1]))
-  expect_tidy_error(add_connectivity_penalties(p, 5, data = c_data[-1, ]))
+  expect_tidy_error(add_connectivity_penalties(p, NA_real_, data = c_matrix))
+  expect_tidy_error(add_connectivity_penalties(p, 1, 0, data = c_matrix))
+  expect_tidy_error(add_connectivity_penalties(p, 5, data = c_matrix[, -1]))
+  expect_tidy_error(add_connectivity_penalties(p, 5, data = c_matrix[-1, ]))
   ac_data <- matrix(
     runif(terra::ncell(sim_pu_raster) ^ 2),
     ncol = terra::ncell(sim_pu_raster)
@@ -275,7 +273,7 @@ test_that("minimum set objective (solve, multiple zones)", {
     solve()
   sc <- category_layer(s)
   # tests
-  expect_is(s, "SpatRaster")
+  expect_inherits(s, "SpatRaster")
   expect_true(all_binary(s))
   expect_true(is_single_patch_raster(s[[1]]))
   expect_true(is_single_patch_raster(s[[2]]))

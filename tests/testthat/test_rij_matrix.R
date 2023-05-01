@@ -1,5 +1,3 @@
-context("rij_matrix")
-
 test_that("x = SpatRaster (single layer), y = SpatRaster (single layer)", {
   # import data
   sim_pu_raster <- get_sim_pu_raster()
@@ -123,10 +121,7 @@ test_that("x = sf (points), y = SpatRaster (multiple layers)", {
   # calculate matrix
   x <- rij_matrix(sim_pu_points, sim_features)
   # calculate correct results
-  y <- terra::extract(
-    sim_features, terra::vect(sim_pu_points), fun = mean, na.rm = TRUE,
-    ID = FALSE
-  )
+  y <- terra::extract(sim_features, sf::st_coordinates(sim_pu_points))
   y <- Matrix::t(as_Matrix(as.matrix(y), "dgCMatrix"))
   # run tests
   expect_true(inherits(x, "dgCMatrix"))
@@ -176,7 +171,7 @@ test_that("x = sf, y = SpatRaster (multiple layers, fun = sum)", {
 
 test_that("x = sf (complex polygons), y = SpatRaster (fun = mean)", {
   skip_on_cran()
-  skip_if_not_installed("prioritizrdata", minimum_version = "0.3.0.0")
+  skip_if_not_installed("prioritizrdata", minimum_version = "0.3.0")
   # import data
   tas_pu <- prioritizrdata::get_tas_pu()
   tas_features <- prioritizrdata::get_tas_features()
@@ -203,7 +198,7 @@ test_that("x = sf (complex polygons), y = SpatRaster (fun = mean)", {
 
 test_that("x = sf (complex polygons), y = SpatRaster (fun = sum)", {
   skip_on_cran()
-  skip_if_not_installed("prioritizrdata", minimum_version = "0.3.0.0")
+  skip_if_not_installed("prioritizrdata", minimum_version = "0.3.0")
   # import data
   tas_pu <- prioritizrdata::get_tas_pu()
   tas_features <- prioritizrdata::get_tas_features()
@@ -271,9 +266,12 @@ test_that("x = Spatial, y = RasterStack", {
   x <- rij_matrix(sim_pu_polygons, sim_features)
   # calculate correct matrix
   expect_warning(
-    y <- rij_matrix(
-      sf::as_Spatial(sim_pu_polygons),
-      raster::stack(sim_features)
+    expect_warning(
+      y <- rij_matrix(
+        sf::as_Spatial(sim_pu_polygons),
+        raster::stack(sim_features)
+      ),
+      "deprecated"
     ),
     "deprecated"
   )

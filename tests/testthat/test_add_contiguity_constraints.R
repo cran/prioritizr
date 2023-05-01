@@ -1,5 +1,3 @@
-context("add_contiguity_constraints")
-
 test_that("compile (single zone)", {
   # import data
   sim_pu_polygons <- get_sim_pu_polygons()
@@ -261,7 +259,7 @@ test_that("invalid inputs (single zone)", {
     add_min_set_objective() %>%
     add_relative_targets(0.1)
   # tests
-  expect_tidy_error(add_contiguity_constraints(p, NA_logical_))
+  expect_tidy_error(add_contiguity_constraints(p, NA))
   expect_tidy_error(add_contiguity_constraints(p, diag(1) + 1))
   expect_tidy_error(add_contiguity_constraints(p, diag(1) - 2))
   expect_tidy_error(add_contiguity_constraints(p, diag(1) - NA))

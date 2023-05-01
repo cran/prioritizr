@@ -187,24 +187,24 @@ ConservationProblem <- R6::R6Class(
 
       # print formulation section
       ## header
-      cli::cli_text("{ch$l}{ch$b}{.h formulation}")
+      cli::cli_text("{ch$j}{ch$b}{.h formulation}")
       ## objective
       cli_tree_component(
         objective_text,
-        header = " {ch$j}{ch$b}objective:    ",
+        header = "{ch$v}{ch$j}{ch$b}objective:    ",
         subheader = " {ch$v}",
         width = 15
       )
       ## penalties
       if (length(self$penalties) > 0) {
-        cli_vtext(" {ch$j}{ch$b}penalties:")
+        cli_vtext("{ch$v}{ch$j}{ch$b}penalties:")
         for (i in seq_along(penalties_text)) {
           if (i < length(penalties_text)) {
             cli_tree_component(
               penalties_text[[i]],
               header = "{ch$v}{ch$j}{ch$b}             ",
               subheader = "{ch$v}{ch$v}",
-              padding = " ",
+              padding = "{ch$v}",
               width = 14
             )
           } else {
@@ -212,32 +212,32 @@ ConservationProblem <- R6::R6Class(
               penalties_text[[i]],
               header = "{ch$v}{ch$l}{ch$b}             ",
               subheader = "{ch$v} ",
-              padding = " ",
+              padding = "{ch$v}",
               width = 14
             )
           }
         }
       } else {
         cli_vtext(
-          " {ch$j}{ch$b}penalties:    ",
+          "{ch$v}{ch$j}{ch$b}penalties:    ",
           penalties_text
         )
       }
       ## targets
       cli_vtext(
-       " {ch$j}{ch$b}targets:      ",
+       "{ch$v}{ch$j}{ch$b}targets:      ",
         targets_text
       )
       ## constraints
       if (length(self$constraints) > 0) {
-        cli_vtext(" {ch$j}{ch$b}constraints: ")
+        cli_vtext("{ch$v}{ch$j}{ch$b}constraints: ")
         for (i in seq_along(constraints_text)) {
           if (i < length(constraints_text)) {
             cli_tree_component(
               constraints_text[[i]],
               header = "{ch$v}{ch$j}{ch$b}             ",
               subheader = "{ch$v}{ch$v}",
-              padding = " ",
+              padding = "{ch$v}",
               width = 14
             )
           } else {
@@ -245,30 +245,36 @@ ConservationProblem <- R6::R6Class(
               constraints_text[[i]],
               header = "{ch$v}{ch$l}{ch$b}             ",
               subheader = "{ch$v} ",
-              padding = " ",
+              padding = "{ch$v}",
               width = 14
             )
           }
         }
       } else {
         cli_vtext(
-          " {ch$j}{ch$b}constraints:  ",
+          "{ch$v}{ch$j}{ch$b}constraints:  ",
           constraints_text
         )
       }
       ## decisions
       cli_tree_component(
         decisions_text,
-        header = " {ch$j}{ch$b}decisions:    ",
+        header = "{ch$v}{ch$l}{ch$b}decisions:    ",
         subheader = " {ch$v}",
         width = 15
       )
+
+      # print optimization section
+      ## header
+      cli::cli_text("{ch$l}{ch$b}{.h optimization}")
+      ## portfolio
       cli_tree_component(
         portfolio_text,
         header = " {ch$j}{ch$b}portfolio:    ",
         subheader = " {ch$v}",
         width = 15
       )
+      # solver
       cli_tree_component(
         solver_text,
         header = " {ch$l}{ch$b}solver:       ",
@@ -399,25 +405,25 @@ ConservationProblem <- R6::R6Class(
 
       # print formulation section
       ## header
-      cli::cli_text("{ch$l}{ch$b}{.h formulation}")
+      cli::cli_text("{ch$j}{ch$b}{.h formulation}")
       ## objective
       cli_vtext(
-        " {ch$j}{ch$b}objective:   ",
+        "{ch$v}{ch$j}{ch$b}objective:   ",
         objective_text
       )
       ## penalties
       if (length(self$penalties) > 0) {
-        cli_vtext(" {ch$j}{ch$b}penalties: ")
+        cli_vtext("{ch$v}{ch$j}{ch$b}penalties: ")
         for (i in seq_along(penalties_text)) {
           if (i < length(penalties_text)) {
             cli_vtext(
-              " {ch$v}{ch$j}{ch$b}", i, ":",
+              "{ch$v}{ch$v}{ch$j}{ch$b}", i, ":",
               paste(rep(" ", max(0, 11 - nchar(i))), collapse = ""),
               penalties_text[[i]]
             )
           } else {
             cli_vtext(
-              " {ch$v}{ch$l}{ch$b}", i, ":",
+              "{ch$v}{ch$v}{ch$l}{ch$b}", i, ":",
               paste(rep(" ", max(0, 11 - nchar(i))), collapse = ""),
               penalties_text[[i]]
             )
@@ -425,28 +431,28 @@ ConservationProblem <- R6::R6Class(
         }
       } else {
         cli_vtext(
-          " {ch$j}{ch$b}penalties:   ",
+          "{ch$v}{ch$j}{ch$b}penalties:   ",
           penalties_text
         )
       }
       ## targets
       cli_vtext(
-        " {ch$j}{ch$b}targets:     ",
+        "{ch$v}{ch$j}{ch$b}targets:     ",
         targets_text
       )
       ## constraints
       if (length(self$constraints) > 0) {
-        cli_vtext(" {ch$j}{ch$b}constraints: ")
+        cli_vtext("{ch$v}{ch$j}{ch$b}constraints: ")
         for (i in seq_along(constraints_text)) {
           if (i < length(constraints_text)) {
             cli_vtext(
-              " {ch$v}{ch$j}{ch$b}", i, ":",
+              "{ch$v}{ch$v}{ch$j}{ch$b}", i, ":",
               paste(rep(" ", max(0, 11 - nchar(i))), collapse = ""),
               constraints_text[[i]]
             )
           } else {
             cli_vtext(
-              " {ch$v}{ch$l}{ch$b}", i, ":",
+              "{ch$v}{ch$v}{ch$l}{ch$b}", i, ":",
               paste(rep(" ", max(0, 11 - nchar(i))), collapse = ""),
               constraints_text[[i]]
             )
@@ -454,19 +460,25 @@ ConservationProblem <- R6::R6Class(
         }
       } else {
         cli_vtext(
-          " {ch$j}{ch$b}constraints: ",
+          "{ch$v}{ch$j}{ch$b}constraints: ",
           constraints_text
         )
       }
       ## decisions
       cli_vtext(
-        " {ch$j}{ch$b}decisions:   ",
+        "{ch$v}{ch$l}{ch$b}decisions:   ",
         decisions_text
       )
+
+      # print optimization section
+      ## header
+      cli::cli_text("{ch$l}{ch$b}{.h optimization}")
+      ## portfolio
       cli_vtext(
         " {ch$j}{ch$b}portfolio:   ",
         portfolio_text
       )
+      ## solver
       cli_vtext(
         " {ch$l}{ch$b}solver:      ",
         solver_text
@@ -761,6 +773,44 @@ ConservationProblem <- R6::R6Class(
       colnames(out) <- self$zone_names()
       rownames(out) <- self$feature_names()
       self$set_data("feature_abundances_in_planning_units", out)
+      invisible(TRUE)
+    },
+
+    #' @description
+    #' Obtain the positive abundance of the features in the planning units.
+    #' Note that this method, unlike `feature_abundances_in_planning_units`,
+    # is only calculated using positive values.
+    #' @return A `numeric` matrix. Each column corresponds to a different zone
+    #' and each row corresponds to a different feature.
+    feature_positive_abundances_in_planning_units = function() {
+      x <- self$get_data("feature_positive_abundances_in_planning_units")
+      if (!is.Waiver(x)) return(x)
+      self$set_feature_positive_abundances_in_planning_units()
+      self$get_data("feature_positive_abundances_in_planning_units")
+    },
+
+    #' @description
+    #' Perform calculations to cache the positive abundance of the features in
+    #' the planning units.
+    #' @return Invisible `TRUE`.
+    set_feature_positive_abundances_in_planning_units = function() {
+      pu_indices <- self$planning_unit_indices()
+      ind <- self$planning_unit_indices_with_finite_costs()
+      ind <- lapply(ind, function(x) match(x, pu_indices))
+      out <- vapply(
+        seq_along(self$data$rij_matrix),
+        FUN.VALUE = numeric(nrow(self$data$rij_matrix[[1]])),
+        function(i) {
+          m <- self$data$rij_matrix[[i]][, ind[[i]], drop = FALSE]
+          m@x <- pmax(m@x, 0)
+          Matrix::rowSums(m, na.rm = TRUE)
+        }
+      )
+      if (!is.matrix(out))
+        out <- matrix(out, ncol = self$number_of_zones())
+      colnames(out) <- self$zone_names()
+      rownames(out) <- self$feature_names()
+      self$set_data("feature_positive_abundances_in_planning_units", out)
       invisible(TRUE)
     },
 

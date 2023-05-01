@@ -109,8 +109,8 @@ methods::setGeneric(
   "add_relative_targets",
   signature = methods::signature("x", "targets"),
   function(x, targets) {
-    rlang::check_required(x)
-    rlang::check_required(targets)
+    assert_required(x)
+    assert_required(targets)
     assert(
       is_conservation_problem(x),
       is_inherits(targets, c("numeric", "matrix", "character"))
@@ -213,7 +213,7 @@ methods::setMethod(
         c("numeric", "integer")
       ),
       msg = paste(
-        "{.arg targets} must refer to numeric columns of the feature data",
+        "{.arg targets} must refer to {.cls numeric} columns of the feature data",
         "for {.arg x}."
       )
     )
@@ -221,7 +221,7 @@ methods::setMethod(
       all_proportion(x$data$features[, targets, drop = FALSE]),
       msg = paste(
         "{.arg targets} must refer to columns of the feature data",
-        "for {.arg x} that contain values {.val {0}} and {.val {1}}."
+        "for {.arg x} that contain values between {.val {0}} and {.val {1}}."
       )
     )
     # add targets to problem

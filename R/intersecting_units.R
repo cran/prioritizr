@@ -53,12 +53,14 @@ NULL
 #' print(intersecting_units(r, ply_with_holes))
 #'
 #' # intersect sf with raster
-#' plot(ply, main = "x = sf")
+#' par(mfrow = c(1, 2))
+#' plot(ply, main = "x = sf", key.pos = NULL, reset = FALSE)
 #' plot(r_with_holes, main = "y = SpatRaster")
 #' print(intersecting_units(ply, r_with_holes))
 #'
 #' # intersect sf with sf
-#' plot(ply, main = "x = sf")
+#' par(mfrow = c(1, 2))
+#' plot(ply, main = "x = sf", key.pos = NULL, reset = FALSE)
 #' plot(ply_with_holes, main = "y = sf", key.pos = NULL, reset = FALSE)
 #' print(intersecting_units(ply, ply_with_holes))
 #' }
@@ -68,8 +70,8 @@ methods::setGeneric(
   "intersecting_units",
   signature = methods::signature("x", "y"),
   function(x, y) {
-    rlang::check_required(x)
-    rlang::check_required(y)
+    assert_required(x)
+    assert_required(y)
     assert(
       is_inherits(
         x, c("data.frame", "sf", "SpatRaster", "Spatial", "Raster")

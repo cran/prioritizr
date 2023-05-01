@@ -10,7 +10,7 @@ NULL
 #' each feature is represented in a contiguous unit and not that the entire
 #' solution should form a contiguous unit. Additionally, this function
 #' can use data showing the distribution of dispersible habitat for each
-#' feature to ensure that all features can disperse through out the areas
+#' feature to ensure that all features can disperse throughout the areas
 #' designated for their conservation.
 #'
 #' @param x [problem()] object.
@@ -234,9 +234,9 @@ NULL
 methods::setGeneric("add_feature_contiguity_constraints",
   signature = methods::signature("x", "zones", "data"),
   function(x, zones = diag(number_of_zones(x)), data = NULL) {
-    rlang::check_required(x)
-    rlang::check_required(zones)
-    rlang::check_required(data)
+    assert_required(x)
+    assert_required(zones)
+    assert_required(data)
     assert(
       is_conservation_problem(x),
       is_inherits(

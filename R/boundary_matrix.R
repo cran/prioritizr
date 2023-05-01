@@ -57,7 +57,7 @@ NULL
 #'
 #' # subset data to reduce processing time
 #' r <- terra::crop(sim_pu_raster, c(0, 0.3, 0, 0.3))
-#' ply <- sim_pu_polygons[c(1:2, 10:12, 20:22), ]
+#' ply <- sim_pu_polygons[c(1:3, 11:13, 20:22), ]
 #'
 #' # create boundary matrix using raster data
 #' bm_raster <- boundary_matrix(r)
@@ -70,12 +70,12 @@ NULL
 #' Matrix::image(bm_raster, main = "boundary matrix")
 #'
 #' # plot polygons and boundary matrices
-#' plot(r, main = "polygons", axes = FALSE)
+#' plot(ply[, 1], main = "polygons", axes = FALSE)
 #' Matrix::image(bm_ply, main = "boundary matrix")
 #' }
 #' @export
 boundary_matrix <- function(x, ...) {
-  rlang::check_required(x)
+  assert_required(x)
   UseMethod("boundary_matrix")
 }
 
@@ -209,7 +209,7 @@ boundary_matrix.sf <- function(x, ...) {
   Matrix::sparseMatrix(
     i = c(d$id1, seq_len(nrow(x))),
     j = c(d$id2, seq_len(nrow(x))),
-    x = suppressWarnings(c(terra::perim(d), terra::perim(x))),
+    x = round(suppressWarnings(c(terra::perim(d), terra::perim(x))), 8),
     symmetric = TRUE,
     dims = rep(nrow(x), 2)
   )

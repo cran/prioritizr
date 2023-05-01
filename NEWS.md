@@ -1,4 +1,4 @@
-# prioritizr 8.0.0
+# prioritizr 8.0.2
 
 ## Notice
 
@@ -18,8 +18,8 @@
 - All _proto_ classes have been migrated to _R6_ classes. This update reduces
   memory usage (#238), so `problem()` objects can now contain many more
   constraints and penalties. Note that any `problem()` objects
-  that were produced using earlier versions of the package are not compatible
-  with this version of the package.
+  that were produced using earlier versions of the package are no longer
+  compatible.
 - The _proto_, _raster_, _sf_, _sp_ packages are no longer automatically
   loaded alongside _prioritizr_. As such, users will need to load them manually
   (e.g., using `library(sf)`).
@@ -73,11 +73,25 @@
   (instead of `data.frame()` objects), when the planning unit data are
   `tibble::tibble()` objects.
 - The `boundary_matrix()` function now uses `terra::sharedPaths()` for
-  calculations, providing greater performance.
-- The package now requires C++17 for compilation (#263).
+  calculations, providing greater performance (#257).
+- The `eval_ferrier_importance()` function can now be used with
+  any objective function that uses targets and a single zone.
+- Fix CRAN note regarding C++ standards (#263).
 - Remove _doParallel_ and _plyr_ packages as dependencies by simplifying
   the `add_shuffle_portfolio()` and `eval_replacement_importance()` functions.
 - Assorted tweaks to improve writing in the vignettes and documentation.
+  Many thanks to Marc Edwards (@edwardsmarc)!
+
+# prioritizr 8.0.1
+
+- Assorted bug fixes.
+
+# prioritizr 8.0.0
+
+- This version contains an incorrect version of the code, due to a mistake
+  when preparing for CRAN release. We strongly recommend upgrading to
+  version 8.0.1 to ensure correct results. We apologize any inconvenience this
+  might have caused.
 
 # prioritizr 7.2.2.7
 

@@ -13,10 +13,11 @@ methods::setMethod(
       raster::nlayers(x) == 1
     )
     assert_dots_empty()
-    cli_warning(raster_pkg_deprecation_notice)
     problem(
       x,
-      zones(features, zone_names = names(x), feature_names = names(features)),
+      suppressWarnings(
+        zones(features, zone_names = names(x), feature_names = names(features))
+      ),
       run_checks = run_checks,
       ...
     )
@@ -101,8 +102,10 @@ methods::setMethod(
     assert(assertthat::is.string(cost_column))
     problem(
       x,
-      zones(
-        features, zone_names = cost_column, feature_names = names(features)
+      suppressWarnings(
+        zones(
+          features, zone_names = cost_column, feature_names = names(features)
+        )
       ),
       cost_column = cost_column,
       run_checks = run_checks,
@@ -244,8 +247,16 @@ methods::setMethod(
     assert(
       all_match_of(unlist(as.list(features)), names(x)),
       msg = paste(
-        "argument to features contains column names that are",
-        "not present in the argument to x"
+        "{.arg features} contains column names that are",
+        "not present in {.arg x}"
+      )
+    )
+    assert(
+      all_columns_inherit(
+        x[, unlist(as.list(features)), drop = FALSE], c("integer", "numeric")
+      ),
+      msg = c(
+        "{.arg features} must refer to {.cls numeric} columns of {.arg x}."
       )
     )
     verify(
@@ -300,10 +311,12 @@ methods::setMethod(
     assert(assertthat::is.string(cost_column))
     problem(
       x,
-      zones(
-        features,
-        zone_names = cost_column,
-        feature_names = names(features)
+      suppressWarnings(
+        zones(
+          features,
+          zone_names = cost_column,
+          feature_names = names(features)
+        )
       ),
       cost_column = cost_column,
       run_checks = run_checks,

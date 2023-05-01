@@ -25,7 +25,7 @@ NULL
 #'
 #' @section Mathematical formulation:
 #' This objective can be expressed mathematically for a set of planning units
-#  (\eqn{I}{I} indexed by
+#'  (\eqn{I}{I} indexed by
 #' \eqn{i}{i}) and a set of features (\eqn{J}{J} indexed by \eqn{j}{j}) as:
 #'
 #' \deqn{\mathit{Maximize} \space \sum_{i = 1}^{I} -s \space c_i \space x_i +
@@ -127,8 +127,8 @@ NULL
 #' @export
 add_max_features_objective <- function(x, budget) {
   # assert arguments are valid
-  rlang::check_required(x)
-  rlang::check_required(budget)
+  assert_required(x)
+  assert_required(budget)
   assert(
     is_conservation_problem(x),
     is.numeric(budget),

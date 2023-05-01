@@ -1,5 +1,3 @@
-context("add_feature_contiguity_constraints")
-
 test_that("compile (single zone)", {
   # create data
   spp1_habitat <- terra::rast(matrix(c(
@@ -444,7 +442,7 @@ test_that("solve (multiple zones)", {
     add_default_solver(verbose = FALSE)
   s <- solve(p)
   # run tests
-  expect_is(s, "SpatRaster")
+  expect_inherits(s, "SpatRaster")
   expect_equal(
     c(terra::values(s[[1]])),
     c(1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1)
@@ -466,7 +464,7 @@ test_that("invalid inputs (single zone)", {
     add_min_set_objective() %>%
     add_relative_targets(0.1)
   # tests
-  expect_tidy_error(add_feature_contiguity_constraints(p, NA_logical_))
+  expect_tidy_error(add_feature_contiguity_constraints(p, NA))
   expect_tidy_error(add_feature_contiguity_constraints(p, diag(1) + 1))
   expect_tidy_error(add_feature_contiguity_constraints(p, diag(1) - 2))
   expect_tidy_error(add_feature_contiguity_constraints(p, diag(1) - NA))

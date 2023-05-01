@@ -21,8 +21,8 @@ assertthat::on_failure(any_nonNA) <- function(call, env) {
   )
 }
 
-any_nonNA.default <- function(x, what) {
-  stop("{.arg x} is not a recognized class.")
+any_nonNA.default <- function(x) {
+  cli::cli_abort("{.arg x} is not a recognized class.")
 }
 
 .S3method("any_nonNA", "default", any_nonNA.default)
@@ -88,7 +88,7 @@ any_nonNA.Raster <- function(x) {
 .S3method("any_nonNA", "Raster", any_nonNA.Raster)
 
 any_nonNA.SpatRaster <- function(x) {
-  all(terra::global(x, "notNA")[[1]] > 0)
+  all(terra::global(x, "notNA", na.rm = TRUE)[[1]] > 0)
 }
 
 .S3method("any_nonNA", "SpatRaster", any_nonNA.SpatRaster)

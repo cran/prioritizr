@@ -34,20 +34,15 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, include = FALSE}
-# wrapper for printing problem objects
-print_problem <- function(x) {
-  if (interactive()) {
-    print(x)
-    return(invisible())
+# set up print method
+print <- function(x, ...) {
+  if (inherits(x, "ConservationProblem")) {
+    prioritizr::knit_print.ConservationProblem(x)
+  } else if (inherits(x, "OptimizationProblem")) {
+    prioritizr::knit_print.OptimizationProblem(x)
+  } else {
+    base::print(x)
   }
-  res <- knitr::knit_child(
-    "print_problem.txt",
-    envir = list2env(
-      list(name = rlang::as_name(rlang::enquo(x)), x = x),
-      parent = parent.frame()),
-    quiet = TRUE,
-  )
-  cat(res, sep = "\n")
 }
 ```
 
@@ -100,7 +95,7 @@ plot(tas_features[[1:4]])
 
 ## Problem formulation
 
-Now we will formulate a conservation planing problem. To achieve this, we first specify which objects contain the planning unit and feature data (using the `problem()` function). Next, we specify that we want to use the minimum set objective function (using the `add_min_set_objective()` function). This objective function indicates that we wish to minimize the total cost of planning units selected by the prioritization. We then specify boundary penalties reduce spatial fragmentation in the resulting prioritization (using the `add_boundary_penalties()` function; see the [_Calibrating trade-offs_ vignette](calibrating_trade-offs_tutorial.html) for details on calibrating the penalty value). We also specify representation targets to ensure the resulting prioritization provides adequate coverage of each vegetation community (using the `add_relative_targets()` function). Specifically, we specify targets to ensure at least 17% of the spatial extent of each vegetation community (based on the [Aichi Target 11](https://www.cbd.int/sp/targets/)). Additionally, we set constraints to ensure that planning units predominately covered by existing protected areas are selected by the prioritization (using the `add_locked_in_constraints()` function). Finally, we specify that the prioritization should either select -- or not select -- planning units for prioritization (using the `add_binary_decisions()` function).
+Now we will formulate a conservation planing problem. To achieve this, we first specify which objects contain the planning unit and feature data (using the `problem()` function). Next, we specify that we want to use the minimum set objective function (using the `add_min_set_objective()` function). This objective function indicates that we wish to minimize the total cost of planning units selected by the prioritization. We then specify boundary penalties to reduce spatial fragmentation in the resulting prioritization (using the `add_boundary_penalties()` function; see the [_Calibrating trade-offs_ vignette](calibrating_trade-offs_tutorial.html) for details on calibrating the penalty value). We also specify representation targets to ensure the resulting prioritization provides adequate coverage of each vegetation community (using the `add_relative_targets()` function). Specifically, we specify targets to ensure at least 17% of the spatial extent of each vegetation community (based on the [Aichi Target 11](https://www.cbd.int/sp/targets/)). Additionally, we set constraints to ensure that planning units predominately covered by existing protected areas are selected by the prioritization (using the `add_locked_in_constraints()` function). Finally, we specify that the prioritization should either select -- or not select -- planning units for prioritization (using the `add_binary_decisions()` function).
 
 ```{r, fig.width = w, fig.height = h}
 # build problem
@@ -111,10 +106,9 @@ p1 <-
   add_relative_targets(0.17) %>%
   add_locked_in_constraints("locked_in") %>%
   add_binary_decisions()
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p1)
+# print problem
+print(p1)
 ```
 
 ## Prioritization
@@ -201,20 +195,17 @@ plot(st_as_sf(irrep_s1[, "plot_total"]), main = "Overall importance")
 
 ## Portfolios
 
-Conservation planning exercises often involve generating multiple different prioritizations. This can help decision makers consider different options, and provide starting points for building consensus among stakeholders. To generate a range of different prioritizations given the same problem formulation, we can use portfolio functions. Here we will use the gap portfolio to generate 1000 solutions that are within 30% of optimality. Please note that you will need to have the *Gurobi* solver installed to use this specific portfolio. If you don't have access to *Gurobi*, you could try using the shuffle portfolio instead (using the `add_shuffle_portfolio()` function).
+Conservation planning exercises often involve generating multiple different prioritizations. This can help decision makers consider different options, and provide starting points for building consensus among stakeholders. To generate a range of different prioritizations given the same problem formulation, we can use portfolio functions. Here we will use the gap portfolio to generate 1000 solutions that are within 20% of optimality. Please note that you will need to have the *Gurobi* solver installed to use this specific portfolio. If you don't have access to *Gurobi*, you could try using the shuffle portfolio instead (using the `add_shuffle_portfolio()` function).
 
 ```{r}
 # create new problem with a portfolio added to it
 p2 <-
   p1 %>%
   add_gap_portfolio(number_solutions = 1000, pool_gap = 0.2)
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p2)
-```
+# print problem
+print(p2)
 
-```{r}
 # generate prioritizations
 prt <- solve(p2)
 print(prt)
@@ -308,13 +299,10 @@ After importing the data, we can now generate a prioritization based on the _Mar
 p3 <- marxan_problem(
   pu_data, spec_data, puvspr_data, bound_data, blm = 0.0005
 )
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p3)
-```
+# print problem
+print(p3)
 
-```{r}
 # solve problem
 s3 <- solve(p3)
 

@@ -132,7 +132,7 @@ NULL
 #'
 #' # create problem with added constraints to ensure that the planning
 #' # units allocated to each zone form a separate contiguous unit,
-#' # except for planning units allocated to zone 2 which do not need
+#' # except for planning units allocated to zone 3 which do not need
 #' # form a single contiguous unit
 #' z5 <- diag(3)
 #' z5[3, 3] <- 0
@@ -220,9 +220,9 @@ NULL
 methods::setGeneric("add_contiguity_constraints",
   signature = methods::signature("x", "zones", "data"),
   function(x, zones = diag(number_of_zones(x)), data = NULL) {
-    rlang::check_required(x)
-    rlang::check_required(zones)
-    rlang::check_required(data)
+    assert_required(x)
+    assert_required(zones)
+    assert_required(data)
     assert(
       is_conservation_problem(x),
       is_inherits(

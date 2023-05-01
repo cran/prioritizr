@@ -80,7 +80,7 @@ NULL
 #' \item{`data` as a `matrix`/`Matrix` object}{where rows and columns represent
 #'   different planning units and the value of each cell represents the
 #'   amount of shared boundary length between two different planning units.
-#'   Cells that occur along the matrix diagonal denote total the
+#'   Cells that occur along the matrix diagonal denote the total
 #'   boundary length associated with each planning unit.}
 #'
 #' \item{`data` as a `data.frame` object}{with the columns `"id1"`,
@@ -258,11 +258,11 @@ methods::setGeneric("add_boundary_penalties",
     x, penalty, edge_factor = rep(0.5, number_of_zones(x)),
     zones = diag(number_of_zones(x)), data = NULL
   ) {
-    rlang::check_required(x)
-    rlang::check_required(penalty)
-    rlang::check_required(edge_factor)
-    rlang::check_required(zones)
-    rlang::check_required(data)
+    assert_required(x)
+    assert_required(penalty)
+    assert_required(edge_factor)
+    assert_required(zones)
+    assert_required(data)
     assert(
       is_conservation_problem(x),
       is_inherits(data, c("NULL", "matrix", "Matrix", "data.frame"))
@@ -319,7 +319,7 @@ methods::setMethod("add_boundary_penalties",
     )
     if (!is.null(data)) {
       # round data to avoid numerical precision issues
-      data <- round(data, 5)
+      data <- round(data, 6)
       # check argument to data if not NULL
       assert(
         ncol(data) == nrow(data),
@@ -331,8 +331,10 @@ methods::setMethod("add_boundary_penalties",
       # verify diagonal is >= edge lengths
       verify(
         all(
-          Matrix::diag(data) >=
-          (Matrix::rowSums(data) - Matrix::diag(data))
+          round(
+            Matrix::diag(data) - (Matrix::rowSums(data) - Matrix::diag(data)),
+            6
+          ) >= -1e-5
         ),
         msg = c(
           "{.arg data} has unexpected values.",

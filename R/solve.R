@@ -25,7 +25,7 @@ NULL
 #' it can be solved using an exact algorithm solver (see [solvers]
 #' for available solvers). If no solver has been explicitly specified,
 #' then the best available exact algorithm solver will be used by default
-#' (see [add_default_solver()]. Although these exact algorithm
+#' (see [add_default_solver()]). Although these exact algorithm
 #' solvers will often display a lot of information that isn't really that
 #' helpful (e.g., nodes, cutting planes), they do display information
 #' about the progress they are making on solving the problem (e.g., the
@@ -62,7 +62,7 @@ NULL
 #'   \item{`a` has [terra::rast()] planning units}{The solution
 #'     will be returned as a [terra::rast()] object.
 #'     If the argument to `x` contains multiple zones, then the object
-#'     will be have a different layer for each management zone.
+#'     will have a different layer for each management zone.
 #'     Note that if a portfolio is used to generate multiple solutions,
 #'     then a `list` of [terra::rast()] objects will be returned.}
 #'
@@ -72,7 +72,7 @@ NULL
 #'     Here, each row corresponds to a different planning unit,
 #'     and columns contain solutions.
 #'     If the argument to `a` contains a single zone, then the solution object
-#'     will contain columns that solution the values.
+#'     will contain columns named by solution.
 #'     Specifically, the column names containing the solution values
 #'     be will named as `"solution_XXX"` where `"XXX"` corresponds to a solution
 #'     identifier (e.g., `"solution_1"`).
@@ -158,11 +158,11 @@ NULL
 #' # plot solution
 #' plot(s2[, "solution_1"], main = "solution", axes = FALSE)
 #'
-#' # build minimal conservation problem with polygon data
+#' # build multi-zone conservation problem with raster data
 #' p3 <-
-#'   problem(sim_pu_polygons, sim_features, cost_column = "cost") %>%
+#'   problem(sim_zones_pu_raster, sim_zones_features) %>%
 #'   add_min_set_objective() %>%
-#'   add_relative_targets(0.1) %>%
+#'   add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5, ncol = 3)) %>%
 #'   add_binary_decisions() %>%
 #'   add_default_solver(verbose = FALSE)
 #'
@@ -173,15 +173,18 @@ NULL
 #' print(s3)
 #'
 #' # calculate feature representation in the solution
-#' r3 <- eval_feature_representation_summary(p3, s3[, "solution_1"])
+#' r3 <- eval_feature_representation_summary(p3, s3)
 #' print(r3)
 #'
 #' # plot solution
-#' plot(s3[, "solution_1"])
+#' plot(category_layer(s3), main = "solution", axes = FALSE)
 #'
-#' # build multi-zone conservation problem with raster data
+#' # build multi-zone conservation problem with polygon data
 #' p4 <-
-#'   problem(sim_zones_pu_raster, sim_zones_features) %>%
+#'   problem(
+#'     sim_zones_pu_polygons, sim_zones_features,
+#'     cost_column = c("cost_1", "cost_2", "cost_3")
+#'   ) %>%
 #'   add_min_set_objective() %>%
 #'   add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5, ncol = 3)) %>%
 #'   add_binary_decisions() %>%
@@ -194,254 +197,222 @@ NULL
 #' print(s4)
 #'
 #' # calculate feature representation in the solution
-#' r4 <- eval_feature_representation_summary(p4, s4)
-#' print(r4)
-#'
-#' # plot solution
-#' plot(category_layer(s4), main = "solution", axes = FALSE)
-#'
-#' # build multi-zone conservation problem with polygon data
-#' p5 <-
-#'   problem(
-#'     sim_zones_pu_polygons, sim_zones_features,
-#'     cost_column = c("cost_1", "cost_2", "cost_3")
-#'   ) %>%
-#'   add_min_set_objective() %>%
-#'   add_relative_targets(matrix(runif(15, 0.1, 0.2), nrow = 5, ncol = 3)) %>%
-#'   add_binary_decisions() %>%
-#'   add_default_solver(verbose = FALSE)
-#'
-#' # solve the problem
-#' s5 <- solve(p5)
-#'
-#' # print solution
-#' print(s5)
-#'
-#' # calculate feature representation in the solution
-#' r5 <- eval_feature_representation_summary(
-#'   p5, s5[, c("solution_1_zone_1", "solution_1_zone_2", "solution_1_zone_3")]
+#' r4 <- eval_feature_representation_summary(
+#'   p4, s4[, c("solution_1_zone_1", "solution_1_zone_2", "solution_1_zone_3")]
 #' )
-#' print(r5)
+#' print(r4)
 #'
 #' # create new column representing the zone id that each planning unit
 #' # was allocated to in the solution
-#' s5$solution <- category_vector(
-#'   s5[, c("solution_1_zone_1", "solution_1_zone_2", "solution_1_zone_3")]
+#' s4$solution <- category_vector(
+#'   s4[, c("solution_1_zone_1", "solution_1_zone_2", "solution_1_zone_3")]
 #' )
-#' s5$solution <- factor(s5$solution)
+#' s4$solution <- factor(s4$solution)
 #'
 #' # plot solution
-#' plot(s5[, "solution"])
+#' plot(s4[, "solution"])
 #' }
 #' @name solve
-#'
-#' @importFrom Matrix solve
-#'
-#' @exportMethod solve
-#'
-#' @aliases solve,ConservationProblem,missing-method
-#'
-#' @export
 NULL
 
-#' @name solve
-#'
 #' @rdname solve
-methods::setMethod(
-  "solve",
-  signature(a = "ConservationProblem", b = "missing"),
-  function(a, b, ..., run_checks = TRUE, force = FALSE) {
-    # assert arguments are valid
-    rlang::check_required(a)
-    assert(
-      assertthat::is.flag(run_checks),
-      assertthat::noNA(run_checks),
-      assertthat::is.flag(force),
-      assertthat::noNA(force)
-    )
-    # compile optimization problem
-    opt <- compile.ConservationProblem(a, ...)
-    # run presolve check to try to identify potential problems
-    if (run_checks) {
-      ## run checks
-      presolve_res <- internal_presolve_check(opt)
-      ## prepare message
-      msg <- presolve_res$msg
-      if (!isTRUE(force)) {
-        msg <- c(
-          msg,
-          "i" = paste(
-            "To ignore checks and attempt optimization anyway,",
-            "use {.code solve(force = TRUE)}."
-          )
-        )
-      }
-      ## determine if error or warning should be thrown
-      if (!isTRUE(force)) {
-        f <- assert
-      } else {
-        f <- verify
-      }
-      ## throw error or warning if checks failed
-      f(isTRUE(presolve_res$pass), call = parent.frame(), msg = msg)
-    }
-    # solve problem
-    sol <- a$portfolio$run(opt, a$solver)
-    # prepare message
-    msg <- c(
-      "Can't find a solution!",
-      "i" = paste(
-        "This is because it is impossible to meet the",
-        "targets, budgets, or constraints."
-      )
-    )
-    if (isTRUE(a$solver$data$time_limit < 1e5)) {
+#' @method solve ConservationProblem
+#' @export
+solve.ConservationProblem <- function(a, b, ...,
+                                      run_checks = TRUE, force = FALSE) {
+  # assert arguments are valid
+  assert_required(a)
+  assert(
+    assertthat::is.flag(run_checks),
+    assertthat::noNA(run_checks),
+    assertthat::is.flag(force),
+    assertthat::noNA(force)
+  )
+  if (!rlang::is_missing(b)) {
+    cli::cli_abort("{.arg b} must not be specified.")
+  }
+  # compile optimization problem
+  opt <- compile.ConservationProblem(a, ...)
+  # run presolve check to try to identify potential problems
+  if (run_checks) {
+    ## run checks
+    presolve_res <- internal_presolve_check(opt)
+    ## prepare message
+    msg <- presolve_res$msg
+    if (!isTRUE(force)) {
       msg <- c(
         msg,
         "i" = paste(
-          "It could also be because the {.arg time_limit}",
-          "is too low."
+          "To ignore checks and attempt optimization anyway,",
+          "use {.code solve(force = TRUE)}."
         )
       )
     }
-    # check that solution is valid
-    assert(
-      !is.null(sol) && !is.null(sol[[1]]$x),
-      msg = msg
+    ## determine if error or warning should be thrown
+    if (!isTRUE(force)) {
+      f <- assert
+    } else {
+      f <- verify
+    }
+    ## throw error or warning if checks failed
+    f(isTRUE(presolve_res$pass), msg = msg)
+  }
+  # solve problem
+  sol <- a$portfolio$run(opt, a$solver)
+  # prepare message
+  msg <- c(
+    "Can't find a solution!",
+    "i" = paste(
+      "This is because it is impossible to meet the",
+      "targets, budgets, or constraints."
     )
-    # check that desired number of solutions were found
-    portfolio_number_solutions <- a$portfolio$get_data("number_solutions")
-    if (!is.Waiver(portfolio_number_solutions)) {
-      if (length(sol) != portfolio_number_solutions) {
-        cli_warning(
-          paste(
-            "Portfolio could only find",
-            "{.val {length(sol)}} out of",
-            "{.val {portfolio_number_solutions}}",
-            "solution{?s}."
-          )
-        )
-      }
-    }
-    ## format solutions
-    # format solutions into planning unit by zones matrix
-    na_pos <- which(is.na(a$planning_unit_costs()), arr.ind = TRUE)
-    sol_status <- lapply(sol, function(x) {
-      m <- matrix(
-        x[[1]][seq_len(a$number_of_planning_units() * a$number_of_zones())],
-        nrow = a$number_of_planning_units(),
-        ncol = a$number_of_zones()
+  )
+  if (isTRUE(a$solver$data$time_limit < 1e5)) {
+    msg <- c(
+      msg,
+      "i" = paste(
+        "It could also be because the {.arg time_limit}",
+        "is too low."
       )
-      m[na_pos] <- NA_real_
-      m
-    })
-    # create solution data
-    pu <- a$data$cost
-    if (inherits(pu, c("SpatRaster", "Raster"))) {
-      # SpatRaster or Raster planning units
-      pos <- a$planning_unit_indices()
-      pu <- terra::rast(pu)
-      pu <- suppressWarnings(terra::setValues(pu[[1]], NA))
-      ret <- lapply(sol_status, function(s) {
-        ret <- lapply(seq_len(ncol(s)), function(z) {
-          pu[pos] <- s[, z]
-          pu
-        })
-        ret <- terra::rast(ret)
-        names(ret) <- a$zone_names()
-        ret
-      })
-      # convert to RasterStack or RasterLayer if needed
-      if (inherits(a$data$cost, c("RasterStack", "RasterBrick"))) {
-        ret <- lapply(ret, raster::stack)
-      } else if (inherits(a$data$cost, "RasterLayer")) {
-        ret <- lapply(ret, raster::raster)
-      }
-      names(ret) <- paste0("solution_", seq_along(sol))
-    } else if (inherits(pu, c("data.frame", "Spatial", "sf"))) {
-      # Spatial* or data.frame planning units
-      sol_status <- do.call(cbind, sol_status)
-      if (a$number_of_zones() == 1) {
-        colnames(sol_status) <- paste0("solution_", seq_along(sol))
-      } else {
-        colnames(sol_status) <- paste0(
-          "solution_",
-          rep(seq_along(sol), each = a$number_of_zones()),
-          "_",
-          rep(a$zone_names(), length(sol))
+    )
+  }
+  # check that solution is valid
+  assert(
+    !is.null(sol) && !is.null(sol[[1]]$x),
+    msg = msg
+  )
+  # check that desired number of solutions were found
+  portfolio_number_solutions <- a$portfolio$get_data("number_solutions")
+  if (!is.Waiver(portfolio_number_solutions)) {
+    if (length(sol) != portfolio_number_solutions) {
+      cli_warning(
+        paste(
+          "Portfolio could only find",
+          "{.val {length(sol)}} out of",
+          "{.val {portfolio_number_solutions}}",
+          "solution{?s}."
         )
-      }
-      # add in NA values for planning units that contained NA values in
-      # all zones that were discarded from the mathematical formulation
-      # to reduce overheads
-      pos <- a$planning_unit_indices()
-      if (!identical(pos, seq_len(a$number_of_total_units()))) {
-        sol_status2 <- matrix(
-          NA_real_,
-          nrow = a$number_of_total_units(),
-          ncol = ncol(sol_status)
-        )
-        sol_status2[pos, ] <- sol_status
-        dimnames(sol_status2) <- dimnames(sol_status)
-      } else {
-        sol_status2 <- sol_status
-      }
-      # cbind solutions to planning unit data
-      sol_status2 <- as.data.frame(sol_status2)
-      if (inherits(pu, "Spatial")) {
-        ret <- pu
-        ret@data <- cbind(ret@data, sol_status2)
-      } else if (inherits(pu, "sf")) {
-        ret <- tibble::as_tibble(data.frame(pu, sol_status2))
-        sf_col <- attr(pu, "sf_column")
-        ret <- ret[, c(setdiff(names(ret), sf_col), sf_col), drop = FALSE]
-        ret <- ret <- sf::st_sf(ret)
-      } else {
-        ret <- cbind(pu, sol_status2)
-        if (inherits(pu, "tbl_df")) {
-          pu <- tibble::as_tibble(pu)
-        }
-      }
-    } else if (is.matrix(pu)) {
-      # matrix planning units
-      # add in NA values for planning units that contained NA values in
-      # all zones that were discarded from the mathematical formulation
-      # to reduce overheads
-      pos <- a$planning_unit_indices()
-      pu[] <- NA
-      colnames(pu) <- a$zone_names()
-      ret <- lapply(sol_status, function(s) {
-        pu[pos, ] <- s
+      )
+    }
+  }
+  ## format solutions
+  # format solutions into planning unit by zones matrix
+  na_pos <- which(is.na(a$planning_unit_costs()), arr.ind = TRUE)
+  sol_status <- lapply(sol, function(x) {
+    m <- matrix(
+      x[[1]][seq_len(a$number_of_planning_units() * a$number_of_zones())],
+      nrow = a$number_of_planning_units(),
+      ncol = a$number_of_zones()
+    )
+    m[na_pos] <- NA_real_
+    m
+  })
+  # create solution data
+  pu <- a$data$cost
+  if (inherits(pu, c("SpatRaster", "Raster"))) {
+    # SpatRaster or Raster planning units
+    pos <- a$planning_unit_indices()
+    pu <- terra::rast(pu)
+    pu <- suppressWarnings(terra::setValues(pu[[1]], NA))
+    ret <- lapply(sol_status, function(s) {
+      ret <- lapply(seq_len(ncol(s)), function(z) {
+        pu[pos] <- s[, z]
         pu
       })
-      names(ret) <- paste0("solution_", seq_along(sol))
+      ret <- terra::rast(ret)
+      names(ret) <- a$zone_names()
+      ret
+    })
+    # convert to RasterStack or RasterLayer if needed
+    if (inherits(a$data$cost, c("RasterStack", "RasterBrick"))) {
+      ret <- lapply(ret, raster::stack)
+    } else if (inherits(a$data$cost, "RasterLayer")) {
+      ret <- lapply(ret, raster::raster)
+    }
+    names(ret) <- paste0("solution_", seq_along(sol))
+  } else if (inherits(pu, c("data.frame", "Spatial", "sf"))) {
+    # Spatial* or data.frame planning units
+    sol_status <- do.call(cbind, sol_status)
+    if (a$number_of_zones() == 1) {
+      colnames(sol_status) <- paste0("solution_", seq_along(sol))
     } else {
-      # nocov start
-      cli::cli_abort(
-        "Planning unit data is of an unrecognized class.",
-        .internal = TRUE
+      colnames(sol_status) <- paste0(
+        "solution_",
+        rep(seq_along(sol), each = a$number_of_zones()),
+        "_",
+        rep(a$zone_names(), length(sol))
       )
-      # nocov end
     }
-    # if ret is a list of matrices with a single column then convert to numeric
-    if (is.matrix(ret[[1]]) && ncol(ret[[1]]) == 1) {
-      ret <- lapply(ret, as.numeric)
+    # add in NA values for planning units that contained NA values in
+    # all zones that were discarded from the mathematical formulation
+    # to reduce overheads
+    pos <- a$planning_unit_indices()
+    if (!identical(pos, seq_len(a$number_of_total_units()))) {
+      sol_status2 <- matrix(
+        NA_real_,
+        nrow = a$number_of_total_units(),
+        ncol = ncol(sol_status)
+      )
+      sol_status2[pos, ] <- sol_status
+      dimnames(sol_status2) <- dimnames(sol_status)
+    } else {
+      sol_status2 <- sol_status
     }
-    # if ret is a list with a single element then extract the element
-    if (length(ret) == 1) {
-      ret <- ret[[1]]
+    # cbind solutions to planning unit data
+    sol_status2 <- as.data.frame(sol_status2)
+    if (inherits(pu, "Spatial")) {
+      ret <- pu
+      ret@data <- cbind(ret@data, sol_status2)
+    } else if (inherits(pu, "sf")) {
+      ret <- tibble::as_tibble(data.frame(pu, sol_status2))
+      sf_col <- attr(pu, "sf_column")
+      ret <- ret[, c(setdiff(names(ret), sf_col), sf_col), drop = FALSE]
+      ret <- ret <- sf::st_sf(ret)
+    } else {
+      ret <- cbind(pu, sol_status2)
+      if (inherits(pu, "tbl_df")) {
+        pu <- tibble::as_tibble(pu)
+      }
     }
-    # add attributes
-    attr(ret, "objective") <- stats::setNames(
-      vapply(sol, `[[`, numeric(1), 2), paste0("solution_", seq_along(sol))
+  } else if (is.matrix(pu)) {
+    # matrix planning units
+    # add in NA values for planning units that contained NA values in
+    # all zones that were discarded from the mathematical formulation
+    # to reduce overheads
+    pos <- a$planning_unit_indices()
+    pu[] <- NA
+    colnames(pu) <- a$zone_names()
+    ret <- lapply(sol_status, function(s) {
+      pu[pos, ] <- s
+      pu
+    })
+    names(ret) <- paste0("solution_", seq_along(sol))
+  } else {
+    # nocov start
+    cli::cli_abort(
+      "Planning unit data is of an unrecognized class.",
+      .internal = TRUE
     )
-    attr(ret, "status") <- stats::setNames(
-      vapply(sol, `[[`, character(1), 3), paste0("solution_", seq_along(sol))
-    )
-    attr(ret, "runtime") <- stats::setNames(
-      vapply(sol, `[[`, numeric(1), 4), paste0("solution_", seq_along(sol))
-    )
-    # return object
-    ret
+    # nocov end
   }
-)
+  # if ret is a list of matrices with a single column then convert to numeric
+  if (is.matrix(ret[[1]]) && ncol(ret[[1]]) == 1) {
+    ret <- lapply(ret, as.numeric)
+  }
+  # if ret is a list with a single element then extract the element
+  if (length(ret) == 1) {
+    ret <- ret[[1]]
+  }
+  # add attributes
+  attr(ret, "objective") <- stats::setNames(
+    vapply(sol, `[[`, numeric(1), 2), paste0("solution_", seq_along(sol))
+  )
+  attr(ret, "status") <- stats::setNames(
+    vapply(sol, `[[`, character(1), 3), paste0("solution_", seq_along(sol))
+  )
+  attr(ret, "runtime") <- stats::setNames(
+    vapply(sol, `[[`, numeric(1), 4), paste0("solution_", seq_along(sol))
+  )
+  # return object
+  ret
+}

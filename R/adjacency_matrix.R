@@ -34,8 +34,8 @@ NULL
 #'   adjacent to each other or not (using ones and zeros).
 #'   To reduce computational burden, cells among the matrix diagonal are
 #'   set to zero. Furthermore, if the argument to `x` is a
-#'   [terra::rast()] object, then cells with `NA`
-#'   values are set to zero too.
+#'   [terra::rast()] object, then cells with `NA` values are set to
+#'   zero too.
 #'
 #' @name adjacency_matrix
 #'
@@ -46,7 +46,6 @@ NULL
 #' # load data
 #' sim_pu_raster <- get_sim_pu_raster()
 #' sim_pu_polygons <- get_sim_pu_polygons()
-#' sim_pu_lines <- get_sim_pu_lines()
 #'
 #' # create adjacency matrix using raster data
 #' ## crop raster to 9 cells
@@ -57,17 +56,10 @@ NULL
 #'
 #' # create adjacency matrix using polygon data
 #' ## subset 9 polygons
-#' ply <- sim_pu_polygons[c(1:2, 10:12, 20:22), ]
+#' ply <- sim_pu_polygons[c(1:3, 11:13, 20:22), ]
 #'
 #' ## make adjacency matrix
 #' am_ply <- adjacency_matrix(ply)
-#'
-#' # create adjacency matrix using lines data
-#' ## subset 9 lines
-#' lns <- sim_pu_lines[c(1:2, 10:12, 20:22), ]
-#'
-#' ## make adjacency matrix
-#' am_lns <- adjacency_matrix(lns)
 #'
 #' # plot data and the adjacency matrices
 #'
@@ -79,9 +71,6 @@ NULL
 #' plot(ply[, 1], main = "polygons")
 #' Matrix::image(am_ply, main = "adjacency matrix")
 #'
-#' ## plot lines and adjacency matrix
-#' plot(lns[, 1], main = "lines")
-#' Matrix::image(am_lns, main = "adjacency matrix")
 #' }
 #' @export
 adjacency_matrix <- function(x, ...) UseMethod("adjacency_matrix")
@@ -90,8 +79,8 @@ adjacency_matrix <- function(x, ...) UseMethod("adjacency_matrix")
 #' @method adjacency_matrix Raster
 #' @export
 adjacency_matrix.Raster <- function(x, directions = 4, ...) {
-  rlang::check_required(x)
-  rlang::check_required(directions)
+  assert_required(x)
+  assert_required(directions)
   assert_dots_empty()
   assert(inherits(x, "Raster"))
   cli_warning(raster_pkg_deprecation_notice)
@@ -102,8 +91,8 @@ adjacency_matrix.Raster <- function(x, directions = 4, ...) {
 #' @method adjacency_matrix SpatRaster
 #' @export
 adjacency_matrix.SpatRaster <- function(x, directions = 4, ...) {
-  rlang::check_required(x)
-  rlang::check_required(directions)
+  assert_required(x)
+  assert_required(directions)
   assert_dots_empty()
   assert(
     inherits(x, "SpatRaster"),
@@ -137,7 +126,7 @@ adjacency_matrix.SpatRaster <- function(x, directions = 4, ...) {
 #' @method adjacency_matrix SpatialPolygons
 #' @export
 adjacency_matrix.SpatialPolygons <- function(x, ...) {
-  rlang::check_required(x)
+  assert_required(x)
   assert_dots_empty()
   cli_warning(sp_pkg_deprecation_notice)
   adjacency_matrix(sf::st_as_sf(x), ...)
@@ -147,7 +136,7 @@ adjacency_matrix.SpatialPolygons <- function(x, ...) {
 #' @method adjacency_matrix SpatialLines
 #' @export
 adjacency_matrix.SpatialLines <- function(x,  ...) {
-  rlang::check_required(x)
+  assert_required(x)
   assert_dots_empty()
   cli_warning(sp_pkg_deprecation_notice)
   adjacency_matrix(sf::st_as_sf(x), ...)
@@ -157,7 +146,7 @@ adjacency_matrix.SpatialLines <- function(x,  ...) {
 #' @method adjacency_matrix SpatialPoints
 #' @export
 adjacency_matrix.SpatialPoints <- function(x, ...) {
-  rlang::check_required(x)
+  assert_required(x)
   assert_dots_empty()
   cli_warning(sp_pkg_deprecation_notice)
   adjacency_matrix(sf::st_as_sf(x), ...)
@@ -168,7 +157,7 @@ adjacency_matrix.SpatialPoints <- function(x, ...) {
 #' @export
 adjacency_matrix.sf <- function(x, ...) {
   # assert valid arguments
-  rlang::check_required(x)
+  assert_required(x)
   assert_dots_empty()
   assert(inherits(x, "sf"), is_valid_geometries(x))
   # verify that geometry types are supported

@@ -28,20 +28,15 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, include = FALSE}
-# wrapper for printing problem objects
-print_problem <- function(x) {
-  if (interactive()) {
-    print(x)
-    return(invisible())
+# set up print method
+print <- function(x, ...) {
+  if (inherits(x, "ConservationProblem")) {
+    prioritizr::knit_print.ConservationProblem(x)
+  } else if (inherits(x, "OptimizationProblem")) {
+    prioritizr::knit_print.OptimizationProblem(x)
+  } else {
+    base::print(x)
   }
-  res <- knitr::knit_child(
-    "print_problem.txt",
-    envir = list2env(
-      list(name = rlang::as_name(rlang::enquo(x)), x = x),
-      parent = parent.frame()),
-    quiet = TRUE,
-  )
-  cat(res, sep = "\n")
 }
 ```
 
@@ -55,7 +50,7 @@ The aim of this tutorial is to showcase the zones functionality of the _prioriti
 
 ### Simple minimum set problem
 
-In the _prioritizr R_ package, all conservation planning problems -- including those which contain multiple management zones or actions -- are initialized using the `problem` function. To refresh our memory on how we can construct problems, let us quickly construct a simple conservation planning problem. This problem will use the simulated built-in planning unit and feature data distributed with the package. It will have a minimum set objective, targets which require that solution secure to 10 % of the habitat in the study area for each feature, and binary decision variables indicating that planning units are selected or not selected for protection.
+In the _prioritizr R_ package, all conservation planning problems -- including those which contain multiple management zones or actions -- are initialized using the `problem` function. To refresh our memory on how we can construct problems, let us quickly construct a simple conservation planning problem. This problem will use the simulated built-in planning unit and feature data distributed with the package. It will have a minimum set objective, targets which require that solutions secure to 10% of the habitat in the study area for each feature, and binary decision variables indicating that planning units are selected or not selected for protection.
 
 ```{r, results = "hide"}
 # load packages
@@ -78,13 +73,10 @@ p1 <-
   add_min_set_objective() %>%
   add_relative_targets(t1) %>%
   add_binary_decisions()
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p1)
-```
+# print problem
+print(p1)
 
-```{r}
 # solve problem
 s1 <- solve(p1)
 
@@ -118,7 +110,7 @@ print(t2)
 # create a zones object that contains the amount of each feature
 # in each planning unit when it is allocated to each zone
 # since our zones pertain to the same habitat data, we will
-# to specify the same habitat data for each zone
+# specify the same habitat data for each zone
 z2 <- zones("zone 1" = sim_features, "zone 2" = sim_features)
 
 # print zones
@@ -138,13 +130,10 @@ p2 <-
   add_min_set_objective() %>%
   add_relative_targets(t2) %>%
   add_binary_decisions()
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p2)
-```
+# print problem
+print(p2)
 
-```{r}
 # solve problem
 s2 <- solve(p2)
 
@@ -155,10 +144,9 @@ print(r2)
 # plot solution
 # here we use the category layer function to generate raster showing the zone
 # that each planning unit was allocated. Specifically, pixels with the
-# value 1 are allocated to "zone 1" and pixels with the value 2 are allocated
-# to "zone 2". Thus units depicted in gray are not allocated
-# to any zone, units depicted in yellow are allocated to zone 1, and units
-# depicted in green are allocated to zone 2
+# value 1 (yellow) are allocated to "zone 1" and pixels with the value 2 (green)
+# are allocated to "zone 2". Units depicted in gray are not allocated
+# to any zone.
 plot(
   category_layer(s2), main = "solution",
   xlim = c(-0.1, 1.1), ylim = c(-0.1, 1.1), axes = FALSE
@@ -187,13 +175,10 @@ p3 <-
   add_min_set_objective() %>%
   add_relative_targets(t2) %>%
   add_binary_decisions()
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p3)
-```
+# print problem
+print(p3)
 
-```{r}
 # solve problem
 s3 <- solve(p3)
 
@@ -255,13 +240,10 @@ p4 <-
   add_min_set_objective() %>%
   add_manual_targets(t4) %>%
   add_binary_decisions()
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p4)
-```
+# print problem
+print(p4)
 
-```{r}
 # solve problem
 s4 <- solve(p4)
 
@@ -275,10 +257,10 @@ plot(category_layer(s4), main = "solution", axes = FALSE)
 
 ### Multiple zones with extra constraints
 
-So it looks like baiting is the way to go! Except that we might recall that we can't use baits in most of the planning units because they contain native species that are susceptible to baits. So now we need to specify that which of our planning units cannot be assigned to the third zone (baiting) to obtain a more useful solution.
+So it looks like baiting is the way to go! Except that we might recall that we can't use baits in most of the planning units because they contain native species that are susceptible to baits. So now we need to specify which of our planning units cannot be assigned to the third zone (baiting) to obtain a more useful solution.
 
 ```{r}
-# create data.frame to specify that we cannot bait in the first 40 units
+# create data.frame to specify that we cannot bait in the first 80 units
 l5 <- tibble(pu = seq(1, 80), zone = "baiting", status = 0)
 
 # preview locked data
@@ -300,13 +282,10 @@ p5 <-
   add_manual_targets(t4) %>%
   add_manual_locked_constraints(l5) %>%
   add_binary_decisions()
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p5)
-```
+# print problem
+print(p5)
 
-```{r}
 # solve problem
 s5 <- solve(p5)
 
@@ -323,7 +302,7 @@ plot(category_layer(s5), main = "solution", axes = FALSE)
 So now the best strategy seems to be a combination of high intensity trapping and baiting. But we can also see that this solution is fairly fragmented, so we can add penalties to cluster managed planning units together. Here we will add penalties that will cluster the planning units allocated to the two trapping zones together, and penalties that will cluster the planning units allocated to the baiting zone together. We will also set an overall penalty factor to 640 to strongly penalize fragmented solutions.
 
 ```{r}
-# create matrix that describe boundary penalties between planning units
+# create matrix that describes boundary penalties between planning units
 # allocated to different zones
 z6 <- diag(3)
 z6[1, 2] <- 1
@@ -351,13 +330,10 @@ p6 <-
   add_manual_locked_constraints(l5) %>%
   add_boundary_penalties(penalty = 640, zones = z6) %>%
   add_binary_decisions()
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p6)
-```
+# print problem
+print(p6)
 
-```{r}
 # solve problem
 s6 <- solve(p6)
 
@@ -395,13 +371,10 @@ p7 <-
   add_manual_locked_constraints(l5) %>%
   add_boundary_penalties(penalty = 640, zones = z6) %>%
   add_binary_decisions()
-```
 
-```{r, echo = FALSE, results = "asis"}
-print_problem(p7)
-```
+# print problem
+print(p7)
 
-```{r}
 # solve problem
 s7 <- solve(p7)
 

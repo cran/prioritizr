@@ -33,7 +33,7 @@ NULL
 #'   [adjacency_matrix()] function.
 #'   See the Data format section for more information.
 #'
-#' @details This function uses neighborhood data identify solutions that
+#' @details This function uses neighborhood data to identify solutions that
 #'   surround planning units with a minimum number of neighbors. It
 #'   was inspired by the mathematical formulations detailed in
 #'   Billionnet (2013) and Beyer *et al.* (2016).
@@ -193,10 +193,10 @@ NULL
 methods::setGeneric("add_neighbor_constraints",
   signature = methods::signature("x", "k", "zones", "data"),
   function(x, k, zones = diag(number_of_zones(x)), data = NULL) {
-    rlang::check_required(x)
-    rlang::check_required(k)
-    rlang::check_required(zones)
-    rlang::check_required(data)
+    assert_required(x)
+    assert_required(k)
+    assert_required(zones)
+    assert_required(data)
     assert(
       is_conservation_problem(x),
       is_inherits(data, c("NULL", "matrix", "Matrix", "data.frame", "array"))
