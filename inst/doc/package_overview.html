@@ -1066,7 +1066,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## │├•penalties:   none specified
 ## │├•targets:     relative targets (between 0.1 and 0.1)
 ## │├•constraints:
-## ││└•1:          neighbor constraints (`k` = 1, …)
+## ││└•1:          neighbor constraints (`k` = 1, `clamp` = TRUE, …)
 ## │└•decisions:   binary decision
 ## └•optimization
 ##  ├•portfolio:   shuffle portfolio (`number_solutions` = 1, …)
@@ -2093,7 +2093,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <pre><code>## # A tibble: 1 × 2
 ##   summary asym_connectivity
 ##   &lt;chr&gt;               &lt;dbl&gt;
-## 1 overall              49.1</code></pre>
+## 1 overall              45.3</code></pre>
 </div>
 <div id="evaluating-relative-importance" class="section level3">
 <h3>Evaluating relative importance</h3>
@@ -2251,7 +2251,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## 
 ##      0     0 9.9758e+07    0   43 1.0659e+08 9.9758e+07  6.41%     -    0s
 ## 
-## Explored 1 nodes (652 simplex iterations) in 0.07 seconds (0.10 work units)
+## Explored 1 nodes (652 simplex iterations) in 0.08 seconds (0.10 work units)
 ## Thread count was 1 (of 48 available processors)
 ## 
 ## Solution count 2: 1.06595e+08 1.25582e+08 

@@ -554,6 +554,7 @@ methods::setMethod(
       verify(
         all_positive(x),
         any_nonzero(x),
+        any_nonNA(features),
         all_positive(features),
         any_nonzero(features)
       )
@@ -653,6 +654,7 @@ methods::setMethod(
       all_positive(x[, cost_column, drop = FALSE]),
       any_nonzero(x[, cost_column, drop = FALSE]),
       all_positive(x[, unlist(features), drop = FALSE]),
+      all_columns_any_finite(x[, unlist(features), drop = FALSE]),
       any_nonzero(x[, unlist(features), drop = FALSE])
     )
     # create rij matrix
@@ -1013,7 +1015,8 @@ methods::setMethod(
     if (run_checks) {
       verify(
         all_positive(features),
-        any_nonzero(features)
+        any_nonzero(features),
+        any_nonNA(features)
       )
     }
     # compute rij matrix including non-planning unit cells
@@ -1105,6 +1108,19 @@ methods::setMethod(
       )
     )
     assert(
+      !any(unlist(as.list(features)) == attr(x, "sf_column")),
+      msg = c(
+        paste(
+          "{.arg features} must not contain the column with geometry data",
+          "for {.arg x}."
+        ),
+        "x" = paste(
+          "The following column has the geometry data:",
+          "{.val {attr(x, 'sf_column')}}."
+        )
+      )
+    )
+    assert(
       all_match_of(unlist(as.list(features)), names(x)),
       msg = c(
         paste(
@@ -1128,8 +1144,9 @@ methods::setMethod(
     verify(
       all_positive(x[, cost_column]),
       any_nonzero(x[, cost_column]),
-      all_positive(sf::st_drop_geometry(x)[, unlist(features)]),
-      any_nonzero(sf::st_drop_geometry(x)[, unlist(features)])
+      all_positive(x[, unlist(features)]),
+      any_nonzero(x[, unlist(features)]),
+      all_columns_any_finite(x[, unlist(features)])
     )
     # create rij matrix
     pos <- which(

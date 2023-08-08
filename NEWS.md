@@ -1,3 +1,104 @@
+# prioritizr 8.0.3
+
+- CRAN release.
+
+# prioritizr 8.0.2.7
+
+## Notice
+
+- We have developed a better approach for rescaling boundary data to
+  avoid numerical issues during optimization (#297). Earlier versions of the
+  package recommended the use of the `scales::rescale()` to rescale such data.
+  However, we now realize that this approach can produce inconsistencies for
+  boundary length data (e.g., the total perimeter of a planning unit might not
+  necessarily equal the sum of the edge lengths). In some cases, these
+  inconsistencies can cause solutions generated with high boundary
+  penalties (i.e., using `add_boundary_penalties()` with a high `penalty`
+  value) to contain a large reserve (i.e., a spatial cluster of selected of
+  planning units) with a single unselected planning unit in the middle of the
+  reserve. In the the worst case, these inconsistencies produce a situation
+  where increasing boundary penalties (i.e., generating multiple solutions with
+  `add_boundary_penalties()` and increasing `penalty` values)
+  does not alter the spatial configuration of solutions. Although use of
+  `scales::rescale()` did not produce such behavior prior to version 8.0.0,
+  changes to the output format for `boundary_matrix()` in subsequent versions
+  now mean that `scales::rescale()` can cause these issues. We now recommend
+  using the new `rescale_matrix()` function to rescale boundary length data to
+  avoid numerical issues, whilst also avoid such inconsistencies.
+
+## New features
+
+- New `rescale_matrix()` function to help with rescaling boundary length
+  (e.g., generated using `boundary_matrix()`) and connectivity
+  (e.g., generated using `connectivity_matrix()`) data so avoid
+  numerical issues during optimization (#297).
+
+## Minor improvements and bug fixes
+
+- Update examples and vignettes to use the `rescale_matrix()` function
+  instead of the `scales::rescale()` function for rescaling boundary
+  length and connectivity data (#297).
+- Update the `print()` and `summary()` methods for `problem()` objects
+  so that they will now better describe situations when the planning cost
+  data all contain a constant value (e.g., all costs equal to 1).
+- Update publication record.
+
+# prioritizr 8.0.2.6
+
+- Update `add_neighbors_constraints()` so that it has an additional
+  `clamp` argument so the minimum number of neighbors permitted for
+  each planning unit in the solution is clamped to the number of neighbors that
+  each planning unit has. For example, if a planning unit has 2 neighbors,
+  `k = 3`, and `clamp = FALSE`, then the planning unit could not
+  ever be selected in the solution. However, if `clamp = TRUE`, then
+  the planning unit could potentially be selected in the solution if both of
+  its 2 neighbors were also selected.
+- Fix issue with `problem()` that prevents `features` being supplied as
+  a `data.frame` that contains feature names stored as a `factor` (#295).
+- Fix broken URLs in documentation.
+
+# prioritizr 8.0.2.5
+
+- Update `problem()` so that it will throw a meaningful error message if the
+  user accidentally specifies the geometry column for `sf` planning unit data
+  as a feature.
+
+# prioritizr 8.0.2.4
+
+- Fix compatibility with updates to _terra_ package.
+- Fix `rij_matrix()` so that it works when none of the raster layers being
+  processed fit into memory (#290).
+- Fix spatial extent of built-in raster datasets so that extents are between
+  0 and 1 (i.e., `get_sim_pu_raster()`, `get_sim_locked_in_raster()`,
+  `get_sim_locked_out_raster()`, `get_sim_zones_pu_raster()`,
+  `get_sim_features()`, `get_sim_zones_features()`).
+- Update `add_manual_locked_constraints()` and
+  `add_manual_bounded_constraints()` so that the indices in the
+  specified in the argument `data$pu` should consistently refer to the total
+  units. In other words, the indices in `data$pu` should refer to the row
+  numbers (for planning units in `sf` or `data.frame` format) or cell numbers
+  (for planning units in `Raster` or `SpatRaster` format) of the planning units
+  that should be locked.
+- Fix warnings thrown due to package version comparisons.
+- Update publication record.
+
+# prioritizr 8.0.2.3
+
+- Export `solve.ConservationProblem()` so that it can be called directly (#283).
+- Update publication record.
+
+# prioritizr 8.0.2.2
+
+- Update publication record.
+- Fix compatibility with _highs_ package (version 0.1-10) (#281).
+
+# prioritizr 8.0.2.1
+
+- Update `problem()` so that an error will be thrown if argument to `features`
+  contains only missing (`NA`) values (e.g., an _sf_ object is supplied that
+  has `NA` values in all rows for a feature's column).
+- Update publication record.
+
 # prioritizr 8.0.2
 
 ## Notice
