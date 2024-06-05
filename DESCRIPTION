@@ -1,6 +1,6 @@
 Package: prioritizr
 Type: Package
-Version: 8.0.3
+Version: 8.0.4
 Title: Systematic Conservation Prioritization in R
 Description: 
     Systematic conservation prioritization using mixed integer linear
@@ -41,7 +41,7 @@ Authors@R:
       person(c('Peter'), 'Arcese',
         email='peter.arcese@ubc.ca', role = c('aut'),
         comment = c(ORCID = '0000-0002-8097-482X')),
-      person(c('Joseph'), 'Bennett',
+      person(c('Joseph', 'R'), 'Bennett',
         email='joseph.bennett@carleton.ca', role = c('aut'),
         comment = c(ORCID = '0000-0002-3901-9513')),
       person(c('Hugh', 'P'), 'Possingham',
@@ -50,7 +50,7 @@ Authors@R:
 Imports: utils, methods, parallel, R6 (>= 2.5.1), rlang (>= 1.0.6), cli
         (>= 3.6.0), sf (>= 1.0-12), terra (>= 1.6-53), raster (>=
         3.6.11), Matrix (>= 1.3-0), assertthat (>= 0.2.0), slam (>=
-        0.1-48), igraph (>= 1.2.9), ape (>= 5.6-1), magrittr (>=
+        0.1-48), igraph (>= 2.0.3), ape (>= 5.6-1), magrittr (>=
         2.0.1), exactextractr (>= 0.8.1), tibble (>= 2.0.0), withr (>=
         2.3.0)
 Suggests: testthat (>= 3.1.0), knitr (>= 1.36), scales (>= 1.1.1),
@@ -67,7 +67,7 @@ Encoding: UTF-8
 URL: https://prioritizr.net, https://github.com/prioritizr/prioritizr
 BugReports: https://github.com/prioritizr/prioritizr/issues
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Collate: 'external-classes.R' 'internal.R' 'assertions_class.R'
         'assertions_sf.R' 'assertions_misc.R' 'assertions_raster.R'
         'assertions_vector.R' 'any_nonzero.R' 'any_nonNA.R'
@@ -88,14 +88,14 @@ Collate: 'external-classes.R' 'internal.R' 'assertions_class.R'
         'add_cbc_solver.R' 'add_compile_solver.R'
         'add_connectivity_penalties.R' 'add_contiguity_constraints.R'
         'add_cplex_solver.R' 'add_cuts_portfolio.R'
-        'add_default_solver.R' 'add_extra_portfolio.R'
-        'add_feature_contiguity_constraints.R' 'add_feature_weights.R'
-        'add_gap_portfolio.R' 'add_gurobi_solver.R'
-        'add_highs_solver.R' 'add_linear_constraints.R'
-        'add_linear_penalties.R' 'intersecting_units.R'
-        'add_locked_in_constraints.R' 'add_locked_out_constraints.R'
-        'loglinear_interpolation.R' 'add_loglinear_targets.R'
-        'add_lpsymphony_solver.R'
+        'add_default_portfolio.R' 'add_default_solver.R'
+        'add_extra_portfolio.R' 'add_feature_contiguity_constraints.R'
+        'add_feature_weights.R' 'add_gap_portfolio.R'
+        'add_gurobi_solver.R' 'add_highs_solver.R'
+        'add_linear_constraints.R' 'add_linear_penalties.R'
+        'intersecting_units.R' 'add_locked_in_constraints.R'
+        'add_locked_out_constraints.R' 'loglinear_interpolation.R'
+        'add_loglinear_targets.R' 'add_lpsymphony_solver.R'
         'add_mandatory_allocation_constraints.R' 'tbl_df.R'
         'add_manual_targets.R' 'add_manual_bounded_constraints.R'
         'add_manual_locked_constraints.R' 'add_max_cover_objective.R'
@@ -131,7 +131,7 @@ Collate: 'external-classes.R' 'internal.R' 'assertions_class.R'
         'zone_names.R' 'zzz.R'
 Config/testthat/edition: 3
 NeedsCompilation: yes
-Packaged: 2023-08-08 15:28:32 UTC; richard
+Packaged: 2024-06-05 16:18:28 UTC; richard
 Author: Jeffrey O Hanson [aut] (<https://orcid.org/0000-0002-4716-6134>),
   Richard Schuster [aut, cre] (<https://orcid.org/0000-0003-3191-7869>),
   Nina Morrell [aut],
@@ -139,8 +139,8 @@ Author: Jeffrey O Hanson [aut] (<https://orcid.org/0000-0002-4716-6134>),
   Brandon P M Edwards [aut] (<https://orcid.org/0000-0003-0865-3076>),
   Matthew E Watts [aut],
   Peter Arcese [aut] (<https://orcid.org/0000-0002-8097-482X>),
-  Joseph Bennett [aut] (<https://orcid.org/0000-0002-3901-9513>),
+  Joseph R Bennett [aut] (<https://orcid.org/0000-0002-3901-9513>),
   Hugh P Possingham [aut] (<https://orcid.org/0000-0001-7755-996X>)
 Maintainer: Richard Schuster <richard.schuster@glel.carleton.ca>
 Repository: CRAN
-Date/Publication: 2023-08-08 23:00:02 UTC
+Date/Publication: 2024-06-05 21:40:06 UTC

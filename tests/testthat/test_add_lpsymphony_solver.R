@@ -198,3 +198,56 @@ test_that("correct solution (complex)", {
   expect_equal(c(terra::values(s1)), c(1, 0, 1, 0, NA))
   expect_equal(terra::values(s1), terra::values(s2))
 })
+
+test_that("solver information (single solution)", {
+  skip_on_cran()
+  skip_if_not_installed("lpsymphony")
+  # load data
+  sim_pu_raster <- get_sim_pu_raster()
+  sim_features <- get_sim_features()
+  # create problem
+  p <-
+    problem(sim_pu_raster, sim_features) %>%
+    add_min_set_objective() %>%
+    add_relative_targets(0.1) %>%
+    add_binary_decisions() %>%
+    add_lpsymphony_solver(time_limit = 5, verbose = FALSE)
+  # solve problem
+  s <- solve(p)
+  # tests
+  expect_true(is.numeric(attr(s, "objective")))
+  expect_length(attr(s, "objective"), 1)
+  expect_true(is.numeric(attr(s, "runtime")))
+  expect_length(attr(s, "runtime"), 1)
+  expect_true(is.character(attr(s, "status")))
+  expect_length(attr(s, "status"), 1)
+  expect_true(is.numeric(attr(s, "gap")))
+  expect_length(attr(s, "gap"), 1)
+})
+
+test_that("solver information (multiple solutions)", {
+  skip_on_cran()
+  skip_if_not_installed("lpsymphony")
+  # load data
+  sim_pu_raster <- get_sim_pu_raster()
+  sim_features <- get_sim_features()
+  # create problem
+  p <-
+    problem(sim_pu_raster, sim_features) %>%
+    add_min_set_objective() %>%
+    add_relative_targets(0.1) %>%
+    add_binary_decisions() %>%
+    add_shuffle_portfolio(3, remove_duplicates = FALSE) %>%
+    add_lpsymphony_solver(time_limit = 5, verbose = FALSE)
+  # solve problem
+  s <- solve(p)
+  # tests
+  expect_true(is.numeric(attr(s, "objective")))
+  expect_length(attr(s, "objective"), 3)
+  expect_true(is.numeric(attr(s, "runtime")))
+  expect_length(attr(s, "runtime"), 3)
+  expect_true(is.character(attr(s, "status")))
+  expect_length(attr(s, "status"), 3)
+  expect_true(is.numeric(attr(s, "gap")))
+  expect_length(attr(s, "gap"), 3)
+})

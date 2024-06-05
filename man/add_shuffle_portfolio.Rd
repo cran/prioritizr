@@ -29,9 +29,10 @@ An updated \code{\link[=problem]{problem()}} object with the portfolio added to 
 \description{
 Generate a portfolio of solutions for a conservation planning
 problem by randomly reordering the data prior to
-solving the problem. This is recommended as a replacement for
-\code{\link[=add_top_portfolio]{add_top_portfolio()}} when the \emph{Gurobi} software is not
-available.
+solving the problem. Although this function can be useful for generating
+multiple different solutions for a given problem,
+it is recommended to use \link{add_pool_portfolio} if the \emph{Gurobi}
+software is available.
 }
 \details{
 This strategy for generating a portfolio of solutions often
@@ -98,6 +99,7 @@ See \link{portfolios} for an overview of all functions for adding a portfolio.
 
 Other portfolios: 
 \code{\link{add_cuts_portfolio}()},
+\code{\link{add_default_portfolio}()},
 \code{\link{add_extra_portfolio}()},
 \code{\link{add_gap_portfolio}()},
 \code{\link{add_top_portfolio}()}

@@ -2,14 +2,24 @@ test_that("x = SpatRaster, features = SpatRaster", {
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
-  # create problem
+  # prepare data
   sim_pu_raster <- terra::setValues(
     sim_pu_raster, runif(terra::ncell(sim_pu_raster), -1, 1)
   )
   sim_features[[1]] <-  terra::setValues(
     sim_features[[1]], runif(terra::ncell(sim_features[[1]]), -1, 1)
   )
-  expect_warning(x <- problem(sim_pu_raster, sim_features), "negative")
+  # create problem
+  w <- capture_warnings(
+    x <- problem(sim_pu_raster, sim_features),
+    ignore_deprecation = TRUE
+  )
+  # check warnings
+  expect_length(w, 2)
+  expect_match(w[[1]], "x")
+  expect_match(w[[1]], "negative")
+  expect_match(w[[2]], "features")
+  expect_match(w[[2]], "negative")
   # verify that object can be printed
   suppressMessages(print(x))
   suppressMessages(summary(x))
@@ -650,14 +660,17 @@ test_that("x = data.frame, features = character", {
   # tests for rij_matrix field
   expect_equal(
     x$data$rij_matrix[[1]],
-    Matrix::sparseMatrix(
-      i = c(rep(1, 9), rep(2, 8)),
-      j = c(1:9, 1:8),
-      x = c(pu$spp1[-2], pu$spp2[c(-2, -10)]),
-      dims = c(2, 9),
-      dimnames = list(x$feature_names(), NULL)
+    Matrix::drop0(
+      Matrix::sparseMatrix(
+        i = c(rep(1, 9), rep(2, 8)),
+        j = c(1:9, 1:8),
+        x = c(pu$spp1[-2], pu$spp2[c(-2, -10)]),
+        dims = c(2, 9),
+        dimnames = list(x$feature_names(), NULL)
+      )
     ),
-    ignore_attr = TRUE
+    ignore_attr = TRUE,
+    tolerance = 1e-6
   )
   expect_equal(names(x$data$rij_matrix), "cost")
   expect_equal(rownames(x$data$rij_matrix[[1]]), c("spp1", "spp2"))

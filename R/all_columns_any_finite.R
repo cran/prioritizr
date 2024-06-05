@@ -16,17 +16,17 @@ all_columns_any_finite <- function(x)
 assertthat::on_failure(all_columns_any_finite) <- function(call, env) {
   paste0(
     "{.arg ", deparse(call$x),
-      "} must have columns that do not only contain missing or non-finite",
-      " values (e.g., {.val {NaN}}, {.val {NA}}, {.val {Inf}})."
+    "} must have columns that do not only contain missing or non-finite",
+    " values (e.g., {.val {NaN}}, {.val {NA}}, {.val {Inf}})."
   )
 }
 
+#' @export
 all_columns_any_finite.default <- function(x) {
   cli::cli_abort("{.arg x} is not a recognized class.")
 }
 
-.S3method("all_columns_any_finite", "default", all_columns_any_finite.default)
-
+#' @export
 all_columns_any_finite.data.frame <- function(x) {
   assert(
     is.data.frame(x)
@@ -34,11 +34,7 @@ all_columns_any_finite.data.frame <- function(x) {
   all(colSums(vapply(x, is.finite, logical(nrow(x)))) > 0)
 }
 
-.S3method(
-  "all_columns_any_finite", "data.frame",
-  all_columns_any_finite.data.frame
-)
-
+#' @export
 all_columns_any_finite.matrix <- function(x) {
   assert(
     is.matrix(x)
@@ -46,16 +42,12 @@ all_columns_any_finite.matrix <- function(x) {
   all(colSums(is.finite(x)) > 0)
 }
 
-.S3method("all_columns_any_finite", "matrix",  all_columns_any_finite.matrix)
-
+#' @export
 all_columns_any_finite.Spatial <- function(x) {
   all_columns_any_finite(x@data)
 }
 
-.S3method("all_columns_any_finite", "Spatial", all_columns_any_finite.Spatial)
-
+#' @export
 all_columns_any_finite.sf <- function(x) {
   all_columns_any_finite(sf::st_drop_geometry(x))
 }
-
-.S3method("all_columns_any_finite", "sf", all_columns_any_finite.sf)

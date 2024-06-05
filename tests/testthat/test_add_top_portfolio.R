@@ -92,3 +92,57 @@ test_that("solve (multiple zones)", {
         )
       )
 })
+
+test_that("solver information (single solution)", {
+  skip_on_cran()
+  skip_if_not_installed("gurobi")
+  # load data
+  sim_pu_raster <- get_sim_pu_raster()
+  sim_features <- get_sim_features()
+  # create problem
+  p <-
+    problem(sim_pu_raster, sim_features) %>%
+    add_min_set_objective() %>%
+    add_relative_targets(0.1) %>%
+    add_binary_decisions() %>%
+    add_top_portfolio(1) %>%
+    add_gurobi_solver(gap = 0.2, verbose = FALSE)
+  # solve problem
+  s <- solve(p)
+  # tests
+  expect_true(is.numeric(attr(s, "objective")))
+  expect_length(attr(s, "objective"), 1)
+  expect_true(is.numeric(attr(s, "runtime")))
+  expect_length(attr(s, "runtime"), 1)
+  expect_true(is.character(attr(s, "status")))
+  expect_length(attr(s, "status"), 1)
+  expect_true(is.numeric(attr(s, "gap")))
+  expect_length(attr(s, "gap"), 1)
+})
+
+test_that("solver information (multiple solutions)", {
+  skip_on_cran()
+  skip_if_not_installed("gurobi")
+  # load data
+  sim_pu_raster <- get_sim_pu_raster()
+  sim_features <- get_sim_features()
+  # create problem
+  p <-
+    problem(sim_pu_raster, sim_features) %>%
+    add_min_set_objective() %>%
+    add_relative_targets(0.1) %>%
+    add_binary_decisions() %>%
+    add_top_portfolio(3) %>%
+    add_gurobi_solver(gap = 0.2, verbose = FALSE)
+  # solve problem
+  s <- solve(p)
+  # tests
+  expect_true(is.numeric(attr(s, "objective")))
+  expect_length(attr(s, "objective"), 3)
+  expect_true(is.numeric(attr(s, "runtime")))
+  expect_length(attr(s, "runtime"), 3)
+  expect_true(is.character(attr(s, "status")))
+  expect_length(attr(s, "status"), 3)
+  expect_true(is.numeric(attr(s, "gap")))
+  expect_length(attr(s, "gap"), 3)
+})

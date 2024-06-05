@@ -568,9 +568,12 @@ test_that("parallel processing", {
   # find solution
   s <- solve(p)
   # calculate replacement costs without parallel processing
-  r1 <- eval_replacement_importance(p, s)
+  r1 <- withr::with_seed(500, eval_replacement_importance(p, s))
   # calculate replacement costs with parallel processing
-  suppressWarnings({r2 <- eval_replacement_importance(p, s, threads = 2)})
+  withr::with_seed(
+    500,
+    suppressWarnings({r2 <- eval_replacement_importance(p, s, threads = 2)})
+  )
   # verify that parallel processing generates the same result
   expect_identical(terra::values(r1), terra::values(r2))
 })

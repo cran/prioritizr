@@ -353,6 +353,20 @@ methods::setMethod("add_locked_out_constraints",
       inherits(locked_out, "sf"),
       x$number_of_zones() == 1
     )
+    assert(
+      is_same_crs(x$data$cost, locked_out),
+      msg = paste(
+        "{.arg locked_out} and planning units for {.arg x}",
+        "must have the same coordinate reference system"
+      )
+    )
+    assert(
+      is_spatial_extents_overlap(x$data$cost, locked_out),
+      msg = paste(
+        "{.arg locked_out} and planning units for {.arg x}",
+        "must have overlapping spatial extents"
+      )
+    )
     # add constraints
     add_locked_out_constraints(x, intersecting_units(x$data$cost, locked_out))
   }
@@ -378,7 +392,22 @@ methods::setMethod("add_locked_out_constraints",
     assert(
       is_conservation_problem(x),
       inherits(locked_out, "SpatRaster"),
+      is_numeric_values(locked_out),
       x$number_of_zones() == terra::nlyr(locked_out)
+    )
+    assert(
+      is_same_crs(x$data$cost, locked_out),
+      msg = paste(
+        "{.arg locked_out} and planning units for {.arg x}",
+        "must have the same coordinate reference system"
+      )
+    )
+    assert(
+      is_spatial_extents_overlap(x$data$cost, locked_out),
+      msg = paste(
+        "{.arg locked_out} and planning units for {.arg x}",
+        "must have overlapping spatial extents"
+      )
     )
     # create matrix with statuses
     if (
