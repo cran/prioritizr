@@ -48,7 +48,7 @@ verify <- function(..., env = parent.frame(), call = fn_caller_env()) {
   # check if assertions met
   res <- assertthat::validate_that(..., env = env)
   # if res is TRUE, then return success
-  if (isTRUE(res)) return(TRUE)
+  if (isTRUE(res)) return(invisible(TRUE))
   # if not TRUE, then res should be a character vector with the error message,
   # so now we will format it following tidyverse style guide
   res <- format_assertthat_msg(res)
@@ -56,9 +56,15 @@ verify <- function(..., env = parent.frame(), call = fn_caller_env()) {
   # because verify() is used to indicate valid -- but likely mistaken -- inputs
   res <- gsub("must not have", "has", res, fixed = TRUE)
   res <- gsub("must have", "does not have", res, fixed = TRUE)
+  # if first warning message does not have a symbol,
+  # then give it one by default
+  if (is.null(names(res)) || !nzchar(names(res)[[1]])) {
+    names(res)[[1]] <- ">"
+  }
   # throw warning
-  cli_warning(res, .envir = call)
+  cli_warning(res, .envir = call, call = call)
   # return result
+  invisible(FALSE)
 }
 
 #' Assert that a condition is met

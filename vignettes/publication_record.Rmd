@@ -15,17 +15,29 @@ This vignette contains a list of publications that have cited or used the _prior
 
 ## Research articles
 
+### 2025
+
+* Matus-Olivares C, Carrasco J, Weintraub A, and Lisón F (2025) From virtue to sin: Is the installation of bat boxes an effective conservation measure or a potential pitfall for vulnerable bat species? _Journal for Nature Conservation_, **83**: 126775.
+
 ### 2024
 
-* Andrello M and Manel S (2024) Evaluating different approaches to integrate genome-wide genetic diversity in spatial conservation prioritization. _Biological Conservation_ **292**: 110533.
+* Andrello M and Manel S (2024) Evaluating different approaches to integrate genome-wide genetic diversity in spatial conservation prioritization. _Biological Conservation_, **292**: 110533.
+* Berio Fortini L, Leopold CR, Amidon F, Leopold DR, Fretz JS, Jacobi JD, Mehrhoff L, Price JP, Duvall F, Keir M, Oppenheimer H, Weisenberger L, and Sutter R (2024) Advancing at‐risk species recovery planning in an era of rapid ecological change with a transparent, flexible, and expert‐engaged approach. _Conservation Biology_, **In press**: e14421.
 * d'Albertas F, Sparovek G, Pinto L-FG, Hohlenwerger C, and Metzger J-P (2024) Yield increases mediated by pollination and carbon payments can offset restoration costs in coffee landscapes. _One Earth_, **7**: 110--122.
-* Du Z, Li L, Liang J, Kang B, Meng W, Li H (2024) National scale biodiversity conservation priorities based on integrated multiple vulnerability features in China. _Ecological Indicators_ **160**: 111914.
-* Finucci B, Pacoureau N, Rigby CL, Matsushiba JH, Faure-Beaulieu N, Sherman CS, VanderWright WJ, Jabado RW, Charvet P, Mejía-Falla PA, Navia AF, Derrick DH, Kyne PM, Pollom RA, Walls RHL, Herman KB, Kinattumkara B, Cotton CF, Cuevas J-M, Daley RK, Dharmadi, Ebert DA, Fernando D, Fernando SMC, Francis MP, Huveneers C, Ishihara H, Kulka DW, Leslie RW, Neat F, Orlov AM, Rincon G, Sant GJ, Volvenko IV, Walker TI, Simpfendorfer CA, and Dulvy NK (2024) Fishing for oil and meat drives irreversible defaunation of deepwater sharks and rays. _Science_ **383**: 1135--1141.
+* Doxa A, Adam C, Nagkoulis N, Mazaris AD, Katsanevakis S (2025) prior3D: An R package for three-dimensional conservation prioritization. _Ecological Modelling_, **499**: 110919.
+* Du Z, Li L, Liang J, Kang B, Meng W, and Li H (2024) National scale biodiversity conservation priorities based on integrated multiple vulnerability features in China. _Ecological Indicators_, **160**: 111914.
+* Finucci B, Pacoureau N, Rigby CL, Matsushiba JH, Faure-Beaulieu N, Sherman CS, VanderWright WJ, Jabado RW, Charvet P, Mejía-Falla PA, Navia AF, Derrick DH, Kyne PM, Pollom RA, Walls RHL, Herman KB, Kinattumkara B, Cotton CF, Cuevas J-M, Daley RK, Dharmadi, Ebert DA, Fernando D, Fernando SMC, Francis MP, Huveneers C, Ishihara H, Kulka DW, Leslie RW, Neat F, Orlov AM, Rincon G, Sant GJ, Volvenko IV, Walker TI, Simpfendorfer CA, and Dulvy NK (2024) Fishing for oil and meat drives irreversible defaunation of deepwater sharks and rays. _Science_, **383**: 1135--1141.
 * Fourchault L, Dahdouh-Guebas F, Dunn DC, Everett JD, Hanson JO, Buenafe KCV, Neubert S, Dabalà A, Yapa KKAS, Cannicci S, and Richardson AJ (2024) Generating affordable protection of high seas biodiversity through cross-sectoral spatial planning. _One Earth_, **7**: 253--264.
-* Kim J, Shin W, Kim S, Choe H, Tanaka T, Song Y (2024) Use of ecosystem services and land ownership to prioritize conservation areas on Jeju Island, Republic of Korea. _Ecosystem Services_ **66**: 101605.
+* Gopalakrishna T, Visconti P, Lomax G, Boere E, Malhi Y, Roy PS, Joshi PK, Fedele G, and Yowargana P (2024) Optimizing restoration: A holistic spatial approach to deliver Nature's Contributions to People with minimal tradeoffs and maximal equity. _Proceedings of the National Academy of Sciences_, **121**: e2402970121.
+* Hanson JO, Schuster R, Strimas-Mackey M, Morrell N, Edwards BPM, Arcese P, Bennett JR, and Possingham HP (2024). Systematic conservation prioritization with the prioritizr R package. _Conservation Biology_, *In press*. DOI&#58;10.1111/cobi.14376.
+* Kim J, Shin W, Kim S, Choe H, Tanaka T, and Song Y (2024) Use of ecosystem services and land ownership to prioritize conservation areas on Jeju Island, Republic of Korea. _Ecosystem Services_, **66**: 101605.
+* Mannocci L, Derville S, Seguin R, and Mouillot D (2024) Aerial video surveys and spatial prioritization reveal conservation opportunities for endangered dugongs in New Caledonia. _Aquatic Conservation: Marine and Freshwater Ecosystems_, **34**: e4237.
+* Nagkoulis N, Papazekou M, Katsanevakis S, and Mazaris A (2024) Spatial conservation planning: Proposing clustering methods to improve connectivity protection. *Methods in Ecology and Evolution*, **In press**: DOI&#58;10.1111/2041-210X.14459.
 * Neugarten RA, Chaplin-Kramer R, Sharp RP, Schuster R, Strimas-Mackey M, Roehrdanz PR, Mulligan M, van Soesbergen A, Hole D, Kennedy CM, Oakleaf JR, Johnson JA, Kiesecker J, Polasky S, Hanson JO, and Rodewald AD (2024) Mapping the planet's critical areas for biodiversity and nature's contributions to people. _Nature Communications_, **15**: 261.
-* Schleimer A, Cantú‐Salazar L, Luttringer A, Frantz AC (2024) Spatial prioritisation for crested newt conservation in Luxembourg: Insights from population genetics and species distribution modelling. _Ecological Solutions and Evidence_ **5**: e12310.
-* von Takach B, Cameron SF, Cremona T, Eldridge MDB, Fisher DO, Hohnen R, Jolly CJ, Kelly E, Phillips BL, Radford IJ, Rick K, Spencer PBS, Trewella GJ, Umbrello LS, and Banks SC (2024) Conservation prioritisation of genomic diversity to inform management of a declining mammal species. _Biological Conservation_ **291**: 110467.
+* Schleimer A, Cantú‐Salazar L, Luttringer A, and Frantz AC (2024) Spatial prioritisation for crested newt conservation in Luxembourg: Insights from population genetics and species distribution modelling. _Ecological Solutions and Evidence_, **5**: e12310.
+* von Takach B, Cameron SF, Cremona T, Eldridge MDB, Fisher DO, Hohnen R, Jolly CJ, Kelly E, Phillips BL, Radford IJ, Rick K, Spencer PBS, Trewella GJ, Umbrello LS, and Banks SC (2024) Conservation prioritisation of genomic diversity to inform management of a declining mammal species. _Biological Conservation_, **291**: 110467.
+* Yang L, Xu W, Chen T, Fan Y, and Fan P (2024) Integrating natural disasters into protected area designing for global primate conservation under climate change. _Geography and Sustainability_, **In press**: DOI&#58;10.1016/j.geosus.2024.09.006.
+* Zucconi MG, Opazo F,and  Navarrete SA (2024) Assessing the Efficiency of the Marine Protected Area Systems in the Southeastern Pacific. *Aquatic Conservation: Marine and Freshwater Ecosystems*, **34**: e70032.
 
 ### 2023
 
@@ -46,14 +58,14 @@ This vignette contains a list of publications that have cited or used the _prior
 * Massante JC, de Castro AF, de Medeiros Sarmento PS, da Silva GM, Caldeira CF, Ramos S, and Gastauer M (2023) Species selection for optimizing mine land rehabilitation: Integrating functional traits with the minimum set prioritization technique. _Ecological Engineering_, **194**: 107039.
 * Rick K, Byrne M, Cameron S, Cooper SJB, Dunlop J, Hill B, Lohr C, Mitchell NJ, Moritz C, Travouillon KJ, von Takach B, and Ottewell K (2023). Population genomic diversity and structure in the golden bandicoot: a history of isolation, extirpation, and conservation. _Heredity_, **131**: 374--386.
 * Nielsen ES, Beger M, Henriques R, and von der Heyden S (2023) Integrating environmental, evolutionary, and socioeconomic vulnerability to future-proof coastal conservation planning. _Biological Conservation_, **286**: 110302.
-* Nogales J, Rogéliz-Prada C, Cañon MA, and Vargas-Luna A (2023) An integrated methodological framework for the durable conservation of freshwater ecosystems: a case study in Colombia’s Caquetá River basin. _Frontiers in Environmental Science_, **11**: DOI&#58;10.3389/fenvs.2023.1264392.
+* Nogales J, Rogéliz-Prada C, Cañon MA, and Vargas-Luna A (2023) An integrated methodological framework for the durable conservation of freshwater ecosystems: a case study in Colombia’s Caquetá River basin. _Frontiers in Environmental Science_, **11**: 1264392.
 * Shen X, Liu M, Hanson JO, Wang J, Locke H, Watson JEM, Ellis EC, Li S, and Ma K (2023) Countries' differentiated responsibilities to fulfill area-based conservation targets of the Kunming-Montreal Global Biodiversity Framework. _One Earth_, **6**:  548--559.
 * Sievers M, Brown CJ, McGowan J, Turschwell MP, Buelow CA, Holgate B, Pearson, RM, Adame MF, Andradi-Brown DA, Arnell A, Mackey BG, zu Ermgassen PSE, Gosling, J, McOwen CJ, Worthington TA, and Connolly RM (2023) Co-occurrence of biodiversity, carbon storage, coastal protection, and fish and invertebrate production to inform global mangrove conservation planning. _Science of The Total Environment_, **904**: 166357.
 * Tack JD, Jakes AF, Jones PF, Hebblewhite M, Naugle DE, Doherty KE, Sather M K, Martin BH, and Pritchert R (2023) Grassland intactness outcompetes species as a more efficient surrogate in conservation design. _Conservation Science and Practice_, **5**: e13020.
 * von Takach B, Sargent H, Penton CE, Rick K, Murphy BP, Neave G, Davies HF, Hill BM, and Banks SC (2023) Population genomics and conservation management of the threatened black-footed tree-rat (_Mesembriomys gouldii_) in northern Australia. _Heredity_, **130**: 278--288.
 * van Lanen, NJ, Shyvers JE, Duchardt CJ, and Aldridge CL (2023) A multi-ecosystem prioritization framework to balance competing habitat conservation needs of multiple species in decline. _Landscape Ecology_, **38**: 2795--2813.
 * Vyas A, and Dwivedi R (2023) Global Regions, Biological Diversity, and Urban Land to Significance. _Applied Science and Engineering Journal for Advanced Research_, **2**: 1--7.
-* Welch H, Liu OR, Riekkola L, Abrahms B, Hazen EL, and Samhouri JF (2023) Selection of planning unit size in dynamic management strategies to reduce human‐wildlife conflict. _Conservation Biology_, **In press**: DOI&#58;10.1111/cobi.14201.
+* Welch H, Liu OR, Riekkola L, Abrahms B, Hazen EL, and Samhouri JF (2023) Selection of planning unit size in dynamic management strategies to reduce human‐wildlife conflict. _Conservation Biology_, **38**: e14201.
 
 ### 2022
 
@@ -110,7 +122,7 @@ This vignette contains a list of publications that have cited or used the _prior
 * Domisch S, Friedrichs M, Hein T, Borgwardt F, Wetzig A, J&auml;hnig SC, and Langhans SD (2019) Spatially explicit species distribution models: A missed opportunity in conservation planning? _Diversity and Distributions_, **25**: 758--769.
 * Hanson JO, Fuller RA, and Rhodes JR (2019) Conventional methods for enhancing connectivity in conservation planning do not always maintain gene flow. _Journal of Applied Ecology_, **56**: 913--922.
 * Rodewald AD, Strimas-Mackey M, Schuster R, and Arcese P (2019) Beyond canaries in coal mines: Co-occurrence of Andean mining concessions and migratory birds. _Perspectives in Ecology and Conservation_, **17**: 151--156.
-* Rodewald AD, Strimas-Mackey M, Schuster R, and Arcese P (2019) Tradeoffs in the value of biodiversity feature and cost data in conservation prioritization. _Scientific Reports_ **9**: 15921.
+* Rodewald AD, Strimas-Mackey M, Schuster R, and Arcese P (2019) Tradeoffs in the value of biodiversity feature and cost data in conservation prioritization. _Scientific Reports_, **9**: 15921.
 * Schuster R, Wilson S, Rodewald A, Arcese P, Fink D, Auer T, and Bennett J (2019) Optimizing the conservation of migratory species over their full annual cycle. _Nature Communications_, **10**: 1754.
 * Tack JD, Jakes AF, Jones PF, Smith JT, Newton RE, Martin BH, Hebblewhite M, and Naugle DE (2019) Beyond protected areas: Private lands and public policy anchor intact pathways for multi-species wildlife migration. _Biological Conservation_, **234**: 18--27.
 
@@ -120,10 +132,14 @@ This vignette contains a list of publications that have cited or used the _prior
 
 ## Review articles
 
+### 2024
+
+* Frazier AE and Song L (2024) Artificial Intelligence in Landscape Ecology: Recent Advances, Perspectives, and Opportunities. *Current Landscape Ecology Reports*, **10**: 1.
+
 ### 2023
 
 * Burns ES, Lopazanski C, Flower J, Thomas LR, Bradley D, and Lester SE (2023) Finding harmony in Marine Protected Area design guidelines. _Conservation Science and Practice_, **5**: e12946.
-* Piczak ML, Robichaud JA, Morrison P, Rous AM, Mulder IM, Hill CJ, Prystay TS, Rosner-Katz H, Robinson KF, Bennett JR, and Cooke SJ (2023) Structured decision making remains underused in ecological restoration despite opportunities. _Environment Systems and Decisions_, **In press**: DOI&#58;10.1007/s10669-023-09940-z.
+* Piczak ML, Robichaud JA, Morrison P, Rous AM, Mulder IM, Hill CJ, Prystay TS, Rosner-Katz H, Robinson KF, Bennett JR, and Cooke SJ (2023) Structured decision making remains underused in ecological restoration despite opportunities. _Environment Systems and Decisions_, **44**: 1--15.
 
 ### 2022
 
@@ -140,10 +156,9 @@ This vignette contains a list of publications that have cited or used the _prior
 
 ### 2019
 
-* Balbar AC, and Metaxas A (2019) The current application of ecological connectivity in the design of marine protected areas. _Global Ecology and Conservation_, **17**: e00569.
+* Balbar AC and Metaxas A (2019) The current application of ecological connectivity in the design of marine protected areas. _Global Ecology and Conservation_, **17**: e00569.
 
 ## Book chapters
 
-* Riginos C, Beger M (2022). Incorporating Genetic Measures of Connectivity and Adaptation in Marine Spatial Planning for Corals in _Coral Reef Conservation and Restoration in the Omics Age_ (eds van Oppen MJH and Aranda Lastra M). Coral Reefs of the World. Springer, Cham.
-
+* Riginos C and Beger M (2022). Incorporating Genetic Measures of Connectivity and Adaptation in Marine Spatial Planning for Corals in _Coral Reef Conservation and Restoration in the Omics Age_ (eds van Oppen MJH and Aranda Lastra M). Coral Reefs of the World. Springer, Cham.
 * Kuemmerle T, Kastner T, Meyfroidt P, and Qin S (2019) Conservation Telecouplings in _Telecoupling: Exploring Land-Use Change in a Globalised World, Springer International Publishing_ (eds Friis C and Nielsen J). Palgrave Studies in Natural Resource Management. Palgrave Macmillan, Cham.

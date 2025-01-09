@@ -28,7 +28,7 @@ NULL
 #'   `connected_matrix` function. It has been renamed to be consistent
 #'   with other spatial association matrix functions.
 #'
-#' @return A [`dsCMatrix-class`] sparse symmetric matrix.
+#' @return A [`Matrix::dsCMatrix-class`] sparse symmetric matrix.
 #'   Each row and column represents a planning unit.
 #'   Cells values indicate if different planning units are
 #'   adjacent to each other or not (using ones and zeros).
@@ -172,10 +172,11 @@ adjacency_matrix.sf <- function(x, ...) {
   )
   # return sparse intersection matrix
   int <- sf::st_intersects(x, sparse = TRUE)
-  names(int) <- as.character(seq_len(nrow(x)))
-  int <- rcpp_list_to_matrix_indices(int)
   int <- Matrix::sparseMatrix(
-    i = int$i, j = int$j, x = 1, dims = rep(nrow(x), 2)
+    i = unlist(int, recursive = TRUE, use.names = FALSE),
+    j = rep(seq_along(int), lengths(int)),
+    x = 1,
+    dims = rep(nrow(x), 2)
   )
   Matrix::diag(int) <- 0
   Matrix::drop0(Matrix::forceSymmetric(int))

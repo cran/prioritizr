@@ -12,8 +12,8 @@ NULL
 #' @param path `character` file path to save the problem formulation.
 #' The argument should contain a `".lp"` or `.mps"` file extension
 #' to specify whether the problem formulation will be saved in the
-#' [LP](https://www.gurobi.com/documentation/9.5/refman/lp_format.html) or
-#' [MPS](https://www.gurobi.com/documentation/9.5/refman/mps_format.html)
+#' [LP](https://docs.gurobi.com/current/#refman/lp_format.html) or
+#' [MPS](https://docs.gurobi.com/current/#refman/mps_format.html)
 #' format (respectively).
 #'
 #' @param solver `character` name of optimization solver to write the problem
@@ -77,11 +77,11 @@ write_problem <- function(x, path, solver = NULL) {
   )
   if (is.null(solver)) {
     solver <- "rsymphony"
-    if (requireNamespace("gurobi")) {
-      solver <- "gurobi"
+    if (requireNamespace("gurobi", quietly = TRUE)) {
+      solver <- "gurobi" # nocov
     } else {
       assert(
-        requireNamespace("Rsymphony"),
+        requireNamespace("Rsymphony", quietly = TRUE),
         msg = "The {.pkg Rsymphony} or {.pkg gurobi} package must be installed."
       )
     }
@@ -94,7 +94,7 @@ write_problem <- function(x, path, solver = NULL) {
     assert(is_installed("Rsymphony"))
   }
   if (identical(solver, "gurobi")) {
-    assert(is_installed("gurobi"))
+    assert(is_installed("gurobi")) # nocov
   }
 
   # add solver

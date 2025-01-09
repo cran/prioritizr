@@ -1,3 +1,163 @@
+# prioritizr 8.0.6
+
+## Notice
+
+- CRAN release.
+
+## New features
+
+- New `add_min_penalties_objective()` function to generate solutions that
+  focus on minimizing the penalties -- as much as possible -- whilst ensuring
+  that (i) the cost of the solution does not exceed a budget and (ii) all
+  feature representation targets are met. This function is designed to aid with
+  hierarchical multi-objective optimization. It can be now used instead of
+  specifying a minimum set objective with zero costs and
+  a linear constraint to specify the budget.
+- New `add_rank_importance()` function to evaluate the relative importance of
+  planning units selected in a solution (#337). Briefly, this approach involves
+  generating incremental prioritizations with increasing budgets, wherein
+  planning units selected in a previous increment are locked in to the
+  following solution. Additionally, locked out constraints are used to ensure
+  that only planning units selected in the original solution are available for
+  selection. The advantages of this approach are that it can (i) be computed
+  relatively quickly for relatively large problems, (ii) account for the cost
+  of different planning units, (iii) account for multiple management zones, and
+  (iv) apply to solutions generated using any objective function.
+
+## Minor improvements and bug fixes
+
+- Update `adjacency_matrix()`, `intersecting_units()`, `rij_matrix()`,
+  `eval_target_coverage_summary()`, and `problem()` to improve processing speed.
+- Update `intersecting_units()` to accommodate very large `sf::st_sf()` objects.
+- Update `rij_matrix()` so that it has an optional `idx` parameter which
+  can be used to specify planning unit indices if they have been pre-computed.
+  This new parameter can be used to help speed up calculations.
+- Update `add_locked_in_constraints()` and `add_locked_out_constraints()` to
+  throw error messages with standardized grammar.
+- Update internal functions for processing `sf::st_sf()` objects to improve
+  processing speed.
+- Update `add_cplex_solver()` error message for failing to initialize CPLEX.
+- Update error message for internal matrix conversion function.
+- Fix typo in error for importance and evaluation functions that
+  is thrown when attempting to use a `solution` that is a different
+  class than the planning units in `x`.
+- Fix bug with warnings displaying the name of internal functions instead
+  of user facing functions.
+- Fix typo in citation information.
+
+## Documentation updates
+
+- Update Package overview and Calibrating trade-offs vignettes with information
+  on the `add_min_penalties_objective()` function.
+- Update `add_max_utility_objective()` documentation to make it clear that
+  the function is simply maximizing a weighted sum of the features.
+- Update publication record.
+- Update Calibrating trade-offs vignette to improve internal logic for
+  determining the best guess penalty value for preliminary prioritizations.
+- Small documentation improvements. Thanks to Sandra Neubert (\@sandra-neubert).
+
+# prioritizr 8.0.5
+
+## Notice
+
+- Abandoned candidate for CRAN release. Although this version was originally
+  a candidate for CRAN release, we decided to add more functionality.
+
+# prioritizr 8.0.4.5
+
+## Minor improvements and bug fixes
+
+- Update `rij_matrix()` to improve memory efficiency when processing
+  large-scale vector (e.g., `sf::st_sf()`) planning unit data. Thanks to
+  Sahebeh Karimi for bug report.
+- Update `rij_matrix()` so that the `memory = TRUE` parameter can be used to
+  reduce memory requirements by processing each feature layer separately. This
+  parameter can now be used when processing both vector or raster planning
+  unit data (previously it could only be used with raster planning unit data).
+
+## Documentation updates
+
+- Fix DOI for citation.
+- Fix citations in package overview vignette and package manual entry to
+  pass package checks.
+
+# prioritizr 8.0.4.4
+
+## Documentation updates
+
+- Update package citation.
+- Update documentation for package manual entry.
+- Update `add_asym_connectivity_penalties()`, `add_connectivity_penalties()`
+  `marxan_connectivity_data_to_matrix()` documentation so that examples
+  are standalone and do not affect the session by loading packages.
+- Update `marxan_boundary_data_to_matrix()` and
+  `marxan_connectivity_data_to_matrix()` documentation so that examples
+  provides more information on how the functions work.
+- Fix equation rendering in online documentation (#344). Thanks to Jason
+  Everett (\@jaseeverett) and Anthony Richardson (\@ric325) for bug report.
+
+# prioritizr 8.0.4.3
+
+## Documentation updates
+
+- Update `marxan_boundary_data_to_matrix()` and
+  `marxan_connectivity_data_to_matrix()` documentation so that examples
+  are standalone and do not affect the session by loading packages.
+
+# prioritizr 8.0.4.2
+
+## Minor improvements and bug fixes
+
+- Fix bug in `add_max_utility_objective()` that caused the optimization
+  process to throw an error about problem infeasibility when using
+  feature data that contain negative values (#334). Thanks to \@hannahmp
+  for bug report.
+- Fix bug in `presolve_check()` that would cause it to erroneously suggest that
+  many planning units don't have any feature data associated with them. This
+  bug was caused when the feature data contained relatively large, negative values.
+- Fix bug in `binary_stack()` that caused it to throw an error when working
+  with raster data containing zeros (#333).
+- Fix bug in `add_absolute_targets()` where it would not throw a warning to
+  the user know that a problem already had targets defined, and so adding
+  the new targets would override the existing targets defined for the problem.
+- Fix bug in `as.ZonesRaster` that resulted in an error when trying to
+  convert a `SpatRaster` zones object (i.e., a `zones` object with _terra_
+  package data) into `Raster` zones object (i.e., a `zones` object with
+  _raster_ package data).
+- Fix bug in `write_problem()` needlessly printing messages about the
+  _gurobi_ package not being installed when the function is trying to
+  automatically determine which solver to use (i.e., when using
+  `solver = NULL`) and the package is not is available.
+- Fix bug in `branch_matrix()` where it would not automatically convert
+  object to the `phylo` class in the _ape_ package.
+- Update warning message for `add_asym_connectivity_penalties()` so that
+  it now specifies that asymmetric connectivity values are required when
+  symmetric values are incorrectly supplied (#339). Thanks to \@DanWismer for
+  bug report.
+- Update warning messages so that they now indicate which function threw
+  the warning message (using `rlang::warn()`).
+- Update `compile()` so that it throws an error when using the expanded
+  version of a problem formulation with negative feature values. This
+  is because the expanded version of the problem formulations are not
+  compatible with negative feature values. Currently, the expanded
+  version of the problem formulation is only required when using
+  `add_feature_contiguity_constraints()`.
+- Additional tests to improve test coverage.
+- Small improvements to code style, maintainability, and logic thanks to code
+  review by Sandra Neubert (\@sandra-neubert).
+
+## Documentation updates
+
+- Update publication record.
+- Fix cross-reference linking issues to classes in other packages (#340).
+
+# prioritizr 8.0.4.1
+
+## Minor improvements and bug fixes
+
+- Fix issue with `print()` and `summarize()` not displaying correct text for
+  linear constraints (#330).
+
 # prioritizr 8.0.4
 
 ## Notice
@@ -361,6 +521,13 @@
 - Fix CRAN note regarding C++ standards (#263).
 - Remove _doParallel_ and _plyr_ packages as dependencies by simplifying
   the `add_shuffle_portfolio()` and `eval_replacement_importance()` functions.
+- Fix `add_linear_penalties()` function so that the penalty parameter is applied
+  correctly (#342). In previous versions, this bug meant that solving a problem
+  with `penalty = 1` would produce solution based on `penalty = -1` (and vice
+  versa). Additionally, this bug also meant that compiling/solving a problem
+  multiple times would cause the formulation to alternate between using
+  `penalty = 1` and `penalty = -1`. Thanks to Carina Firkowski
+  (\@Carina-Firkowski) for bug report.
 
 ## Documentation updates
 

@@ -84,9 +84,6 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' # load package
-#' library(Matrix)
-#'
 #' # set seed for reproducibility
 #' set.seed(600)
 #'
@@ -136,7 +133,7 @@ NULL
 #' acm1 <- rescale_matrix(acm1, max = 1)
 #'
 #' # visualize asymmetric connectivity matrix
-#' image(acm1)
+#' Matrix::image(acm1)
 #'
 #' # create penalties
 #' penalties <- c(1, 50)
@@ -296,7 +293,7 @@ methods::setMethod("add_asym_connectivity_penalties",
     verify(
       !Matrix::isSymmetric(data),
       msg =  paste0(
-        "{.arg data} does not contain symmetric connectivity values, ",
+        "{.arg data} does not contain asymmetric connectivity values, ",
         "use {.fn add_connectivity_penalties} instead."
       )
     )

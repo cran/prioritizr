@@ -11,15 +11,15 @@
 \usage{
 rij_matrix(x, y, ...)
 
-\S4method{rij_matrix}{Raster,Raster}(x, y, ...)
+\S4method{rij_matrix}{SpatRaster,SpatRaster}(x, y, memory, idx, ...)
 
-\S4method{rij_matrix}{SpatRaster,SpatRaster}(x, y, memory, ...)
+\S4method{rij_matrix}{sf,SpatRaster}(x, y, fun, memory, idx, ...)
 
-\S4method{rij_matrix}{Spatial,Raster}(x, y, fun, ...)
+\S4method{rij_matrix}{Raster,Raster}(x, y, memory, idx, ...)
 
-\S4method{rij_matrix}{sf,Raster}(x, y, fun, ...)
+\S4method{rij_matrix}{sf,Raster}(x, y, fun, memory, idx, ...)
 
-\S4method{rij_matrix}{sf,SpatRaster}(x, y, fun, ...)
+\S4method{rij_matrix}{Spatial,Raster}(x, y, fun, memory, idx, ...)
 }
 \arguments{
 \item{x}{\code{\link[terra:rast]{terra::rast()}} or \code{\link[sf:sf]{sf::sf()}} object representing planning units.}
@@ -30,14 +30,19 @@ rij_matrix(x, y, ...)
 
 \item{memory}{\code{logical} should calculations be performed using a method
 that prioritizes reduced memory consumption over speed?
-If \code{TRUE}, then calculations are performed using a method that
-reduces memory consumption, but can take a long time to complete.
-If \code{FALSE}, then calculations are performed using a method that
-reduces run time, but will fail when insufficient memory is available.
-Defaults to \code{NA}, such that calculations are automatically performed
-using the best method given available memory and dataset sizes.
-Note that this parameter can only be used when the arguments to \code{x}
-and \code{y} are both \code{\link[terra:rast]{terra::rast()}} objects.}
+This is useful when processing particularly large raster datasets.
+If \code{TRUE}, then calculations are performed by processing each raster layer
+in \code{y} in a sequential manner.
+If \code{FALSE}, then calculations are performed by processing all raster layers
+in \code{y} together.
+If \code{NA}, then the memory requirements will be estimated and, if required,
+processing will be performed using the method that reduces memory
+consumption.
+Defaults to \code{NA}.}
+
+\item{idx}{\code{integer} vector containing planning unit
+indices. Defaults to \code{NULL} such that the indices are computed
+automatically based on \code{x}.}
 
 \item{fun}{\code{character} for summarizing values inside each planning unit.
 This parameter is only used when the argument to \code{x} is a
@@ -45,7 +50,7 @@ This parameter is only used when the argument to \code{x} is a
 Defaults to \code{"sum"}.}
 }
 \value{
-A \code{\linkS4class{dgCMatrix}} sparse matrix object.
+A \code{\link[Matrix:dgCMatrix-class]{Matrix::dgCMatrix}} sparse matrix object.
 The sparse matrix represents the spatial intersection between the
 planning units and the features. Rows correspond to features,
 and columns correspond to planning units. Values correspond to the amount
