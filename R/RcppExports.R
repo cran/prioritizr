@@ -85,6 +85,26 @@ rcpp_get_optimization_problem_compressed_formulation <- function(x) {
     .Call(`_prioritizr_rcpp_get_optimization_problem_compressed_formulation`, x)
 }
 
+rcpp_set_optimization_problem_obj <- function(x, obj) {
+    .Call(`_prioritizr_rcpp_set_optimization_problem_obj`, x, obj)
+}
+
+rcpp_set_optimization_problem_lb <- function(x, lb) {
+    .Call(`_prioritizr_rcpp_set_optimization_problem_lb`, x, lb)
+}
+
+rcpp_set_optimization_problem_ub <- function(x, ub) {
+    .Call(`_prioritizr_rcpp_set_optimization_problem_ub`, x, ub)
+}
+
+rcpp_remove_optimization_problem_last_linear_constraint <- function(x) {
+    .Call(`_prioritizr_rcpp_remove_optimization_problem_last_linear_constraint`, x)
+}
+
+rcpp_append_optimization_problem_linear_constraints <- function(x, rhs, sense, A, row_ids) {
+    .Call(`_prioritizr_rcpp_append_optimization_problem_linear_constraints`, x, rhs, sense, A, row_ids)
+}
+
 rcpp_set_optimization_problem_shuffled <- function(x, shuffle_key) {
     .Call(`_prioritizr_rcpp_set_optimization_problem_shuffled`, x, shuffle_key)
 }
@@ -113,6 +133,10 @@ rcpp_apply_boundary_penalties <- function(x, penalty, edge_factor, zones_matrix,
     .Call(`_prioritizr_rcpp_apply_boundary_penalties`, x, penalty, edge_factor, zones_matrix, boundary_matrix, exposed_boundary, total_boundary)
 }
 
+rcpp_apply_boundary_penalties2 <- function(x, penalty, edge_factor, zones_matrix, boundary_matrix, exposed_boundary, total_boundary) {
+    .Call(`_prioritizr_rcpp_apply_boundary_penalties2`, x, penalty, edge_factor, zones_matrix, boundary_matrix, exposed_boundary, total_boundary)
+}
+
 rcpp_apply_bounded_constraints <- function(x, pu, zone, lower, upper) {
     .Call(`_prioritizr_rcpp_apply_bounded_constraints`, x, pu, zone, lower, upper)
 }
@@ -133,32 +157,28 @@ rcpp_apply_feature_contiguity_constraints <- function(x, data, clusters_list) {
     .Call(`_prioritizr_rcpp_apply_feature_contiguity_constraints`, x, data, clusters_list)
 }
 
-rcpp_apply_feature_weights <- function(x, weights) {
-    .Call(`_prioritizr_rcpp_apply_feature_weights`, x, weights)
-}
-
 rcpp_apply_linear_penalties <- function(x, penalty, data) {
     .Call(`_prioritizr_rcpp_apply_linear_penalties`, x, penalty, data)
 }
 
-rcpp_apply_locked_constraints <- function(x, pu, zone, status) {
-    .Call(`_prioritizr_rcpp_apply_locked_constraints`, x, pu, zone, status)
+rcpp_apply_locked_constraints <- function(x, pu, zone, status, lb, ub) {
+    .Call(`_prioritizr_rcpp_apply_locked_constraints`, x, pu, zone, status, lb, ub)
 }
 
-rcpp_apply_max_cover_objective <- function(x, costs, budget) {
-    .Call(`_prioritizr_rcpp_apply_max_cover_objective`, x, costs, budget)
+rcpp_apply_max_cover_objective <- function(x, costs, budget, weights) {
+    .Call(`_prioritizr_rcpp_apply_max_cover_objective`, x, costs, budget, weights)
 }
 
-rcpp_apply_max_features_objective <- function(x, targets_list, costs, budget) {
-    .Call(`_prioritizr_rcpp_apply_max_features_objective`, x, targets_list, costs, budget)
+rcpp_apply_max_features_objective <- function(x, targets_list, costs, budget, weights) {
+    .Call(`_prioritizr_rcpp_apply_max_features_objective`, x, targets_list, costs, budget, weights)
 }
 
-rcpp_apply_max_phylo_objective <- function(x, targets_list, costs, budget, branch_matrix, branch_lengths) {
-    .Call(`_prioritizr_rcpp_apply_max_phylo_objective`, x, targets_list, costs, budget, branch_matrix, branch_lengths)
+rcpp_apply_max_phylo_objective <- function(x, targets_list, costs, budget, branch_matrix, branch_lengths, weights) {
+    .Call(`_prioritizr_rcpp_apply_max_phylo_objective`, x, targets_list, costs, budget, branch_matrix, branch_lengths, weights)
 }
 
-rcpp_apply_max_utility_objective <- function(x, abundances, has_negative_feature_values, costs, budget) {
-    .Call(`_prioritizr_rcpp_apply_max_utility_objective`, x, abundances, has_negative_feature_values, costs, budget)
+rcpp_apply_max_utility_objective <- function(x, abundances, has_negative_feature_values, costs, budget, weights) {
+    .Call(`_prioritizr_rcpp_apply_max_utility_objective`, x, abundances, has_negative_feature_values, costs, budget, weights)
 }
 
 rcpp_apply_min_largest_shortfall_objective <- function(x, targets_list, costs, budget) {
@@ -173,12 +193,12 @@ rcpp_apply_min_set_objective <- function(x, targets_list, costs) {
     .Call(`_prioritizr_rcpp_apply_min_set_objective`, x, targets_list, costs)
 }
 
-rcpp_apply_min_shortfall_objective <- function(x, targets_list, costs, budget) {
-    .Call(`_prioritizr_rcpp_apply_min_shortfall_objective`, x, targets_list, costs, budget)
+rcpp_apply_min_shortfall_objective <- function(x, targets_list, costs, budget, weights) {
+    .Call(`_prioritizr_rcpp_apply_min_shortfall_objective`, x, targets_list, costs, budget, weights)
 }
 
-rcpp_apply_neighbor_constraints <- function(x, connected_data, k) {
-    .Call(`_prioritizr_rcpp_apply_neighbor_constraints`, x, connected_data, k)
+rcpp_apply_neighbor_constraints <- function(x, connected_data, clamp, k, max_n) {
+    .Call(`_prioritizr_rcpp_apply_neighbor_constraints`, x, connected_data, clamp, k, max_n)
 }
 
 rcpp_asym_connectivity <- function(data, solution) {

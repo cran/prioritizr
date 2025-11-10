@@ -1,4 +1,4 @@
-#' @include internal.R waiver.R assertions.R
+#' @include internal.R waiver.R
 NULL
 
 #' @export
@@ -16,6 +16,8 @@ NULL
 #' @name ConservationModifier-class
 #'
 #' @family classes
+#'
+#' @export
 ConservationModifier <- R6::R6Class(
   "ConservationModifier",
   public = list(

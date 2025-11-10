@@ -1,3 +1,292 @@
+# prioritizr 8.1.0
+
+## Notice
+
+- CRAN release.
+
+## New features
+
+- New `add_auto_targets()` function for adding targets to a conservation
+  planning problem based on a target setting method (#377). In particular, the
+  following functions can be used in conjunction with this function to specify
+  target setting methods: `spec_absolute_targets()`, `spec_area_targets()`,
+  `spec_interp_absolute_targets()`, `spec_interp_area_targets()`
+  `spec_jung_targets()`, `spec_max_targets()`, `spec_min_targets()`,
+  `spec_polak_targets()`, `spec_pop_size_targets()`, `spec_relative_targets()`,
+  `spec_rl_ecosystem_targets()`, `spec_rl_species_targets()`,
+  `spec_rodrigues_targets()`, `spec_rule_targets()`,
+  `spec_ward_targets()`, `spec_watson_targets()`, and `spec_wilson_targets()`.
+- New `add_group_targets()` function for adding targets to a conservation
+  planning problem based on feature groups. This function is provided as a
+  convenient alternative to the `add_auto_targets()` function. With this
+  function, features can be organized into groups and then have their targets
+  calculated based on the method specified for their group.
+- New `linear_interpolation()` function for linearly interpolating values.
+- New `as_km2()` and `as_per_km2()` functions to help with area-based
+  calcultions.
+- Many of the internal functions used for parameter and data validation can now
+  be used by other packages that depend on the _prioritizr_ package (e.g.,
+  `assert()`, `as_Matrix()`, `all_binary()`, `all_positive()`).
+  The idea here is that people developing packages that build on the
+  _prioritizr_ package can use these functions to streamline their
+  developmental efforts, while helping to avoid reverse dependency issues.
+  To use these functions in your own package, you can make a local copy of the
+  desired _prioritizr_ functions in your package (i.e., a process known as code vendoring). In particular, you can use the `usethis::use_standalone()`
+  function to automatically make a copy of _prioritizr_ functions from the
+  _prioritizr_ online code repository. For example,
+  `usethis::use_standalone("prioritizr/prioritizr", file = "standalone-cli.R")`
+  can be used to make a copy of the `standalone-cli.R` file in the
+  _prioritizr_ source code. Note that all files in the _prioritizr_ code
+  repository that begin with `"standalone-"` can be copied with the
+  `usethis::use_standalone()` function.
+
+## Major changes
+
+- The `add_loglinear_targets()` function has been deprecated. For similar
+  functionality, see the new `spec_interp_absolute_targets()` function.
+- The `presolve_check()` function will now catch issues where the same planning
+  unit (or planning units) has been both locked in and locked out (#386).
+  Thanks to Jason Everett (\@jaseeverett) for the suggestion.
+- The `add_feature_weights()` function can only be used once with a `problem()`,
+  and attempting to add multiple weights will over-write previously specified
+  weights (similar to how targets are handled).
+
+#### Minor improvements and bug fixes
+
+- Update `print()` method for `problem()` objects to display a more useful
+  number of digits for floating point numbers.
+- Update `add_boundary_penalties()` so that an alternative formulation can be
+  used for the optimization problem (#369). This alternative formulation may be
+  useful when conservation planning problems are taking a long time to solve.
+  Note that the default behavior of the function is to use the same
+  formulation as in previous versions of the package.
+- Update `solve()` function to provide information on the objective bound. This
+  represents the best estimate of the optimal objective value during
+  optimization. Given a solution `x`, this information can be accessed using
+  `attr(x, "objbound")`. Note that this is only supported for the Gurobi solver.
+- Update `ConservationProblem` class so that overwriting problem components will
+  yield a more concise warning message.
+- Update `compile()` function to throw more informative warnings when a
+  `problem()` have an objective that does not support weights or targets.
+- Update `category_layer()` and `category_vector()` to work with continuous
+  values (#381). In cases, where a given pixel has multiple non-zero values, it
+  will be allocated to the category with the greatest value. Thanks to Martin
+  Jung (\@Martin-Jung) for the suggestion.
+- Fix bug in internal `get_crs()` function when using `raster::raster()` or
+  `raster::stack()` objects.
+- Fix bug in `add_relative_targets()` that produced an incoherent error message.
+- Fix bug in `add_locked_in_constraints()` that produced poorly formatted error
+  message.
+- Speed up internal validation of `terra::rast()` raster data. In particular,
+  the minimum and maximum values of rasters are now computed with
+  `terra::minmax(x, compute = TRUE)`, instead of
+  `terra::global(x, "range", na.rm = TRUE)`.
+- Fix bug in `intersecting_units()` function that caused it to throw
+  an incorrect error message when used with an `sf::st_sf()` object containing
+  geometry collection data (#379). Thanks to Alan Jackson (\@alankjackson) for
+  bug report.
+
+#### Documentation
+
+- Update `?targets` to provide a comprehensive overview of the target functions.
+- Update `boundary_matrix()` function documentation with better example.
+- Fix incorrect text in Management Zones vignette (#382). Thanks to
+  Anthony Richardson (\@ric325) for bug report.
+- Update publication record.
+
+# prioritizr 8.0.6.8
+
+#### Minor improvements and bug fixes
+
+- Update `rij_matrix()` function to reduce run time.
+- Update `solve()` function and the importance functions to ensure consistency
+  their in output formats. Note that these changes do not alter their outputs.
+- Update `eval_ferrier_importance()` function to better provide error messages
+  with improved formatting.
+- Update internal `any_nonNA()`, `any_nonzero()`, and `all_binary()` functions
+  for processing raster data.
+- Update internal `any_nonzero()` and `any_nonNA()` functions to provide better
+  error messages.
+
+# prioritizr 8.0.6.7
+
+## New features
+
+- New `calibrate_cohon_penalty()` function for automatically identifying
+  a suitable penalty value for the penalties functions (#175). It is designed
+  to work with any objective function and any of the penalty functions
+  available in the package.
+- New `add_neighbor_penalties()` function to reduce spatial fragmentation.
+  This function is especially useful when working with large-scale problems or
+  open source solvers.
+- Update `add_cbc_solver()`, `add_gurobi_solver()`, and `add_highs_solver()`,
+  functions with a new `control` parameter that can be used to manually
+  specify additional parameters for customizing the optimization process (#354).
+
+## Minor improvements and bug fixes
+
+- Update problem formulation for `add_connectivity_penalties()`,
+  `add_asym_connectivity_penalties()`, and `add_boundary_penalties()` to
+  slightly improve solve times. In particular, instead of using binary
+  variables to model the product of the planning unit decision variables,
+  continuous variables are now used. The documentation for these functions
+  has also been updated to mention this information. Thanks to Bistra Dilkina
+  for the suggestion.
+- Update `add_neighbor_constraints()` function so that setting `clamp = TRUE`
+  is more likely to resolve infeasibility issues. In particular, setting
+  `clamp = TRUE` will (i) limit the minimum number of neighbors for a given
+  planning unit based on the locked out constraints of neighboring planning
+  units and (ii) not apply this constraint to any locked in or locked out
+  planning units.
+- Update `add_min_shortfall_objective()` and
+  `add_min_largest_shortfall_objective()` functions to employ a slightly
+  different problem formulation that -- despite being functionally identical to
+  the previous formulation -- has better performance for large-scale
+  problems (#357). Thanks to Aboozar Mohammadi (\@AboozarM) for the suggestion.
+- Update `write_problem()` function to support all the file formats supported by
+  the Gurobi solver (per `gurobi::gurobi_write()`). Of particular note,
+  this means that problems can now be saved in compressed file file format
+  (e.g., `.mps.gz`).
+- Update `add_cbc_solver()` function so that the `presolve` parameter
+  can be used to specify the intensity of the presolve process. Similar to
+  `add_gurobi_solver()`, the `presolve` parameter is now specified as an integer
+  value. The default value is now 2, which specifies the most intensive
+  level of presolve. For backwards compatibility, a value of `TRUE`
+  is treated as a value of 1.
+- Update `eval_target_coverage_amount()` so that the relative shortfall
+  for each target is now calculated by dividing the absolute shortfall
+  by the absolute target. This change is to ensure consistency with the minimum
+  shortfall objective.
+- Fix bug in internal `repr.list()` function that displayed duplicate class
+  names.
+- Fix bug in `adjacency_matrix()`, `compile()`, and `zone_names()` functions
+  that caused an unhelpful error message when calling the function without
+  any arguments.
+- Update unit tests for `add_boundary_penalties()`,
+  `add_connectivity_penalties()`, and `add_asym_connectivity_penalties()` to
+  reduce run time.
+- Fix bug in unit tests for `add_asym_connectivity_penalties()`, and
+  `eval_rank_importance()` functions. Note that these bugs do not affect
+  the correctness of the functions as implemented in the package.
+- Classes are now exported to make it easier for reverse dependencies to add
+  their own objectives, constraints, penalties, targets, and solvers.
+
+## Documentation updates
+
+- Fix mistake in `add_gurobi_solver()` function documentation for the
+  `numeric_focus` parameter.
+- Fix typo in equation for `add_max_utility_objective()` (#373). Thanks to
+  Anthony Richardson (\@ric325) for bug report.
+- Update Calibrating trade-offs vignette with new `calibrate_cohon_penalty()`
+  function.
+- Update package overview vignette with new `add_neighbor_penalties()` function.
+- Update solver benchmarks vignette to remove unnecessary package dependencies.
+- Update publication record.
+
+# prioritizr 8.0.6.6
+
+## Minor improvements and bug fixes
+
+- Fix bug in `eval_rank_importance()` function that could lead to incorrect
+  importance values when considering proportion or semi-continuous decision
+  types (i.e., problems with `add_proportion_decisions()` or
+  `add_semicontinuous_decisions()`).
+
+## Documentation updates
+
+- Update publication record.
+
+# prioritizr 8.0.6.5
+
+## Minor improvements and bug fixes
+
+- Fix bug in `eval_rank_importance()` function that caused a superfluous
+  warning to be thrown when locked constraints (i.e,
+  `add_locked_in_constraints()`, `add_locked_out_constraints()`, or
+  `add_manual_locked_constraints()`).
+
+# prioritizr 8.0.6.4
+
+## Minor improvements and bug fixes
+
+- Update `add_locked_in_constraints()`, `add_locked_out_constraints()`,
+  `add_manual_locked_constraints()`, and `add_manual_bounded_constraints()`
+  functions so that planning units can be locked based on their planning unit
+  identifier values when specifying `data.frame` planning units (#359). These
+  functions have also been updated to provide more informative error messages
+  when invalid data are specified. Thanks to Martin Jung (\@Martin-Jung) for
+  bug report.
+- Fix `eval_rank_importance()` to better account for proportion-type and
+  semi-continuous decision types (#367). Thanks to Martin Jung (\@Martin-Jung)
+  for bug report.
+- Fix bug in `print()` and `summary()` functions for `problem()` objects that
+  caused the functions to incorrectly show the classes of the planning unit
+  data that inherit from multiple classes. For example, this means that
+  `sf::st_sf()` planning units will now be shown as having `"sf"` data, rather
+  than `"sftbl_dftbldata.frame"` data. Similarly, `tibble::tibble()` planning
+  units will now be shown as `tbl_df` instead of `tbldfdata.frame`.
+- Update internal `all_finite()` function to perform faster for `character`
+  vector arguments.
+- Update dependencies so that the _slam_ package is now an optional dependency.
+  This is because the _slam_ package is only required when using
+  `add_lpsymphony_solver()` and `add_gurobi_solver()`.
+- Update `marxan_problem()` to provide better validation of input data
+  and more informative error messages. This update also involves replacing the
+  _data.table_ package with the _vroom_ package.
+- Thanks to Sandra Neubert (\@sandra-neubert) for code review.
+
+## Documentation updates
+
+- Update `add_locked_in_constraints()`, `add_locked_out_constraints()`,
+  `add_manual_locked_constraints()`, and `add_manual_bounded_constraints()`
+  documentation to provide more detail on specifying which planning units
+  should be constrained (#359). Thanks to Martin Jung (\@Martin-Jung) for bug
+  report.
+- Update README to thank Theodoros Ploumis (\@theodorosploumis) for the logo.
+- Update documentation for `eval_rank_importance()`.
+- Standardize terminology for referring to "cells" in raster data. Previously,
+  some parts of the documentation referred to them as pixels.
+- Update publication record.
+
+# prioritizr 8.0.6.3
+
+## Minor improvements and bug fixes
+
+- Fix bug in `add_manual_targets()` that caused segmentation faults when
+  invalid arguments to `data` were specified (#363).
+
+## Documentation updates
+
+- Update publication record.
+
+# prioritizr 8.0.6.2
+
+## Minor improvements and bug fixes
+
+- Update internal functions (i.e., `all_match_of`, and `is_match_of()`) for
+  validating arguments to be compatible with `character` vectors produced
+  using the _glue_ package (#360). Thanks to Dan Wismer (\@DanWismer) for bug
+  report.
+
+## Documentation updates
+
+- Update `eval_feature_representation_summary()` documentation to improve
+  description of the output data frame (#355). Thanks to Sam Bradshaw
+  (\@sam-bradshaw-wcmc) for bug report.
+
+# prioritizr 8.0.6.1
+
+## Minor improvements and bug fixes
+
+- Update `boundary_matrix()` calculations to maintain compatibility with
+  updates to the _terra_ package.
+- Thanks to Sandra Neubert (\@sandra-neubert) for code review.
+
+## Documentation updates
+
+- Update publication record.
+- Update package citation.
+
 # prioritizr 8.0.6
 
 ## Notice
@@ -1483,7 +1772,7 @@ Update `add_cbc_solver()` function so that it can use a starting solution to red
 
 - New `add_manual_bounded_constraints()` function to apply lower and upper
   bounds on planning units statuses in a solution (#118). Thanks to Martin Jung
-  (\@Martin-Jung) for suggestion.
+  (\@Martin-Jung) for the suggestion.
 
 ## Minor improvements and bug fixes
 
@@ -1525,7 +1814,7 @@ Update `add_cbc_solver()` function so that it can use a starting solution to red
 
 - New `add_max_phylo_end_objective()` function to maximize the phylogenetic
   endemism of species adequately represented in a prioritization (#113).
-  Thanks to \@FerreiraPSM for suggestion.
+  Thanks to \@FerreiraPSM for the suggestion.
 
 ## Minor improvements and bug fixes
 
@@ -1894,7 +2183,8 @@ Update `add_cbc_solver()` function so that it can use a starting solution to red
 
 - The `add_loglinear_targets()` function now includes a `feature_abundances()`
   parameter for specifying the total amount of each feature to use when
-  calculating the targets (#89). Thanks to Liz Law (\@lizlaw) for suggestion.
+  calculating the targets (#89). Thanks to Liz Law (\@lizlaw) for the
+  suggestion.
 
 ## Documentation updates
 
@@ -1913,7 +2203,7 @@ Update `add_cbc_solver()` function so that it can use a starting solution to red
 
 - New `feature_abundances()` function to calculate the total amount of each
   feature in the planning units (#86). Thanks to Javier Fajardo
-  (\@javierfajnolla) for suggestion.
+  (\@javierfajnolla) for the suggestion.
 
 # prioritizr 4.0.0.11
 

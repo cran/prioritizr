@@ -1,6 +1,7 @@
 test_that("binary decisions", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -22,6 +23,7 @@ test_that("binary decisions", {
 test_that("proportion decisions", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -48,6 +50,7 @@ test_that("proportion decisions", {
 test_that("proportion decisions (floating point)", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   skip_if_not_installed("prioritizrdata", minimum_version = "0.3.0")
   # import data
   tas_pu <- prioritizrdata::get_tas_pu()[seq_len(15), ]
@@ -71,6 +74,7 @@ test_that("proportion decisions (floating point)", {
 
 test_that("variable bounds methods", {
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -99,6 +103,7 @@ test_that("variable bounds methods", {
 test_that("mix of binary and continuous variables", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -121,6 +126,7 @@ test_that("mix of binary and continuous variables", {
 test_that("first_feasible", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -142,6 +148,7 @@ test_that("first_feasible", {
 test_that("correct solution (simple)", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # create data
   cost <- terra::rast(matrix(c(1, 2, 2, NA), ncol = 4))
   locked_in <- 2
@@ -170,6 +177,7 @@ test_that("correct solution (simple)", {
 test_that("correct solution (complex)", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # create data
   cost <- terra::rast(matrix(c(1000, 100, 200, 300, NA), nrow = 1))
   features <- c(
@@ -202,6 +210,7 @@ test_that("correct solution (complex)", {
 test_that("solver information (single solution)", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # load data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -223,11 +232,14 @@ test_that("solver information (single solution)", {
   expect_length(attr(s, "status"), 1)
   expect_true(is.numeric(attr(s, "gap")))
   expect_length(attr(s, "gap"), 1)
+  expect_true(is.numeric(attr(s, "objbound")))
+  expect_length(attr(s, "objbound"), 1)
 })
 
 test_that("solver information (multiple solutions)", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # load data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -250,11 +262,14 @@ test_that("solver information (multiple solutions)", {
   expect_length(attr(s, "status"), 3)
   expect_true(is.numeric(attr(s, "gap")))
   expect_length(attr(s, "gap"), 3)
+  expect_true(is.numeric(attr(s, "objbound")))
+  expect_length(attr(s, "objbound"), 3)
 })
 
 test_that("set_start_solution", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # create data
   cost <- terra::rast(matrix(c(1000, 100, 200, 300, NA), nrow = 1))
   features <- c(
@@ -280,15 +295,16 @@ test_that("set_start_solution", {
   # force calculations
   p$solver$calculate(compile(p))
   # tests
-  expect_error(
+  expect_warning(
     p$solver$set_start_solution(c(1, 2, 3)),
-    "No defined"
+    "starting"
   )
 })
 
 test_that("set_constraint_rhs", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # create data
   cost <- terra::rast(matrix(c(1000, 100, 200, 300, NA), nrow = 1))
   features <- c(
@@ -324,6 +340,7 @@ test_that("set_constraint_rhs", {
 test_that("set_variable_lb", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # create data
   cost <- terra::rast(matrix(c(1000, 100, 200, 300, NA), nrow = 1))
   features <- c(
@@ -367,6 +384,7 @@ test_that("set_variable_lb", {
 test_that("set_variable_ub", {
   skip_on_cran()
   skip_if_not_installed("lpsymphony")
+  skip_if_not_installed("slam")
   # create data
   cost <- terra::rast(matrix(c(1000, 100, 200, 300, NA), nrow = 1))
   features <- c(

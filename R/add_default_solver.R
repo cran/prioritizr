@@ -1,4 +1,4 @@
-#' @include Solver-class.R
+#' @include Solver-class.R standalone-assertions_misc.R
 NULL
 
 #' Add default solver
@@ -35,6 +35,12 @@ add_default_solver <- function(x, ...) {
   # assert valid arguments
   assert_required(x)
   assert(is_conservation_problem(x), call = NULL)
+  if (!identical(Sys.getenv("PRIORITIZR_ENABLE_COMPILE_SOLVER"), "TRUE")) {
+    assert(
+      any_solvers_installed(),
+      call = NULL
+    )
+  }
   # find solver
   ds <- default_solver_name()
   # return solver
@@ -56,60 +62,10 @@ add_default_solver <- function(x, ...) {
   {
     return(add_compile_solver(x, ...))
   } else {
-    # throw error if solver not installed
-    if (is.null(ds)) {
-      cli::cli_abort(
-        c(
-          "No optimization solvers are installed.",
-          "x" = "You must install a solver to generate prioritizations.",
-          "i" = "See {.topic solvers} for options."
-        ),
-        call = NULL
-      )
-    }
+    cli::cli_abort(
+      "Solver not recognized.",
+      call = NULL,
+      .internal = TRUE
+    )
   }
-}
-
-#' Default solver name
-#'
-#' This function returns the name of the default solver. If no solvers are
-#' detected on the system, then a `NULL` object is returned.
-#'
-#' @details This function tests if any of the following packages are installed:
-#'   \pkg{gurobi}, \pkg{cplexAPI}, \pkg{rcbc}, \pkg{highs},
-#'   \pkg{lpsymphony}, \pkg{Rsymphony}.
-#'
-#' @return `character` indicating the name of the default solver.
-#'
-#' @noRd
-default_solver_name <- function() {
-  if (requireNamespace("gurobi", quietly = TRUE)) {
-    return("gurobi")
-  } else if (requireNamespace("cplexAPI", quietly = TRUE)) {
-    return("cplexAPI")
-  } else if (requireNamespace("rcbc", quietly = TRUE)) {
-    return("rcbc")
-  } else if (requireNamespace("highs", quietly = TRUE)) {
-    return("highs")
-  } else if (requireNamespace("lpsymphony", quietly = TRUE)) {
-    return("lpsymphony")
-  } else if (requireNamespace("Rsymphony", quietly = TRUE)) {
-    return("Rsymphony")
-  } else {
-    return(NULL)
-  }
-}
-
-#' Any solvers installed?
-#'
-#' Test if any solvers are installed.
-#'
-#' @details This function tests if any of the following packages are installed:
-#'   \pkg{Rsymphony}, \pkg{lpsymphony}, \pkg{gurobi}.
-#'
-#' @return `logical` value indicating if any solvers are installed.
-#'
-#' @noRd
-any_solvers_installed <- function() {
-  !is.null(default_solver_name())
 }

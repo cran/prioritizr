@@ -5,8 +5,10 @@
 bool rcpp_apply_min_shortfall_objective(
   SEXP x,
   const Rcpp::List targets_list,
-  Rcpp::NumericMatrix costs,
-  Rcpp::NumericVector budget) {
+  const Rcpp::NumericMatrix costs,
+  const Rcpp::NumericVector budget,
+  const Rcpp::NumericVector weights
+) {
   // initialize
   Rcpp::XPtr<OPTIMIZATIONPROBLEM> ptr = Rcpp::as<Rcpp::XPtr<OPTIMIZATIONPROBLEM>>(x);
   Rcpp::NumericVector targets_value = targets_list["value"];
@@ -48,13 +50,13 @@ bool rcpp_apply_min_shortfall_objective(
   if (!ptr->_compressed_formulation)
     for (std::size_t i = 0; i < A_extra_ncol; ++i)
        ptr->_obj.push_back(0.0);
-  // add target totals to convert total amounts to proportions
+  // add feature weights
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_obj.push_back(targets_value[i] > 1.0e-5 ? 1.0 / targets_value[i] : 0);
+    ptr->_obj.push_back(weights[i]);
   // add in upper and lower bounds for the decision variables representing if
   // each species is adequately conserved
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_ub.push_back(std::numeric_limits<double>::infinity());
+    ptr->_ub.push_back(1.0);
   for (std::size_t i = 0; i < n_targets; ++i)
     ptr->_lb.push_back(0.0);
   // add in binary variable types for variables representing if each species is
@@ -68,7 +70,7 @@ bool rcpp_apply_min_shortfall_objective(
     ptr->_A_j.push_back((ptr->_number_of_zones *
                         ptr->_number_of_planning_units) + A_extra_ncol + i);
   for (std::size_t i = 0; i < n_targets; ++i)
-    ptr->_A_x.push_back(1.0);
+    ptr->_A_x.push_back(targets_value[i]);
   // add in budget constraints
   if (budget.size() == 1) {
     for (std::size_t i = 0;

@@ -20,6 +20,8 @@ NULL
 #' @name ConservationProblem-class
 #'
 #' @family classes
+#'
+#' @export
 ConservationProblem <- R6::R6Class(
   "ConservationProblem",
   public = list(
@@ -32,6 +34,7 @@ ConservationProblem <- R6::R6Class(
       objective = TRUE,
       decisions = TRUE,
       targets = TRUE,
+      weights = TRUE,
       constraints = TRUE,
       penalties = TRUE,
       solver = TRUE
@@ -48,6 +51,10 @@ ConservationProblem <- R6::R6Class(
     #' @field targets [`Target-class`] object specifying the representation
     #' targets for the problem formulation.
     targets = new_waiver(),
+
+    #' @field weights [`Weight-class`] object specifying the feature weights
+    #' for the problem formulation.
+    weights = new_waiver(),
 
     #' @field constraints `list` containing [`Constraint-class`] objects that
     #' specify constraints for the problem formulation.
@@ -115,7 +122,7 @@ ConservationProblem <- R6::R6Class(
       cli_vtext(
         "{ch$v} {ch$j}{ch$b}data:        ",
         "{.cls ",
-        class(self$data$cost), "} (",
+        self$planning_unit_class(), "} (",
         self$number_of_planning_units(),
         " total)"
       )
@@ -139,6 +146,11 @@ ConservationProblem <- R6::R6Class(
       objective_text <- missing_text
       if (!is.Waiver(self$objective)) {
         objective_text <- self$objective$repr(compact = FALSE)
+      }
+      ## weights
+      weights_text <- missing_text
+      if (!is.Waiver(self$weights)) {
+        weights_text <- self$weights$repr(compact = FALSE)
       }
       ## targets
       targets_text <- missing_text
@@ -184,7 +196,7 @@ ConservationProblem <- R6::R6Class(
       cli_tree_component(
         objective_text,
         header = "{ch$v}{ch$j}{ch$b}objective:    ",
-        subheader = " {ch$v}",
+        subheader = "{ch$v}{ch$v}",
         width = 15
       )
       ## penalties
@@ -215,10 +227,17 @@ ConservationProblem <- R6::R6Class(
           penalties_text
         )
       }
+      ## feature
+      cli_vtext("{ch$v}{ch$j}{ch$b}features:")
       ## targets
       cli_vtext(
-       "{ch$v}{ch$j}{ch$b}targets:      ",
+        "{ch$v}{ch$v}{ch$j}{ch$b}targets:     ",
         targets_text
+      )
+      ## weights
+      cli_vtext(
+        "{ch$v}{ch$v}{ch$l}{ch$b}weights:     ",
+        weights_text
       )
       ## constraints
       if (length(self$constraints) > 0) {
@@ -323,7 +342,7 @@ ConservationProblem <- R6::R6Class(
       cli_vtext(
         "{ch$v} {ch$j}{ch$b}data:       ",
         "{.cls ",
-        class(self$data$cost), "} (",
+        self$planning_unit_class(), "} (",
         self$number_of_planning_units(),
         " total)"
       )
@@ -347,6 +366,11 @@ ConservationProblem <- R6::R6Class(
       objective_text <- missing_text
       if (!is.Waiver(self$objective)) {
         objective_text <- self$objective$repr()
+      }
+      ## weights
+      weights_text <- missing_text
+      if (!is.Waiver(self$weights)) {
+        weights_text <- self$weights$repr()
       }
       ## targets
       targets_text <- missing_text
@@ -419,10 +443,17 @@ ConservationProblem <- R6::R6Class(
           penalties_text
         )
       }
+      ## feature
+      cli_vtext("{ch$v}{ch$j}{ch$b}features:")
       ## targets
       cli_vtext(
-        "{ch$v}{ch$j}{ch$b}targets:     ",
+        "{ch$v}{ch$v}{ch$j}{ch$b}targets:    ",
         targets_text
+      )
+      ## weights
+      cli_vtext(
+        "{ch$v}{ch$v}{ch$l}{ch$b}weights:    ",
+        weights_text
       )
       ## constraints
       if (length(self$constraints) > 0) {
@@ -524,7 +555,7 @@ ConservationProblem <- R6::R6Class(
     #' @description
     #' Obtain the number of planning units. The planning units correspond to
     #' elements in the cost data
-    #' (e.g., indices, rows, geometries, pixels) that have finite
+    #' (e.g., indices, rows, geometries, cells) that have finite
     #' values in at least one zone. In other words, planning unit are
     #' elements in the cost data that do not have missing (`NA`) values in
     #' every zone.
@@ -534,10 +565,50 @@ ConservationProblem <- R6::R6Class(
     },
 
     #' @description
+    #' Check if planning unit identifiers are equivalent to the planning
+    #' unit indices? Only `FALSE` if the planning units are
+    #' `data.frame` format.
+    #' @return A `logical` value.
+    is_ids_equivalent_to_indices = function() {
+      self$get_data("is_ids_equivalent_to_indices")
+    },
+
+    #' @description
     #' Obtain the planning unit indices.
     #' @return An `integer` vector.
     planning_unit_indices = function() {
       self$get_data("planning_unit_indices")
+    },
+
+    #' @description
+    #' Obtain the total unit identifiers.
+    #' @return An `integer` vector.
+    total_unit_ids = function() {
+      v <- self$get_data("total_unit_ids")
+      assert(
+        is.numeric(v),
+        msg = "no total unit identifiers defined.",
+        .internal = TRUE
+      )
+      v
+    },
+
+    #' @description
+    #' Convert total unit identifiers to indices.
+    #' @param ids `integer` vector with planning unit identifiers.
+    #' @return An `integer` vector.
+    convert_total_unit_ids_to_indices = function(ids) {
+      # if planning unit identifiers are sequential integers,
+      # then just return the ids because they are equivalent to indices
+      if (self$is_ids_equivalent_to_indices()) {
+        return(ids)
+      }
+      # extract the identifiers
+      total_ids <- self$get_data("total_unit_ids")
+      # convert identifiers to indices
+      out <- match(ids, total_ids)
+      # return result
+      out
     },
 
     #' @description
@@ -591,7 +662,7 @@ ConservationProblem <- R6::R6Class(
     #' @description
     #' Obtain the number of total units. The total units include all elements
     #' in the cost data
-    #' (e.g., indices, rows, geometries, pixels), including those with
+    #' (e.g., indices, rows, geometries, cells), including those with
     #' missing (`NA`) values.
     #' @return An `integer` value.
     number_of_total_units = function() {
@@ -618,6 +689,13 @@ ConservationProblem <- R6::R6Class(
       if (!is.Waiver(i)) return(i)
       self$set_planning_unit_costs()
       self$get_data("planning_unit_costs")
+    },
+
+    #' @description
+    #' Get planning unit class.
+    #' @return A `character` value.
+    planning_unit_class = function() {
+      class(self$data$cost)[[1]]
     },
 
     #' @description
@@ -773,12 +851,107 @@ ConservationProblem <- R6::R6Class(
     },
 
     #' @description
+    #' Obtain the units of the features.
+    #' @return A `character` value. Each element corresponds to a different
+    #' feature.
+    feature_units = function() {
+      self$data$feature_units
+    },
+
+    #' @description
+    #' Obtain the abundance of the features in area-based units of
+    #' \ifelse{html}{\out{km<sup>2</sup>}}{\eqn{km^2}}.
+    #' @details Note that if a feature has missing (`NA`) units
+    #' then missing values are returned.
+    #' @return A `numeric` matrix. Each column corresponds to a different zone
+    #' and each row corresponds to a different feature.
+    feature_abundances_km2_in_total_units = function() {
+      x <- self$get_data("feature_abundances_km2_in_total_units")
+      if (!is.Waiver(x)) return(x)
+      self$set_feature_abundances_km2_in_total_units()
+      self$get_data("feature_abundances_km2_in_total_units")
+    },
+
+    #' @description
+    #' Perform calculations to cache the abundance of the features in
+    #' area-based units of \ifelse{html}{\out{km<sup>2</sup>}}{\eqn{km^2}}.
+    #' @return Invisible `TRUE`.
+    set_feature_abundances_km2_in_total_units = function() {
+      # get total units
+      fa <- self$feature_abundances_in_total_units()
+      # process data depending on feature data format
+      ft <- self$get_data("features")
+      if (inherits(ft, c("ZonesRaster", "ZonesSpatRaster"))) {
+        ## if raster data...
+        if (inherits(ft, "ZonesSpatRaster")) {
+          ### extract cell res
+          cell_res <- terra::res(ft[[1]])
+        } else {
+          ### extract cell res
+          cell_res <- raster::res(ft[[1]])
+        }
+        ### extract cell unit
+        cell_unit <- units::deparse_unit(get_crs(ft)$ud_unit)
+        ### if cell unit is degree, then throw error
+        assert(
+          !identical(cell_unit, units::deparse_unit(sf::st_crs(4326)$ud_unit)),
+          msg = "{.arg features} has a geodetic coordinate reference system.",
+          .internal = TRUE,
+          call = NULL
+        )
+        ### if cell unit is NA or CRS is NA, then throw error
+        assert(
+          assertthat::noNA(cell_unit),
+          get_crs(ft) != sf::st_crs(NA),
+          get_crs(ft) != sf::st_crs(na_crs),
+          msg = "{.arg features} has missing coordinate reference system.",
+          .internal = TRUE,
+          call = NULL
+        )
+        ### calculate conversion factor
+        cell_factor <- as.numeric(
+          units::set_units(
+            units::set_units(cell_res[[1]], cell_unit, mode = "standard") *
+            units::set_units(cell_res[[2]], cell_unit, mode = "standard"),
+          "km^2"
+          )
+        )
+        ### convert values
+        out <- fa * cell_factor
+      } else {
+        ## if not raster data..
+        ### get feature units
+        fu <- self$feature_units()
+        ## convert values
+        out <- fa * NA_real_
+        for (i in seq_len(nrow(out))) {
+          # if fu[[i]] is not NA, then convert it
+          if (!is.na(fu[[i]])) {
+            out[i, ] <- as_km2(fa[i, ], fu[[i]])
+          }
+        }
+      }
+      # store result
+      self$set_data("feature_abundances_km2_in_total_units", out)
+      invisible(TRUE)
+    },
+
+    #' @description
     #' Obtain the representation targets for the features.
     #' @return A [tibble::tibble()] data frame.
     feature_targets = function() {
       if (is.Waiver(self$targets))
         cli::cli_abort("Targets have not been specified.", call = NULL)
-      self$targets$output()
+      self$targets$output(self)
+    },
+
+    #' @description
+    #' Obtain the weights for the features.
+    #' @return A [tibble::tibble()] data frame.
+    feature_weights = function() {
+      if (is.Waiver(self$weights))
+        return(self$weights)
+      self$weights$output(self)
     },
 
     #' @description
@@ -838,7 +1011,7 @@ ConservationProblem <- R6::R6Class(
       assert(inherits(x, "Portfolio"))
       p <- self$clone(deep = TRUE)
       if (!isTRUE(p$defaults$portfolio)) {
-        cli_warning("Overwriting previously defined portfolio.")
+        cli_warning("Overwriting previously defined portfolio.", call = NULL)
       } else {
         p$defaults$portfolio <- FALSE
       }
@@ -854,7 +1027,7 @@ ConservationProblem <- R6::R6Class(
       assert(inherits(x, "Solver"))
       p <- self$clone(deep = TRUE)
       if (!isTRUE(p$defaults$solver)) {
-        cli_warning("Overwriting previously defined solver.")
+        cli_warning("Overwriting previously defined solver.", call = NULL)
       } else {
         p$defaults$solver <- FALSE
       }
@@ -870,11 +1043,27 @@ ConservationProblem <- R6::R6Class(
       assert(inherits(x, "Target"))
       p <- self$clone(deep = TRUE)
       if (!isTRUE(p$defaults$targets)) {
-        cli_warning("Overwriting previously defined targets.")
+        cli_warning("Overwriting previously defined targets.", call = NULL)
       } else {
         p$defaults$targets <- FALSE
       }
       p$targets <- x
+      p
+    },
+
+    #' @description
+    #' Create a new object with weights added to the problem formulation.
+    #' @param x [Weight-class] object.
+    #' @return An updated `ConservationProblem` object.
+    add_weights = function(x) {
+      assert(inherits(x, "Weight"))
+      p <- self$clone(deep = TRUE)
+      if (!isTRUE(p$defaults$weights)) {
+        cli_warning("Overwriting previously defined weights.", call = NULL)
+      } else {
+        p$defaults$weights <- FALSE
+      }
+      p$weights <- x
       p
     },
 
@@ -886,7 +1075,7 @@ ConservationProblem <- R6::R6Class(
       assert(inherits(x, "Objective"))
       p <- self$clone(deep = TRUE)
       if (!isTRUE(p$defaults$objective)) {
-        cli_warning("Overwriting previously defined objective.")
+        cli_warning("Overwriting previously defined objective.", call = NULL)
       } else {
         p$defaults$objective <- FALSE
       }
@@ -902,7 +1091,7 @@ ConservationProblem <- R6::R6Class(
       assert(inherits(x, "Decision"))
       p <- self$clone(deep = TRUE)
       if (!isTRUE(p$defaults$decisions)) {
-        cli_warning("Overwriting previously defined decision.")
+        cli_warning("Overwriting previously defined decision.", call = NULL)
       } else {
         p$defaults$decisions <- FALSE
       }
@@ -929,6 +1118,23 @@ ConservationProblem <- R6::R6Class(
       assert(inherits(x, "Penalty"))
       p <- self$clone(deep = TRUE)
       p$penalties[[length(p$penalties) + 1]] <- x
+      p
+    },
+
+    #' @description
+    #' Create a new object without any penalties.
+    #' @param retain `character` vector of classes to retain. Defaults to
+    #' `NULL` such that all penalties are excluded.
+    #' @return An updated `ConservationProblem` object.
+    remove_all_penalties = function(retain = NULL) {
+      p <- self$clone(deep = TRUE)
+      if (!is.null(retain)) {
+        assert(is.character(retain))
+        idx <- which(vapply(p$penalties, inherits, logical(1), retain))
+        p$penalties <- p$penalties[idx]
+      } else {
+        p$penalties <- list()
+      }
       p
     }
   )

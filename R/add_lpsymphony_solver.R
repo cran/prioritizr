@@ -92,7 +92,8 @@ add_lpsymphony_solver <- function(x, gap = 0.1,
     assertthat::noNA(verbose),
     assertthat::is.flag(first_feasible),
     assertthat::noNA(first_feasible),
-    is_installed("lpsymphony")
+    is_installed("lpsymphony"),
+    is_installed("slam")
   )
   # throw error about bug in early version of lpsymphony
   assert(
@@ -215,7 +216,8 @@ add_lpsymphony_solver <- function(x, gap = 0.1,
             objective = x$objval,
             status = as.character(x$status),
             runtime = rt[[3]],
-            gap = NA_real_
+            gap = NA_real_,
+            objbound = NA_real_
           )
         },
         set_variable_ub = function(index, value) {

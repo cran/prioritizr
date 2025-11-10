@@ -2,30 +2,9 @@
 % Please edit documentation in R/eval_ferrier_importance.R
 \name{eval_ferrier_importance}
 \alias{eval_ferrier_importance}
-\alias{eval_ferrier_importance,ConservationProblem,numeric-method}
-\alias{eval_ferrier_importance,ConservationProblem,matrix-method}
-\alias{eval_ferrier_importance,ConservationProblem,data.frame-method}
-\alias{eval_ferrier_importance,ConservationProblem,Spatial-method}
-\alias{eval_ferrier_importance,ConservationProblem,SpatRaster-method}
-\alias{eval_ferrier_importance,ConservationProblem,sf-method}
-\alias{eval_ferrier_importance,ConservationProblem,Raster-method}
 \title{Evaluate solution importance using Ferrier scores}
 \usage{
 eval_ferrier_importance(x, solution)
-
-\S4method{eval_ferrier_importance}{ConservationProblem,numeric}(x, solution)
-
-\S4method{eval_ferrier_importance}{ConservationProblem,matrix}(x, solution)
-
-\S4method{eval_ferrier_importance}{ConservationProblem,data.frame}(x, solution)
-
-\S4method{eval_ferrier_importance}{ConservationProblem,Spatial}(x, solution)
-
-\S4method{eval_ferrier_importance}{ConservationProblem,sf}(x, solution)
-
-\S4method{eval_ferrier_importance}{ConservationProblem,Raster}(x, solution)
-
-\S4method{eval_ferrier_importance}{ConservationProblem,SpatRaster}(x, solution)
 }
 \arguments{
 \item{x}{\code{\link[=problem]{problem()}} object.}
@@ -92,7 +71,7 @@ missing (\code{NA}) values in the argument to \code{solution}.
 }
 
 \item{\code{x} has \code{\link[terra:rast]{terra::rast()}} planning units}{The argument to \code{solution}
-be a \code{\link[terra:rast]{terra::rast()}} object where different grid cells (pixels) correspond
+be a \code{\link[terra:rast]{terra::rast()}} object where different cells correspond
 to different planning units and layers correspond to
 a different management zones. It should have the same dimensionality
 (rows, columns, layers), resolution, extent, and coordinate reference
@@ -204,7 +183,7 @@ to real-world planning, and a research agenda for further refinement.
 See \link{importance} for an overview of all functions for evaluating
 the importance of planning units selected in a solution.
 
-Other importances: 
+Other functions for evaluating solution importance:
 \code{\link{eval_rank_importance}()},
 \code{\link{eval_rare_richness_importance}()},
 \code{\link{eval_replacement_importance}()}

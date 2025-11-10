@@ -14,7 +14,8 @@ add_gurobi_solver(
   numeric_focus = FALSE,
   node_file_start = Inf,
   start_solution = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  control = list()
 )
 }
 \arguments{
@@ -54,10 +55,11 @@ Defaults to \code{FALSE}.}
 
 \item{numeric_focus}{\code{logical} should extra attention be paid
 to verifying the accuracy of numerical calculations? This may be
-useful when dealing with problems that may suffer from numerical instability
-issues. Beware that it will likely substantially increase run time
+useful when dealing with problems that may suffer from numerical
+instability issues.
+Beware that it will likely substantially increase run time
 (sets the \emph{Gurobi} \code{NumericFocus} parameter
-to 3). Defaults to \code{FALSE}.}
+to 2). Defaults to \code{FALSE}.}
 
 \item{node_file_start}{\code{numeric} threshold amount of memory (in GB).
 Once the amount of memory (RAM) used to store information for solving
@@ -85,6 +87,13 @@ See the Start solution format section for more information.}
 
 \item{verbose}{\code{logical} should information be printed while solving
 optimization problems? Defaults to \code{TRUE}.}
+
+\item{control}{\code{list} with additional parameters for tuning
+the optimization process.
+For example, \code{control = list(Method = 2)} could be used to
+set the \code{Method} parameter.
+See the \href{https://docs.gurobi.com/projects/optimizer/en/current/reference/parameters.html}{online documentation}
+for information on the parameters.}
 }
 \value{
 An updated \code{\link[=problem]{problem()}} object with the solver added to it.
@@ -149,7 +158,7 @@ missing (\code{NA}) values in the argument to \code{start_solution}.
 }
 
 \item{\code{x} has \code{\link[terra:rast]{terra::rast()}} planning units}{The argument to \code{start_solution}
-be a \code{\link[terra:rast]{terra::rast()}} object where different grid cells (pixels) correspond
+be a \code{\link[terra:rast]{terra::rast()}} object where different cells correspond
 to different planning units and layers correspond to
 a different management zones. It should have the same dimensionality
 (rows, columns, layers), resolution, extent, and coordinate reference
@@ -234,7 +243,7 @@ solving conservation planning problems. \emph{PeerJ}, 8: e9258.
 \seealso{
 See \link{solvers} for an overview of all functions for adding a solver.
 
-Other solvers: 
+Other functions for adding solvers:
 \code{\link{add_cbc_solver}()},
 \code{\link{add_cplex_solver}()},
 \code{\link{add_default_solver}()},

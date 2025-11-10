@@ -311,6 +311,8 @@ test_that("solver information (single solution)", {
   expect_length(attr(s, "status"), 1)
   expect_true(is.numeric(attr(s, "gap")))
   expect_length(attr(s, "gap"), 1)
+  expect_true(is.numeric(attr(s, "objbound")))
+  expect_length(attr(s, "objbound"), 1)
 })
 
 test_that("solver information (multiple solutions)", {
@@ -338,6 +340,8 @@ test_that("solver information (multiple solutions)", {
   expect_length(attr(s, "status"), 3)
   expect_true(is.numeric(attr(s, "gap")))
   expect_length(attr(s, "gap"), 3)
+  expect_true(is.numeric(attr(s, "objbound")))
+  expect_length(attr(s, "objbound"), 3)
 })
 
 test_that("set_start_solution", {
@@ -365,15 +369,17 @@ test_that("set_start_solution", {
     ) %>%
     add_binary_decisions() %>%
     add_gurobi_solver(verbose = FALSE)
-  # force calculations
-  p$solver$calculate(compile(p))
   # overwrite start solution
   p$solver$set_start_solution(c(1, 2, 3))
   # tests
   expect_equal(
-    p$solver$internal$model$start,
-    c(1, 2, 3, NA)
+    p$solver$data$start_solution,
+    c(1, 2, 3)
   )
+  # remove start solution
+  p$solver$remove_start_solution()
+  # tests
+  expect_equal(p$solver$data$start_solution, NULL)
 })
 
 test_that("set_constraint_rhs", {
@@ -495,4 +501,29 @@ test_that("set_variable_ub", {
     p$solver$internal$model$ub,
     c(1, 0, 1, 0)
   )
+})
+
+test_that("control", {
+  skip_on_cran()
+  skip_if_not_installed("gurobi")
+  # load data
+  sim_pu_raster <- get_sim_pu_raster()
+  sim_features <- get_sim_features()
+  # create problems
+  p1 <-
+    problem(sim_pu_raster, sim_features) %>%
+    add_min_set_objective() %>%
+    add_relative_targets(0.1) %>%
+    add_binary_decisions() %>%
+    add_gurobi_solver(
+      time_limit = 5, verbose = FALSE,
+      control = list(Method = 2, Cuts = 0)
+  )
+  # solve problems
+  s1 <- solve(p1)
+  # tests
+  expect_inherits(s1, "SpatRaster")
+  expect_equal(terra::nlyr(s1), 1)
+  expect_true(all_binary(s1))
+  expect_true(is_comparable_raster(sim_pu_raster, s1))
 })

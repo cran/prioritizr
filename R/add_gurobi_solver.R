@@ -46,10 +46,11 @@ NULL
 #'
 #' @param numeric_focus `logical` should extra attention be paid
 #'   to verifying the accuracy of numerical calculations? This may be
-#'   useful when dealing with problems that may suffer from numerical instability
-#'   issues. Beware that it will likely substantially increase run time
+#'   useful when dealing with problems that may suffer from numerical
+#'   instability issues.
+#'   Beware that it will likely substantially increase run time
 #'   (sets the *Gurobi* `NumericFocus` parameter
-#'   to 3). Defaults to `FALSE`.
+#'   to 2). Defaults to `FALSE`.
 #'
 #' @param node_file_start `numeric` threshold amount of memory (in GB).
 #'   Once the amount of memory (RAM) used to store information for solving
@@ -78,6 +79,13 @@ NULL
 #' @param verbose `logical` should information be printed while solving
 #'  optimization problems? Defaults to `TRUE`.
 #'
+#' @param control `list` with additional parameters for tuning
+#'  the optimization process.
+#'  For example, `control = list(Method = 2)` could be used to
+#'  set the `Method` parameter.
+#'  See the [online documentation](https://docs.gurobi.com/projects/optimizer/en/current/reference/parameters.html)
+#'  for information on the parameters.
+#"
 #' @details
 #' [*Gurobi*](https://www.gurobi.com/) is a
 #' state-of-the-art commercial optimization software with an R package
@@ -167,7 +175,8 @@ NULL
 add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
                               presolve = 2, threads = 1, first_feasible = FALSE,
                               numeric_focus = FALSE, node_file_start = Inf,
-                              start_solution = NULL, verbose = TRUE) {
+                              start_solution = NULL, verbose = TRUE,
+                              control = list()) {
   # assert that arguments are valid (except start_solution)
   assert_required(x)
   assert_required(gap)
@@ -179,6 +188,7 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
   assert_required(node_file_start)
   assert_required(start_solution)
   assert_required(verbose)
+  assert_required(control)
   assert(
     is_conservation_problem(x),
     assertthat::is.number(gap),
@@ -198,8 +208,18 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
     assertthat::noNA(node_file_start),
     node_file_start >= 0,
     assertthat::is.flag(verbose),
+    is.list(control),
+    is_installed("slam"),
     is_installed("gurobi")
   )
+  # additional checks for control
+  if (length(control) > 0) {
+    assert(
+      !is.null(names(control)),
+      all(nzchar(names(control))),
+      msg = "all elements in {.arg control} must have a name."
+    )
+  }
   # extract start solution
   if (!is.null(start_solution)) {
     start_solution <- planning_unit_solution_status(x, start_solution)
@@ -224,7 +244,8 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
           numeric_focus = numeric_focus,
           node_file_start = node_file_start,
           start_solution = start_solution,
-          verbose = verbose
+          verbose = verbose,
+          control = control
         ),
         calculate = function(x, ...) {
           # create problem
@@ -255,11 +276,10 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
           if (p$NodeFileStart < 0) {
             p$NodeFileStart <- NULL
           }
-          # add starting solution if specified
-          start <- self$get_data("start_solution")
-          if (!is.null(start) && !is.Waiver(start)) {
-            n_extra <- length(model$obj) - length(start)
-            model$start <- c(c(start), rep(NA_real_, n_extra))
+          # specify custom parameters
+          control <- self$get_data("control")
+          if (length(control) > 0) {
+            p[names(control)] <- control
           }
           # add extra parameters from portfolio if needed
           p2 <- list(...)
@@ -283,16 +303,16 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
           self$internal$model$rhs[index] <- value
           invisible(TRUE)
         },
-        set_start_solution = function(value) {
-          n_extra <- length(self$internal$model$obj) - length(value)
-          value <- c(c(value), rep(NA_real_, n_extra))
-          self$internal$model$start <- value
-          invisible(TRUE)
-        },
         run = function() {
           # access internal model and parameters
+          start <- self$get_data("start_solution")
           model <- self$get_internal("model")
           p <- self$get_internal("parameters")
+          # add starting solution if specified
+          if (!is.null(start) && !is.Waiver(start)) {
+            n_extra <- max(length(model$obj) - length(start), 0)
+            model$start <- c(c(start), rep(NA_real_, n_extra))
+          }
           # solve problem
           rt <- system.time({
             x <- withr::with_locale(
@@ -313,11 +333,13 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
             x$x <- pmax(x$x, model$lb)
             x$x <- pmin(x$x, model$ub)
           }
-          # set default mip gap to NA if missing
-          ## this is needed for earlier versions of Gurobi that don't
-          ## return the mip gpa for a solution
+          # set defaults to NA if missing
+          ## this is because earlier versions of Gurobi didn't return this info
           if (is.null(x$mipgap)) {
             x$mipgap <- NA_real_
+          }
+          if (is.null(x$objbound)) {
+            x$objbound <- NA_real_
           }
           # extract solutions
           out <- list(
@@ -325,7 +347,8 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
             objective = x$objval,
             status = x$status,
             runtime = rt[[3]],
-            gap = x$mipgap
+            gap = x$mipgap,
+            objbound = x$objbound
           )
           # add pool if required
           if (!is.null(p$PoolSearchMode) &&
@@ -334,11 +357,7 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
           ) {
             out$pool <- x$pool[-1]
             # get bound for objective value for optimal solution
-            if (identical(model$modelsense, "min")) {
-              optimal_obj <- x$objval / (1 + x$mipgap)
-            } else {
-              optimal_obj <- x$objval * (1 + x$mipgap)
-            }
+            optimal_obj <- x$objbound
             for (i in seq_len(length(out$pool))) {
               # fix binary variables for i'th solution in pool
               out$pool[[i]]$xn[b] <- round(out$pool[[i]]$xn[b])
@@ -367,6 +386,7 @@ add_gurobi_solver <- function(x, gap = 0.1, time_limit = .Machine$integer.max,
               # set remaining values for i'th solution
               out$pool[[i]]$objective <- out$pool[[i]]$objval
               out$pool[[i]]$gap <- i_gap
+              out$pool[[i]]$objbound <- x$objbound
             }
           }
           out

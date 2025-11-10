@@ -62,7 +62,7 @@ p2 <- p1 \%>\% add_mandatory_allocation_constraints()
 s1 <- solve(p1)
 s2 <- solve(p2)
 
-# convert solutions into category layers, where each pixel is assigned
+# convert solutions into category layers, where each cell is assigned
  # value indicating which zone it was assigned to in the zone
 c1 <- category_layer(s1)
 c2 <- category_layer(s2)
@@ -74,7 +74,7 @@ plot(c(c1, c2), main = c("default", "mandatory allocation"), axes = FALSE)
 \seealso{
 See \link{constraints} for an overview of all functions for adding constraints.
 
-Other constraints: 
+Other functions for adding constraints:
 \code{\link{add_contiguity_constraints}()},
 \code{\link{add_feature_contiguity_constraints}()},
 \code{\link{add_linear_constraints}()},

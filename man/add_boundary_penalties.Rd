@@ -2,17 +2,17 @@
 % Please edit documentation in R/add_boundary_penalties.R
 \name{add_boundary_penalties}
 \alias{add_boundary_penalties}
-\alias{add_boundary_penalties,ConservationProblem,ANY,ANY,ANY,array-method}
-\alias{add_boundary_penalties,ConservationProblem,ANY,ANY,ANY,matrix-method}
-\alias{add_boundary_penalties,ConservationProblem,ANY,ANY,ANY,data.frame-method}
-\alias{add_boundary_penalties,ConservationProblem,ANY,ANY,ANY,ANY-method}
+\alias{add_boundary_penalties,ConservationProblem,ANY,ANY,ANY,ANY,array-method}
+\alias{add_boundary_penalties,ConservationProblem,ANY,ANY,ANY,ANY,matrix-method}
+\alias{add_boundary_penalties,ConservationProblem,ANY,ANY,ANY,ANY,data.frame-method}
+\alias{add_boundary_penalties,ConservationProblem,ANY,ANY,ANY,ANY,ANY-method}
 \title{Add boundary penalties}
 \usage{
-\S4method{add_boundary_penalties}{ConservationProblem,ANY,ANY,ANY,data.frame}(x, penalty, edge_factor, zones, data)
+\S4method{add_boundary_penalties}{ConservationProblem,ANY,ANY,ANY,ANY,data.frame}(x, penalty, edge_factor, formulation, zones, data)
 
-\S4method{add_boundary_penalties}{ConservationProblem,ANY,ANY,ANY,matrix}(x, penalty, edge_factor, zones, data)
+\S4method{add_boundary_penalties}{ConservationProblem,ANY,ANY,ANY,ANY,matrix}(x, penalty, edge_factor, formulation, zones, data)
 
-\S4method{add_boundary_penalties}{ConservationProblem,ANY,ANY,ANY,ANY}(x, penalty, edge_factor, zones, data)
+\S4method{add_boundary_penalties}{ConservationProblem,ANY,ANY,ANY,ANY,ANY}(x, penalty, edge_factor, formulation, zones, data)
 }
 \arguments{
 \item{x}{\code{\link[=problem]{problem()}} object.}
@@ -34,6 +34,15 @@ units. For example, an edge factor of \code{0.5} is commonly used to
 avoid overly penalizing planning units along a coastline.
 Note that this argument must have an element for each zone in the argument
 to \code{x}.}
+
+\item{formulation}{\code{character} value denoting the name of the linearization
+technique used to formulate the penalties. Available options are \code{"simple"}
+and \code{"knapsack"}. Defaults to \code{"simple"}. If you are having issues with
+solving problems within a reasonable period of time using the \code{"simple"}
+technique, then consider trying the \code{"knapsack"} technique.
+Note that the \code{"knapsack"} technique is likely to yield better
+performance when each planning unit has a large number of neighbors
+(e.g., planning units are based on a hexagonal grid or irregular polygons).}
 
 \item{zones}{\code{matrix} or \code{Matrix} object describing the
 clumping scheme for different zones. Each row and column corresponds to a
@@ -139,7 +148,10 @@ sum_j^I sum_z^Z sum_y^Z (-2 * p * Xiz * Xjy * Wzy * Bij)
 
 Note that when the problem objective is to maximize some measure of
 benefit and not minimize some measure of cost, the term \eqn{p} is
-replaced with \eqn{-p}.
+replaced with \eqn{-p}. Additionally, to linearize the problem,
+the expression \eqn{X_{iz} \times X_{jy}}{Xiz * Xjy} is modeled using
+a set of continuous variables (bounded between 0 and 1) based on
+Beyer \emph{et al.} (2016).
 }
 
 \examples{
@@ -260,11 +272,16 @@ conservation planning problems with integer linear programming.
 }
 \seealso{
 See \link{penalties} for an overview of all functions for adding penalties.
+Also see \code{\link[=add_neighbor_penalties]{add_neighbor_penalties()}} for a penalty that
+can reduce spatial fragmentation and has faster solver run times.
+Additionally, see \code{\link[=calibrate_cohon_penalty]{calibrate_cohon_penalty()}} for assistance with selecting
+an appropriate \code{penalty} value.
 
-Other penalties: 
+Other functions for adding penalties:
 \code{\link{add_asym_connectivity_penalties}()},
 \code{\link{add_connectivity_penalties}()},
 \code{\link{add_feature_weights}()},
-\code{\link{add_linear_penalties}()}
+\code{\link{add_linear_penalties}()},
+\code{\link{add_neighbor_penalties}()}
 }
 \concept{penalties}

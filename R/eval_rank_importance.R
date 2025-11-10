@@ -3,130 +3,135 @@ NULL
 
 #' Evaluate solution importance using incremental ranks
 #'
-#' Calculate importance scores for planning units selected in a solution
-#' by calculating ranks via an incremental optimization process
-#' (based on Jung *et al.* 2021).
+#' Calculate importance scores for the planning units selected in a solution
+#' using an incremental rank procedure (based on Jung *et al.* 2021).
 #'
 #' @inheritParams eval_replacement_importance
 #'
-#' @param by_zone `logical` indicating value.
-#'  If `TRUE`, then the optimization process will
+#' @param by_zone `logical` value indicating how budgets should be calculated
+#'  when `x` has multiple zones.
+#'  If `TRUE`, then the incremental rank procedure will
 #'  increment budgets for each zone separately.
-#'  If `FALSE`, then the optimization process will
+#'  If `FALSE`, then the incremental rank procedure will
 #'  increment a single budget that is applied to all zones.
 #'  Note that this parameter is only considered if `n` is specified,
 #'  and does not affect processing if `budgets` is specified.
 #'  Defaults to `TRUE`.
 #'
 #' @param objective `character` value with the name of the objective function
-#' that should be used for the incremental optimization process.
+#' that should be used for the incremental rank procedure.
 #' This function must be budget limited (e.g., cannot be
 #' [add_min_set_objective()]).
-#' For example, "add_min_shortfall_objective" can be used to specify the
-#' minimum shortfall objective (per [add_min_shortfall_objective()])..
-#' Defaults to `NULL` such that the same objective is used as specified in
-#' `x`. If using this default and `x` has the minimum set objective, then the
-#' minimum shortfall objective is used.
+#' For example, `"add_min_shortfall_objective"` can be used to specify the
+#' minimum shortfall objective (per [add_min_shortfall_objective()]).
+#' Defaults to `NULL` such that the incremental rank procedure will use
+#' the objective specified by `x`. If using this default and `x` has the minimum
+#' set objective, then the minimum shortfall objective is used
+#' (per [add_min_shortfall_objective()]).
 #'
-#' @param extra_args `list` value with additional arguments for the
-#' objective function (excluding the `budgets` parameter). For example, this
+#' @param extra_args `list` with additional arguments for the
+#' objective function (excluding the `budget` parameter). For example, this
 #' parameter can be used to supply phylogenetic data for
 #' the phylogenetic diversity objective function (i.e., when using
 #' `objective = "add_max_phylo_div_objective"`).
 #' Defaults to `NULL` such that no additional arguments are supplied.
 #'
-#' @param n `integer` number of ranks to evaluate.
+#' @param n `integer` number of increments for the incremental rank procedure.
 #'  Note that either `n` or `budgets` (not both) must be specified.
 #'  If `n` is specified, then `by_zone` is considered during
 #'  processing for problems with multiple zones.
 #'
-#' @param budgets `numeric` vector with the budget thresholds for generating
-#'  solutions at different steps in an iterative procedure.
+#' @param budgets `numeric` vector with budget thresholds for each
+#'  increment in the incremental rank procedure.
 #'  Note that either `n` or `budgets` (not both) must be specified.
 #'
 #' @param ... not used.
 #'
 #' @details
-#' Importance scores are calculated using an incremental optimization
-#' process. Note that if a problem has complex constraints (i.e.,
+#' Importance scores are calculated using an incremental rank procedure.
+#' Note that if a problem (per `x`) has complex constraints (i.e.,
 #' constraints that do not involve locking in or locking out planning
 #' units), then the `budgets` parameter must be specified.
-#' This optimization process involves the following steps.
+#' The incremental rank procedure involves the following steps.
 #' 1. A set of budgets are defined.
-#  If an argument to the `budgets` parameter is supplied,
+#'  If an argument to the `budgets` parameter is supplied,
 #' then the budgets are defined using the `budgets`.
 #' Otherwise, if an argument to the `n` parameter is supplied,
-#' then the budgets are defined as a set of `n` values with equal
-#' increments between them that sum to the total cost of `solution`.
-#' For example, if
-#' considering a problem with a single zone, a solution with a total
-#' cost of 400, and `n = 4`: then the budgets will be 100, 200, 300, and 400.
+#' then the budgets are automatically calculated as a set of values --
+#' with equal increments between successive values -- that range to a maximum
+#' value that is equal to the total cost of `solution`.
+#' For example, if considering a problem (per `x`) with a single zone, a
+#' solution with a total cost of 400, and `n = 4`: then the budgets will be
+#' automatically calculated as 100, 200, 300, and 400.
 #' If considering a multiple zone problem and `by_zone = FALSE`, then the
 #' budgets will based calculated based on the total cost of the `solution`
 #' across all zones.
 #' Otherwise if `by_zone = TRUE`, then the budgets are calculated and set
 #' based on the total cost of planning units allocated to each zone (separately)
 #' in the `solution`. Note that after running this function, you can
-#' see what budgets were used to calculate the ranks by accessing
+#' see what budgets were defined by accessing
 #' attributes from the result (see below for examples).
 #' 2. The problem (per `x`) is checked for potential issues.
 #' This step is performed to avoid issues during subsequent optimization steps.
 #' Note that this step can be skipped using `run_checks = FALSE`.
 #' Also, if issues are detected and you wish to proceed anyway,
 #' then use`force = TRUE` ignore any detected issues.
-#' 3. The problem is modified for subsequent optimization. In particular, any
-#' planning units not selected in `solution` are locked out. This is important
-#' to ensure that all subsequent optimization procedures produce solutions
-#' that only contain planning units selected in the `solution`.
+#' 3. The problem is modified for subsequent optimization. In particular,
+#' the upper bounds for the planning units in the problem are specified
+#' based on the `solution`. For problems (per `x`) that have binary decision
+#' types, this step is equivalent to locking out any planning units that are
+#' not selected in the `solution`. Note that this step is important
+#' to ensure that all subsequent optimization processes produce solutions
+#' that are nested within the `solution`.
 #' 4. The problem is further modified for subsequent optimization.
 #' Specifically, its objective is overwritten using the objective defined for
-#' the rank calculations (per `objective`) with the smallest
-#' budget defined in the first step. Additionally, if an argument to the
-#' `extra_args` parameter is specified, this argument is also used when
-#' overwriting the objective.
+#' the incremental rank procedure (per `objective`) with the budget
+#' defined for the first increment. When this step is
+#' repeated during subsequent increments, the objective will be overwritten with
+#' with the budget defined for the next increment.
+#' Additionally, if an argument to the `extra_args` parameter is specified,
+#' this argument is used when overwriting the objective.
 #' 5. The modified problem is solved to generate a solution.
-#' Depending on the budget and objective specified when modifying the problem,
-#' the newly generated solution will contain a
-#' subset of the planning units selected in the original `solution`.
-#. 6. Planning units selected in the newly generated solution
-#' are assigned a rank. In particular, all selected planning units in the
-#' newly generated solution are assigned the same rank.
-#' This rank is based on the number of increments that have been previously
-#' completed. If no previous increments
-#' have been completed, then the rank is equal to the total number of budget
-#' increments.
-#' Otherwise, if previous increments have been completed, then
-#' the rank is equal to the total number of budget increments minus the
-#' number of completed increments.
-#' Note that if previous increments have been completed, then only planning
-#' units in the newly generated solution that have not been previously selected
-#' are assigned this rank.
-#' For example, if no previous increments have been completed and there
-#' are 5 budget increments (e.g. `n = 5`), then the planning units
-#' selected in the newly generated solution are assigned a rank of 5.
-#' Alternatively, if 3 previous increments have been
-#' completed, then the planning units would be assigned a rank of 2.
+#' Due to the steps used to modify the problem (i.e., steps 3 and 4), the newly
+#' generated solution will contain a subset of the selected planning units in
+#' the original `solution`.
+#' 6. The status of the planning units in the newly generated solution are
+#' recorded for later use
+#' (e.g., binary values indicating if planning units were selected or not,
+#' or the proportion of each planning unit selected) .
 #' 7. The problem is further modified for subsequent optimization.
-#' Specifically, the planning units selected in the newly generated solution
-#' are locked in. This is to ensure that all subsequent solutions will
-#' select these planning units and, in turn, build on this solution.
+#' Specifically, the status of the planning units in the newly generated
+#' solution are used to set the lower bounds for the planning units in the
+#' problem. For problems with binary type decision variables, this step
+#' is equivalent to modifying the problem to lock in planning units that
+#' were selected by the newly generated solution.
 #' Additionally, the newly generated solution is used to specify the starting
-#' solution for the subsequent optimization procedure to reduce processing time
-#' (note this is only done when using the *CBC* and *Gurobi* solvers).
+#' solution for the subsequent optimization process to reduce processing time
+#' (note this is only done when using the *CBC* or *Gurobi* solvers).
 #' 8. Steps 4--7 are repeated for each of the remaining budget increments.
-#' As the increasingly greater budgets are used at higher increments,
-#' the modified problem will generate new solutions that become increasingly
-#' similar to the original `solution`. Planning units that are selected at
-#' lower budget increments are assigned greater ranks and considered more
-#' important, and those selected at higher budget increments are assigned
-#' lower ranks and considered less important. This is because
-#' if a planning unit is highly cost-effective for meeting the objective
-#' (per `objective`), then it is more likely to be selected
-#' earlier in the incremental optimization process.
-#' 9. The incremental optimization process has completed. If `rescale = TRUE`,
-#' then the ranks are linearly rescaled to range between 0.01 and 1.
-#' Otherwise, the ranks remain unchanged.
-#' 10. The rank values are output in the same format as the planning units
+#' As increasingly greater budgets are used at higher increments,
+#' the modified problem will begin to generate solutions that become
+#' increasingly more similar to the original `solution`.
+#' Note that the status of the planning units in each of these new solutions are
+#' recorded for later use.
+#' 9. The incremental optimization rank procedure has now completed.
+#' The planning unit solution statuses that were previously recorded in each
+#' iteration are used to compute relative importance scores.
+#' These relative importance scores range between 0 and 1, with higher scores
+#' indicating that a given planning unit was selected in earlier increments and
+#' is more cost-effective for meeting the objective (per `objective`).
+#' In particular, for a given planning unit, the importance score is calculated
+#' based on the arithmetic mean of the status values.
+#' For example, if we performed an incremental rank procedure with five
+#' increments
+#' and binary decision variables, then a planning unit might have been selected
+#' in the second increment. In this example, the planning unit would have the
+#' following solution statuses across the five increments: (1st increment) 0,
+#' (2nd increment) 1, (3rd increment) 1, (4th increment) 1, and
+#' (5th increment) 1. The mean of these values is 0.8, and so the planning unit
+#' would have an importance score of 0.8. A score of 0.8 is relatively high,
+#' and suggests that this planning unit is highly cost-effective.
+#' 10. The importance scores are output in the same format as the planning units
 #' in the problem (per `x`) (see the Solution Format section for details).
 #'
 #' @inheritSection eval_cost_summary Solution format
@@ -136,44 +141,44 @@ NULL
 #' @return
 #' A `numeric`, `matrix`, `data.frame`,
 #' [terra::rast()], or [sf::sf()] object
-#' containing the importance scores for each planning
-#' unit in the solution. Specifically, the returned object is in the
+#' containing importance scores for the planning units in the solution.
+#' Specifically, the returned object is in the
 #' same format as the planning unit data in the argument to `x`.
 #' The object also has the following attributes that provide information
-#' on the incremental optimization process.
+#' on the incremental rank procedure.
 #' \describe{
 #' \item{\code{budgets}}{
-#' \code{numeric} or \code{matrix} containing the budgets used for
-#' each increment in the incremental optimization process.
+#' \code{numeric} vector or \code{matrix} containing the budgets used for
+#' each increment in the incremental rank procedure.
 #' If the problem (per \code{x}) has a single zone, then the budgets
 #' are a \code{numeric} vector, wherein values correspond to the
 #' budgets for each increment.
 #' Otherwise, if the problem (per \code{x}) has multiple zones, then
 #' the budgets are a \code{matrix} and their format depends on the
 #' \code{by_zone} parameter.
-#' If \code{by_zone = FALSE}, then the budgets are are \code{matrix}
+#' If \code{by_zone = FALSE}, then the budgets are a \code{matrix}
 #' with a column for each zone and a row for each budget increment.
 #' Alternatively, if \code{by_zone = TRUE}, then the \code{matrix} has
 #' a single column and a row for each budget increment.
 #' }
 #' \item{\code{objective}}{
 #' \code{numeric} mathematical objective values for each solution
-#' generated during the incremental optimization process.
+#' generated by the incremental rank procedure.
 #' }
 #' \item{\code{runtime}}{
-#' \code{numeric} total amount of time elapsed during the optimization
-#' (reported in seconds) of each solution
-#' generated throughout the incremental optimization process.
+#' \code{numeric} total amount of time elapsed (reported in seconds)
+#' during the optimization process for each solution generated
+#' by the incremental rank procedure.
 #' }
 #' \item{\code{status}}{
 #' \code{character} status of the optimization process for each
-#' solution generated during the incremental optimization process.
-#' See [prioritizr::solve()] for further details.
+#' solution generated by the incremental rank procedure.
+#' See [prioritizr::solve()] for details on interpreting these values.
 #' }
 #' \item{\code{gap}}{
-#' \code{numeric} optimality of each solution
-#' generated during the incremental optimization process.
-#' See [prioritizr::solve()] for further details.
+#' \code{numeric} values describing the optimality gap for each solution
+#' generated by the incremental rank procedure.
+#' See [prioritizr::solve()] for details on interpreting these values.
 #' }
 #' }
 #'
@@ -208,10 +213,10 @@ NULL
 #' # plot solution
 #' plot(s1, main = "solution", axes = FALSE)
 #'
-#' # calculate importance scores using ranks based on 10 budgets
-#' # N.B. since the objective for calculating ranks is not explicitly
-#' # defined and the problem has a minimum set objective, the
-#' # ranks are calculated using the minimum shortfall objective by default
+#' # calculate importance scores using 10 budget increments
+#' # N.B. since the objective for the incremental rank procedure is not
+#' # explicitly defined and the problem has a minimum set objective, the
+#' # the minimum shortfall objective is used by default
 #' rs1 <- eval_rank_importance(p1, s1, n = 10)
 #'
 #' # print importance scores
@@ -230,12 +235,12 @@ NULL
 #' ## objective value
 #' print(attr(rs1, "objective"))
 #'
-#' # plot relationship between objective values and rank
+#' # plot relationship between objective values and budget increment
 #' plot(
 #'   y = attr(rs1, "objective"),
 #'   x = seq_along(attr(rs1, "objective")),
-#'   ylab = "objective value", xlab = "rank",
-#'   main = "relationship between objective values and rank"
+#'   ylab = "objective value", xlab = "budget increment",
+#'   main = "Relationship between objective values and budget increment"
 #' )
 #'
 #' # calculate importance scores using the maximum utility objective and
@@ -250,17 +255,15 @@ NULL
 #' # plot importance scores
 #' plot(rs2, main = "rank importance (10, max utility obj)", axes = FALSE)
 #'
-#' # calculate importance scores using ranks based on 5 manually specified
-#' # budgets
+#' # calculate importance scores based on 5 manually specified budgets
 #'
 #' # calculate 5 ranks using equal intervals
 #' # N.B. we use length.out = 6 because we want 5 budgets > 0
 #' budgets <- seq(0, eval_cost_summary(p1, s1)$cost[[1]], length.out = 6)[-1]
 #'
 #' # calculate importance using manually specified budgets
-#' # N.B. since the objective for calculating ranks is not explicitly
-#' # defined and the problem has a minimum set objective, the
-#' # ranks are calculated using the minimum shortfall objective by default
+#' # N.B. since the objective is not explicitly defined and the problem has a
+#' # minimum set objective, the minimum shortfall objective is used by default
 #' rs3 <- eval_rank_importance(p1, s1, budgets = budgets)
 #'
 #' # print importance scores
@@ -312,478 +315,70 @@ NULL
 #' terrestrial biodiversity, carbon and water. *Nature Ecology and Evolution*,
 #' 5: 1499--1509.
 #'
-#' @aliases eval_rank_importance,ConservationProblem,numeric-method eval_rank_importance,ConservationProblem,matrix-method eval_rank_importance,ConservationProblem,data.frame-method eval_rank_importance,ConservationProblem,Spatial-method eval_rank_importance,ConservationProblem,sf-method eval_rank_importance,ConservationProblem,Raster-method eval_rank_importance,ConservationProblem,SpatRaster-method
-#'
-#' @name eval_rank_importance
-#'
-#' @rdname eval_rank_importance
-#'
-#' @exportMethod eval_rank_importance
-methods::setGeneric("eval_rank_importance",
-  function(x, solution, ...) {
-    assert_required(x)
-    assert_required(solution)
-    assert(
-      is_conservation_problem(x),
-      is_inherits(
-        solution,
-        c(
-          "numeric", "data.frame", "matrix", "sf", "SpatRaster",
-          "Spatial", "Raster"
-        )
+#' @export
+eval_rank_importance <- function(x, solution, ..., run_checks = TRUE,
+                                 force = FALSE, by_zone = TRUE,
+                                 objective = NULL, extra_args = NULL,
+                                 n, budgets) {
+  # assert arguments are valid
+  assert_required(x)
+  assert_required(solution)
+  assert(
+    is_conservation_problem(x),
+    is_inherits(
+      solution,
+      c(
+        "numeric", "data.frame", "matrix", "sf", "SpatRaster",
+        "Spatial", "Raster"
       )
-    )
-    standardGeneric("eval_rank_importance")
-  }
-)
-
-#' @name eval_rank_importance
-#' @usage \S4method{eval_rank_importance}{ConservationProblem,numeric}(x,
-#' solution, ..., rescale, run_checks, force, by_zone, objective, extra_args,
-#' n, budgets)
-#' @rdname eval_rank_importance
-methods::setMethod("eval_rank_importance",
-  methods::signature("ConservationProblem", "numeric"),
-  function(
-    x, solution, ..., rescale = TRUE, run_checks = TRUE, force = FALSE,
-    by_zone = TRUE, objective = NULL, extra_args = NULL, n, budgets
-  ) {
-    # assert valid arguments
-    assert(is.numeric(solution))
-    # extract planning unit and solution information
-    idx <- x$planning_unit_indices()
-    status <- planning_unit_solution_status(x, solution)
-    in_idx <- which(status > 1e-10)
-    out_idx <- which(status < 1e-10)
-    # additional tests
-    check_n_budgets(
-      x = x, status = status, n = n, budgets = budgets, by_zone = by_zone, ...
-    )
-    assert_dots_empty()
-    # calculate rank scores
-    v <- internal_eval_rank_importance(
-      x, status, in_idx, out_idx,
-      rescale, run_checks, force,
-      by_zone, objective, extra_args, n, budgets
-    )
-    # return rank scores
-    out <- rep(NA_real_, length(solution))
-    out[idx] <- 0
-    out[idx[in_idx]] <- c(v$values)
-    # add attributes
-    attr(out, "budgets") <- v$budgets
-    attr(out, "objective") <- v$objective
-    attr(out, "runtime") <- v$runtime
-    attr(out, "status") <- v$status
-    attr(out, "gap") <- v$gap
-    # return result
-    out
-  }
-)
-
-#' @name eval_rank_importance
-#' @usage \S4method{eval_rank_importance}{ConservationProblem,matrix}(x,
-#' solution, ..., rescale, run_checks, force, by_zone, objective, extra_args,
-#' n, budgets)
-#' @rdname eval_rank_importance
-methods::setMethod("eval_rank_importance",
-  methods::signature("ConservationProblem", "matrix"),
-  function(
-    x, solution, ..., rescale = TRUE, run_checks = TRUE, force = FALSE,
-    by_zone = TRUE, objective = NULL, extra_args = NULL, n, budgets
-  ) {
-    # assert valid arguments
-    assert(
-      is.matrix(solution),
-      is.numeric(solution)
-    )
-    # extract planning unit and solution information
-    idx <- x$planning_unit_indices()
-    status <- planning_unit_solution_status(x, solution)
-    in_idx <- which(status > 1e-10)
-    out_idx <- which(status < 1e-10)
-    # additional tests
-    check_n_budgets(
-      x = x, status = status, n = n, budgets = budgets, by_zone = by_zone, ...
-    )
-    assert_dots_empty()
-    # calculate rank scores
-    v <- internal_eval_rank_importance(
-      x, status, in_idx, out_idx,
-      rescale, run_checks, force,
-      by_zone, objective, extra_args, n, budgets
-    )
-    # initialize matrix
-    m_total <- matrix(
-      NA_real_,
-      nrow = x$number_of_total_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu <- matrix(
-      0,
-      nrow = x$number_of_planning_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu[in_idx] <- c(v$values)
-    m_pu[is.na(x$planning_unit_costs())] <- NA_real_
-    m_total[x$planning_unit_indices(), ] <- m_pu
-    # add column names to matrix
-    if (x$number_of_zones() > 1) {
-      colnames(m_total) <- paste0("rs_", x$zone_names())
-    } else {
-      colnames(m_total) <- "rs"
-    }
-    # add attributes
-    attr(m_total, "budgets") <- v$budgets
-    attr(m_total, "objective") <- v$objective
-    attr(m_total, "runtime") <- v$runtime
-    attr(m_total, "gap") <- v$gap
-    attr(m_total, "status") <- v$status
-    # return result
-    m_total
-  }
-)
-
-#' @name eval_rank_importance
-#' @usage \S4method{eval_rank_importance}{ConservationProblem,data.frame}(x,
-#' solution, ..., rescale, run_checks, force, by_zone, objective, extra_args,
-#' n, budgets)
-#' @rdname eval_rank_importance
-methods::setMethod("eval_rank_importance",
-  methods::signature("ConservationProblem", "data.frame"),
-  function(
-    x, solution, ..., rescale = TRUE, run_checks = TRUE, force = FALSE,
-    by_zone = TRUE, objective = NULL, extra_args = NULL, n, budgets
-  ) {
-    # assert valid arguments
-    assert(is.data.frame(solution))
-    # extract planning unit and solution information
-    idx <- x$planning_unit_indices()
-    status <- planning_unit_solution_status(x, solution)
-    in_idx <- which(status > 1e-10)
-    out_idx <- which(status < 1e-10)
-    # additional tests
-    check_n_budgets(
-      x = x, status = status, n = n, budgets = budgets, by_zone = by_zone, ...
-    )
-    assert_dots_empty()
-    # calculate rank scores
-    v <- internal_eval_rank_importance(
-      x, status, in_idx, out_idx,
-      rescale, run_checks, force,
-      by_zone, objective, extra_args, n, budgets
-    )
-    # initialize matrix
-    m_total <- matrix(
-      NA_real_,
-      nrow = x$number_of_total_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu <- matrix(
-      0,
-      nrow = x$number_of_planning_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu[in_idx] <- c(v$values)
-    m_pu[is.na(x$planning_unit_costs())] <- NA_real_
-    m_total[x$planning_unit_indices(), ] <- m_pu
-    # add column names to matrix
-    if (x$number_of_zones() > 1) {
-      colnames(m_total) <- paste0("rs_", x$zone_names())
-    } else {
-      colnames(m_total) <- "rs"
-    }
-    m_total <- tibble::as_tibble(m_total)
-    # add attributes
-    attr(m_total, "budgets") <- v$budgets
-    attr(m_total, "objective") <- v$objective
-    attr(m_total, "runtime") <- v$runtime
-    attr(m_total, "gap") <- v$gap
-    attr(m_total, "status") <- v$status
-    # return result
-    m_total
-  }
-)
-
-#' @name eval_rank_importance
-#' @usage \S4method{eval_rank_importance}{ConservationProblem,Spatial}(x,
-#' solution, ..., rescale, run_checks, force, by_zone, objective, extra_args,
-#' n, budgets)
-#' @rdname eval_rank_importance
-methods::setMethod("eval_rank_importance",
-  methods::signature("ConservationProblem", "Spatial"),
-  function(
-    x, solution, ..., rescale = TRUE, run_checks = TRUE, force = FALSE,
-    by_zone = TRUE, objective = NULL, extra_args = NULL, n, budgets
-  ) {
-    # assert valid arguments
-    assert(
-      is_inherits(
-        solution,
-        c(
-          "SpatialPointsDataFrame", "SpatialLinesDataFrame",
-          "SpatialPolygonsDataFrame"
-        )
-      )
-    )
-    # extract planning unit and solution information
-    idx <- x$planning_unit_indices()
-    status <- planning_unit_solution_status(x, solution)
-    in_idx <- which(status > 1e-10)
-    out_idx <- which(status < 1e-10)
-    # additional tests
-    check_n_budgets(
-      x = x, status = status, n = n, budgets = budgets, by_zone = by_zone, ...
-    )
-    assert_dots_empty()
-    # calculate rank scores
-    v <- internal_eval_rank_importance(
-      x, status, in_idx, out_idx,
-      rescale, run_checks, force,
-      by_zone, objective, extra_args, n, budgets
-    )
-    # initialize matrix
-    m_total <- matrix(
-      NA_real_,
-      nrow = x$number_of_total_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu <- matrix(
-      0,
-      nrow = x$number_of_planning_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu[in_idx] <- c(v$values)
-    m_pu[is.na(x$planning_unit_costs())] <- NA_real_
-    m_total[x$planning_unit_indices(), ] <- m_pu
-    # add column names to matrix
-    if (x$number_of_zones() > 1) {
-      colnames(m_total) <- paste0("rs_", x$zone_names())
-    } else {
-      colnames(m_total) <- "rs"
-    }
-    # prepare result
-    out <- as.data.frame(m_total)
-    rownames(out) <- rownames(solution@data)
-    solution@data <- out
-    # add attributes
-    attr(solution, "budgets") <- v$budgets
-    attr(solution, "objective") <- v$objective
-    attr(solution, "runtime") <- v$runtime
-    attr(solution, "gap") <- v$gap
-    attr(solution, "status") <- v$status
-    # return result
-    solution
-  }
-)
-
-#' @name eval_rank_importance
-#' @usage \S4method{eval_rank_importance}{ConservationProblem,sf}(x, solution,
-#' ..., rescale, run_checks, force, by_zone, objective, extra_args, n, budgets)
-#' @rdname eval_rank_importance
-methods::setMethod("eval_rank_importance",
-  methods::signature("ConservationProblem", "sf"),
-  function(
-    x, solution, ..., rescale = TRUE, run_checks = TRUE, force = FALSE,
-    by_zone = TRUE, objective = NULL, extra_args = NULL, n, budgets
-  ) {
-    # assert valid arguments
-    assert(inherits(solution, "sf"))
-    # extract planning unit and solution information
-    idx <- x$planning_unit_indices()
-    status <- planning_unit_solution_status(x, solution)
-    in_idx <- which(status > 1e-10)
-    out_idx <- which(status < 1e-10)
-    # additional tests
-    check_n_budgets(
-      x = x, status = status, n = n, budgets = budgets, by_zone = by_zone, ...
-    )
-    assert_dots_empty()
-    # calculate rank scores
-    v <- internal_eval_rank_importance(
-      x, status, in_idx, out_idx,
-      rescale, run_checks, force,
-      by_zone, objective, extra_args, n, budgets
-    )
-    # initialize matrix
-    m_total <- matrix(
-      NA_real_,
-      nrow = x$number_of_total_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu <- matrix(
-      0,
-      nrow = x$number_of_planning_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu[in_idx] <- c(v$values)
-    m_pu[is.na(x$planning_unit_costs())] <- NA_real_
-    m_total[x$planning_unit_indices(), ] <- m_pu
-    # add column names to matrix
-    if (x$number_of_zones() > 1) {
-      colnames(m_total) <- paste0("rs_", x$zone_names())
-    } else {
-      colnames(m_total) <- "rs"
-    }
-    # prepare result
-    out <- tibble::as_tibble(as.data.frame(m_total))
-    out$geometry <- sf::st_geometry(x$data$cost)
-    out <- sf::st_sf(out, crs = sf::st_crs(x$data$cost))
-    # add attributes
-    attr(out, "budgets") <- v$budgets
-    attr(out, "objective") <- v$objective
-    attr(out, "runtime") <- v$runtime
-    attr(out, "status") <- v$status
-    attr(out, "gap") <- v$gap
-    # return result
-    out
-  }
-)
-
-#' @name eval_rank_importance
-#' @usage \S4method{eval_rank_importance}{ConservationProblem,Raster}(x,
-#' solution, ..., rescale, run_checks, force, by_zone, objective, extra_args,
-#' n, budgets)
-#' @rdname eval_rank_importance
-methods::setMethod("eval_rank_importance",
-  methods::signature("ConservationProblem", "Raster"),
-  function(
-    x, solution, ..., rescale = TRUE, run_checks = TRUE, force = FALSE,
-    by_zone = TRUE, objective = NULL, extra_args = NULL, n, budgets
-  ) {
-    assert(inherits(solution, "Raster"))
-    # extract planning unit and solution information
-    idx <- x$planning_unit_indices()
-    status <- planning_unit_solution_status(x, solution)
-    in_idx <- which(status > 1e-10)
-    out_idx <- which(status < 1e-10)
-    # additional tests
-    check_n_budgets(
-      x = x, status = status, n = n, budgets = budgets, by_zone = by_zone, ...
-    )
-    assert_dots_empty()
-    # calculate rank scores
-    v <- internal_eval_rank_importance(
-      x, status, in_idx, out_idx,
-      rescale, run_checks, force,
-      by_zone, objective, extra_args, n, budgets
-    )
-    # initialize matrix
-    m_pu <- matrix(
-      0,
-      nrow = x$number_of_planning_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu[in_idx] <- c(v$values)
-    m_pu[is.na(x$planning_unit_costs())] <- NA_real_
-    # add column names to matrix
-    if (x$number_of_zones() > 1) {
-      colnames(m_pu) <- paste0("rs_", x$zone_names())
-    } else {
-      colnames(m_pu) <- "rs"
-    }
-    # prepare result
-    out <- raster::as.list(solution)
-    for (i in seq_along(out)) {
-      out[[i]][x$planning_unit_indices()] <- m_pu[, i]
-      out[[i]][raster::Which(is.na(solution[[i]]), cells = TRUE)] <- NA_real_
-    }
-    if (length(out) > 1) {
-      out <- raster::stack(out)
-    } else {
-      out <- out[[1]]
-    }
-    names(out) <- colnames(m_pu)
-    # add attributes
-    attr(out, "budgets") <- v$budgets
-    attr(out, "objective") <- v$objective
-    attr(out, "runtime") <- v$runtime
-    attr(out, "status") <- v$status
-    attr(out, "gap") <- v$gap
-    # return result
-    out
-  }
-)
-
-#' @name eval_rank_importance
-#' @usage \S4method{eval_rank_importance}{ConservationProblem,SpatRaster}(x,
-#' solution, ..., rescale, run_checks, force, by_zone, objective, extra_args,
-#' n, budgets)
-#' @rdname eval_rank_importance
-methods::setMethod("eval_rank_importance",
-  methods::signature("ConservationProblem", "SpatRaster"),
-  function(
-    x, solution, ..., rescale = TRUE, run_checks = TRUE, force = FALSE,
-    by_zone = TRUE, objective = NULL, extra_args = NULL, n, budgets
-  ) {
-    assert(inherits(solution, "SpatRaster"))
-    # extract planning unit and solution information
-    idx <- x$planning_unit_indices()
-    status <- planning_unit_solution_status(x, solution)
-    in_idx <- which(status > 1e-10)
-    out_idx <- which(status < 1e-10)
-    # additional tests
-    check_n_budgets(
-      x = x, status = status, n = n, budgets = budgets, by_zone = by_zone, ...
-    )
-    assert_dots_empty()
-    # calculate rank scores
-    v <- internal_eval_rank_importance(
-      x, status, in_idx, out_idx,
-      rescale, run_checks, force,
-      by_zone, objective, extra_args, n, budgets
-    )
-    # initialize matrix
-    m_pu <- matrix(
-      0,
-      nrow = x$number_of_planning_units(),
-      ncol = x$number_of_zones()
-    )
-    m_pu[in_idx] <- c(v$values)
-    m_pu[is.na(x$planning_unit_costs())] <- NA_real_
-    # add column names to matrix
-    if (x$number_of_zones() > 1) {
-      colnames(m_pu) <- paste0("rs_", x$zone_names())
-    } else {
-      colnames(m_pu) <- "rs"
-    }
-    # prepare result
-    out <- terra::as.list(solution)
-    for (i in seq_along(out)) {
-      out[[i]][x$planning_unit_indices()] <- m_pu[, i]
-      out[[i]][is.na(solution[[i]])] <- NA_real_
-    }
-    out <- terra::rast(out)
-    names(out) <- colnames(m_pu)
-    # add attributes
-    attr(out, "budgets") <- v$budgets
-    attr(out, "objective") <- v$objective
-    attr(out, "runtime") <- v$runtime
-    attr(out, "status") <- v$status
-    attr(out, "gap") <- v$gap
-    # return result
-    out
-  }
-)
+    ),
+    assertthat::is.flag(run_checks),
+    assertthat::noNA(run_checks),
+    assertthat::is.flag(force),
+    assertthat::noNA(force),
+    assertthat::is.flag(by_zone),
+    assertthat::noNA(by_zone)
+  )
+  # extract planning unit solution status
+  status <- planning_unit_solution_status(x, solution)
+  # additional tests
+  check_n_budgets(
+    x = x, status = status, n = n, budgets = budgets, by_zone = by_zone, ...
+  )
+  assert_dots_empty()
+  # calculate rank scores
+  v <- internal_eval_rank_importance(
+    x, status, run_checks, force, by_zone, objective, extra_args, n, budgets
+  )
+  # prepare formatted values
+  out <- planning_unit_solution_format(x, v$values, solution, prefix = "rs")
+  # attach attributes
+  attr(out, "budgets") <- v$budgets
+  attr(out, "objective") <- v$objective
+  attr(out, "runtime") <- v$runtime
+  attr(out, "gap") <- v$gap
+  attr(out, "status") <- v$status
+  # return result
+  out
+}
 
 internal_eval_rank_importance <- function(x,
-                                          status, in_idx, out_idx,
-                                          rescale, run_checks, force,
+                                          status,
+                                          run_checks, force,
                                           by_zone, objective, extra_args,
                                           n, budgets, ...,
                                           call = fn_caller_env()) {
-
   # assert valid arguments
   assert(
-    is_conservation_problem(x),
+    is.numeric(status),
     is.matrix(status),
-    is.integer(in_idx),
-    is.integer(out_idx),
-    assertthat::is.flag(rescale),
-    assertthat::is.flag(run_checks),
-    assertthat::is.flag(force),
+    .internal = TRUE,
     call = call
   )
+  # extract indices from solution
+  in_idx <- which(status > 1e-10)
+  out_idx <- which(status < 1e-10)
+  # additional validation
   assert(
     length(in_idx) > 0,
     call = call,
@@ -879,20 +474,21 @@ internal_eval_rank_importance <- function(x,
   assert(identical(length(budget_idx), ncol(budgets)), .internal = TRUE)
   # calculate number of decision variables for planning units
   n_vars <- opt$number_of_planning_units() * opt$number_of_zones()
-  # extract planning unit indices
-  idx <- x$planning_unit_indices()
-  in_idx <- which(status > 1e-10)
-  out_idx <- which(status < 1e-10)
   # remove optimization problem, since information is now stored in x$solver
   rm(opt)
-  # lock out planning units not in the solution
+  # set bounds for planning units not selected by the solution
   if (length(out_idx) > 0) {
     x$solver$set_variable_lb(out_idx, rep.int(0, length(out_idx)))
     x$solver$set_variable_ub(out_idx, rep.int(0, length(out_idx)))
   }
-  rm(out_idx)
+  # set bounds for planning units selected by the solution
+  ## note we only set upper bounds to ensure that any locked in constraints
+  ## are still accounted for during optimization
+  if (length(in_idx) > 0) {
+    x$solver$set_variable_ub(in_idx, status[in_idx])
+  }
   # initialize objects for storing results
-  out <- numeric(length(in_idx))
+  sol_status <- matrix(NA_real_, nrow = nrow(budgets), ncol = length(in_idx))
   prev_sol <- c()
   prev_selected_idx <- c()
   prev_selected_vals <- c()
@@ -900,8 +496,7 @@ internal_eval_rank_importance <- function(x,
   status <- character(nrow(budgets))
   gap <- numeric(nrow(budgets))
   runtime <- numeric(nrow(budgets))
-  # debug
-  # run incremental optimization process
+  # run incremental optimization procedure
   for (i in seq_len(nrow(budgets))) {
     ## update budgets
     x$solver$set_constraint_rhs(budget_idx, budgets[i, ])
@@ -939,15 +534,8 @@ internal_eval_rank_importance <- function(x,
     prev_sol <- curr_sol$x
     prev_selected_idx <- which(prev_sol[seq_len(n_vars)] > 1e-10)
     prev_selected_vals <- prev_sol[prev_selected_idx]
-    ## store ranks
-    curr_rank <- (nrow(budgets) + 1) - i
-    curr_idx <- which((out < 1e-10) & (prev_sol[in_idx] > 1e-10))
-    out[curr_idx] <- curr_rank
-  }
-  # if specified, rescale values
-  if (isTRUE(rescale)) {
-    rescale_ind <- is.finite(out) & (abs(out) > 1e-10)
-    out[rescale_ind] <- rescale(out[rescale_ind], to = c(0.01, 1))
+    ## store solution status
+    sol_status[i, ] <- prev_sol[in_idx]
   }
   # if problem only has one zone, convert from matrix to vector
   if (identical(number_of_zones(x), 1L)) {
@@ -955,8 +543,15 @@ internal_eval_rank_importance <- function(x,
   }
   # return result
   list(
-    values = out, budgets = budgets,
-    objective = obj_vals, status = status, gap = gap, runtime = runtime
+    # calculate scores based on average value of statuses
+    values = convert_raw_solution_to_solution_status(
+      x, colMeans(sol_status), in_idx
+    ),
+    budgets = budgets,
+    objective = obj_vals,
+    status = status,
+    gap = gap,
+    runtime = runtime
   )
 }
 
@@ -1013,7 +608,10 @@ create_budget_thresholds <- function(x, status, n, by_zone,
   ) {
     locked_in <- matrix(0, ncol = n_z, nrow = n_pu)
   } else {
-    locked_in <- matrix(compile(x)$lb(), ncol = n_z, nrow = n_pu)
+    locked_in <- matrix(
+      compile(x)$lb()[seq_len(n_z * n_pu)],
+      ncol = n_z, nrow = n_pu
+    )
   }
   locked_in <- locked_in * ((x$planning_unit_costs() * 0) + 1)
   ## calculate cost of cheapest feasible solution based on

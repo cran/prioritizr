@@ -35,6 +35,13 @@ test_that("is_count_vector", {
   expect_true(is_count_vector(c(1L, 2L, 3L)))
   expect_false(is_count_vector(c(-1, 1, 2, 3)))
   expect_false(is_count_vector(c(-1L, 1L, 2L, 3L)))
-  expect_error(assert(is_count_vector(c("1", "2", "3"))), "internal")
+  expect_error(assert(is_count_vector(c("1", "2", "3"))), "integer")
   expect_error(assert(is_count_vector(c(-1, 1, 2, 3))), "integer")
+})
+
+test_that("is_integer", {
+  expect_true(is_integer(c(1, 2, 3, NA)))
+  expect_false(is_integer(c(0.5, 2, 3, NA)))
+  expect_false(is_integer("a"))
+  expect_error(assert(is_integer("a")), "integer")
 })

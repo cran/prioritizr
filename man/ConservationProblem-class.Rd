@@ -24,7 +24,9 @@ Other classes:
 \code{\link{Penalty-class}},
 \code{\link{Portfolio-class}},
 \code{\link{Solver-class}},
-\code{\link{Target-class}}
+\code{\link{Target-class}},
+\code{\link{TargetMethod-class}},
+\code{\link{Weight-class}}
 }
 \concept{classes}
 \section{Public fields}{
@@ -42,6 +44,9 @@ for the problem formulation.}
 
 \item{\code{targets}}{\code{\linkS4class{Target}} object specifying the representation
 targets for the problem formulation.}
+
+\item{\code{weights}}{\code{\linkS4class{Weight}} object specifying the feature weights
+for the problem formulation.}
 
 \item{\code{constraints}}{\code{list} containing \code{\linkS4class{Constraint}} objects that
 specify constraints for the problem formulation.}
@@ -68,11 +73,15 @@ generating solutions.}
 \item \href{#method-ConservationProblem-get_data}{\code{ConservationProblem$get_data()}}
 \item \href{#method-ConservationProblem-set_data}{\code{ConservationProblem$set_data()}}
 \item \href{#method-ConservationProblem-number_of_planning_units}{\code{ConservationProblem$number_of_planning_units()}}
+\item \href{#method-ConservationProblem-is_ids_equivalent_to_indices}{\code{ConservationProblem$is_ids_equivalent_to_indices()}}
 \item \href{#method-ConservationProblem-planning_unit_indices}{\code{ConservationProblem$planning_unit_indices()}}
+\item \href{#method-ConservationProblem-total_unit_ids}{\code{ConservationProblem$total_unit_ids()}}
+\item \href{#method-ConservationProblem-convert_total_unit_ids_to_indices}{\code{ConservationProblem$convert_total_unit_ids_to_indices()}}
 \item \href{#method-ConservationProblem-planning_unit_indices_with_finite_costs}{\code{ConservationProblem$planning_unit_indices_with_finite_costs()}}
 \item \href{#method-ConservationProblem-set_planning_unit_indices_with_finite_costs}{\code{ConservationProblem$set_planning_unit_indices_with_finite_costs()}}
 \item \href{#method-ConservationProblem-number_of_total_units}{\code{ConservationProblem$number_of_total_units()}}
 \item \href{#method-ConservationProblem-planning_unit_costs}{\code{ConservationProblem$planning_unit_costs()}}
+\item \href{#method-ConservationProblem-planning_unit_class}{\code{ConservationProblem$planning_unit_class()}}
 \item \href{#method-ConservationProblem-set_planning_unit_costs}{\code{ConservationProblem$set_planning_unit_costs()}}
 \item \href{#method-ConservationProblem-number_of_features}{\code{ConservationProblem$number_of_features()}}
 \item \href{#method-ConservationProblem-feature_names}{\code{ConservationProblem$feature_names()}}
@@ -81,17 +90,23 @@ generating solutions.}
 \item \href{#method-ConservationProblem-feature_positive_abundances_in_planning_units}{\code{ConservationProblem$feature_positive_abundances_in_planning_units()}}
 \item \href{#method-ConservationProblem-set_feature_positive_abundances_in_planning_units}{\code{ConservationProblem$set_feature_positive_abundances_in_planning_units()}}
 \item \href{#method-ConservationProblem-feature_abundances_in_total_units}{\code{ConservationProblem$feature_abundances_in_total_units()}}
+\item \href{#method-ConservationProblem-feature_units}{\code{ConservationProblem$feature_units()}}
+\item \href{#method-ConservationProblem-feature_abundances_km2_in_total_units}{\code{ConservationProblem$feature_abundances_km2_in_total_units()}}
+\item \href{#method-ConservationProblem-set_feature_abundances_km2_in_total_units}{\code{ConservationProblem$set_feature_abundances_km2_in_total_units()}}
 \item \href{#method-ConservationProblem-feature_targets}{\code{ConservationProblem$feature_targets()}}
+\item \href{#method-ConservationProblem-feature_weights}{\code{ConservationProblem$feature_weights()}}
 \item \href{#method-ConservationProblem-has_negative_feature_data}{\code{ConservationProblem$has_negative_feature_data()}}
 \item \href{#method-ConservationProblem-number_of_zones}{\code{ConservationProblem$number_of_zones()}}
 \item \href{#method-ConservationProblem-zone_names}{\code{ConservationProblem$zone_names()}}
 \item \href{#method-ConservationProblem-add_portfolio}{\code{ConservationProblem$add_portfolio()}}
 \item \href{#method-ConservationProblem-add_solver}{\code{ConservationProblem$add_solver()}}
 \item \href{#method-ConservationProblem-add_targets}{\code{ConservationProblem$add_targets()}}
+\item \href{#method-ConservationProblem-add_weights}{\code{ConservationProblem$add_weights()}}
 \item \href{#method-ConservationProblem-add_objective}{\code{ConservationProblem$add_objective()}}
 \item \href{#method-ConservationProblem-add_decisions}{\code{ConservationProblem$add_decisions()}}
 \item \href{#method-ConservationProblem-add_constraint}{\code{ConservationProblem$add_constraint()}}
 \item \href{#method-ConservationProblem-add_penalty}{\code{ConservationProblem$add_penalty()}}
+\item \href{#method-ConservationProblem-remove_all_penalties}{\code{ConservationProblem$remove_all_penalties()}}
 \item \href{#method-ConservationProblem-clone}{\code{ConservationProblem$clone()}}
 }
 }
@@ -218,7 +233,7 @@ Invisible \code{TRUE}.
 \subsection{Method \code{number_of_planning_units()}}{
 Obtain the number of planning units. The planning units correspond to
 elements in the cost data
-(e.g., indices, rows, geometries, pixels) that have finite
+(e.g., indices, rows, geometries, cells) that have finite
 values in at least one zone. In other words, planning unit are
 elements in the cost data that do not have missing (\code{NA}) values in
 every zone.
@@ -231,6 +246,21 @@ An \code{integer} value.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-is_ids_equivalent_to_indices"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-is_ids_equivalent_to_indices}{}}}
+\subsection{Method \code{is_ids_equivalent_to_indices()}}{
+Check if planning unit identifiers are equivalent to the planning
+unit indices? Only \code{FALSE} if the planning units are
+\code{data.frame} format.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$is_ids_equivalent_to_indices()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A \code{logical} value.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ConservationProblem-planning_unit_indices"></a>}}
 \if{latex}{\out{\hypertarget{method-ConservationProblem-planning_unit_indices}{}}}
 \subsection{Method \code{planning_unit_indices()}}{
@@ -239,6 +269,39 @@ Obtain the planning unit indices.
 \if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$planning_unit_indices()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+An \code{integer} vector.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-total_unit_ids"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-total_unit_ids}{}}}
+\subsection{Method \code{total_unit_ids()}}{
+Obtain the total unit identifiers.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$total_unit_ids()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+An \code{integer} vector.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-convert_total_unit_ids_to_indices"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-convert_total_unit_ids_to_indices}{}}}
+\subsection{Method \code{convert_total_unit_ids_to_indices()}}{
+Convert total unit identifiers to indices.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$convert_total_unit_ids_to_indices(ids)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ids}}{\code{integer} vector with planning unit identifiers.}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
 An \code{integer} vector.
 }
@@ -278,7 +341,7 @@ Invisible \code{TRUE}.
 \subsection{Method \code{number_of_total_units()}}{
 Obtain the number of total units. The total units include all elements
 in the cost data
-(e.g., indices, rows, geometries, pixels), including those with
+(e.g., indices, rows, geometries, cells), including those with
 missing (\code{NA}) values.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$number_of_total_units()}\if{html}{\out{</div>}}
@@ -299,6 +362,19 @@ Obtain the planning unit costs.
 
 \subsection{Returns}{
 A \code{numeric} matrix.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-planning_unit_class"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-planning_unit_class}{}}}
+\subsection{Method \code{planning_unit_class()}}{
+Get planning unit class.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$planning_unit_class()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A \code{character} value.
 }
 }
 \if{html}{\out{<hr>}}
@@ -412,12 +488,73 @@ and each row corresponds to a different feature.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-feature_units"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-feature_units}{}}}
+\subsection{Method \code{feature_units()}}{
+Obtain the units of the features.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$feature_units()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A \code{character} value. Each element corresponds to a different
+feature.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-feature_abundances_km2_in_total_units"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-feature_abundances_km2_in_total_units}{}}}
+\subsection{Method \code{feature_abundances_km2_in_total_units()}}{
+Obtain the abundance of the features in area-based units of
+\ifelse{html}{\out{km<sup>2</sup>}}{\eqn{km^2}}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$feature_abundances_km2_in_total_units()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+Note that if a feature has missing (\code{NA}) units
+then missing values are returned.
+}
+
+\subsection{Returns}{
+A \code{numeric} matrix. Each column corresponds to a different zone
+and each row corresponds to a different feature.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-set_feature_abundances_km2_in_total_units"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-set_feature_abundances_km2_in_total_units}{}}}
+\subsection{Method \code{set_feature_abundances_km2_in_total_units()}}{
+Perform calculations to cache the abundance of the features in
+area-based units of \ifelse{html}{\out{km<sup>2</sup>}}{\eqn{km^2}}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$set_feature_abundances_km2_in_total_units()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Invisible \code{TRUE}.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ConservationProblem-feature_targets"></a>}}
 \if{latex}{\out{\hypertarget{method-ConservationProblem-feature_targets}{}}}
 \subsection{Method \code{feature_targets()}}{
 Obtain the representation targets for the features.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$feature_targets()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A \code{\link[tibble:tibble]{tibble::tibble()}} data frame.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-feature_weights"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-feature_weights}{}}}
+\subsection{Method \code{feature_weights()}}{
+Obtain the weights for the features.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$feature_weights()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
@@ -524,6 +661,26 @@ An updated \code{ConservationProblem} object.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-add_weights"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-add_weights}{}}}
+\subsection{Method \code{add_weights()}}{
+Create a new object with weights added to the problem formulation.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$add_weights(x)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{\linkS4class{Weight} object.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An updated \code{ConservationProblem} object.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ConservationProblem-add_objective"></a>}}
 \if{latex}{\out{\hypertarget{method-ConservationProblem-add_objective}{}}}
 \subsection{Method \code{add_objective()}}{
@@ -596,6 +753,27 @@ Create a new object with a penalty added to the problem formulation.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{x}}{\linkS4class{Penalty} object.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An updated \code{ConservationProblem} object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ConservationProblem-remove_all_penalties"></a>}}
+\if{latex}{\out{\hypertarget{method-ConservationProblem-remove_all_penalties}{}}}
+\subsection{Method \code{remove_all_penalties()}}{
+Create a new object without any penalties.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ConservationProblem$remove_all_penalties(retain = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{retain}}{\code{character} vector of classes to retain. Defaults to
+\code{NULL} such that all penalties are excluded.}
 }
 \if{html}{\out{</div>}}
 }

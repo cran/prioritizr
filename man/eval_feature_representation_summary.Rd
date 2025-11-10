@@ -24,11 +24,18 @@ It contains the following columns:
 \describe{
 
 \item{summary}{\code{character} description of the summary statistic.
-The statistic associated with the \code{"overall"} value
-in this column is calculated using the entire solution
-(including all management zones if there are multiple zones).
-If multiple management zones are present, then summary statistics
-are also provided for each zone separately
+The statistics associated with the \code{"overall"} value
+in this column are calculated using all planning unit values.
+For problems with multiple management zones, this means
+that all calculations are completed by summing together
+all planning unit values across all zones. For example, if there are
+two zones, a single planning unit, and a feature has a value of one
+in the single planning unit for both zones, then \code{total_amount} will
+contain a value of two (even though it would not be possible to
+to achieve a value of two because the planning unit could not
+simultaneously be allocated to both zones).
+Additionally, if multiple management zones are present,
+then summary statistics are also provided for each zone separately
 (indicated using zone names).}
 
 \item{feature}{\code{character} name of the feature.}
@@ -87,7 +94,7 @@ missing (\code{NA}) values in the argument to \code{solution}.
 }
 
 \item{\code{x} has \code{\link[terra:rast]{terra::rast()}} planning units}{The argument to \code{solution}
-be a \code{\link[terra:rast]{terra::rast()}} object where different grid cells (pixels) correspond
+be a \code{\link[terra:rast]{terra::rast()}} object where different cells correspond
 to different planning units and layers correspond to
 a different management zones. It should have the same dimensionality
 (rows, columns, layers), resolution, extent, and coordinate reference
@@ -303,7 +310,7 @@ plot(s5[, "solution"])
 \seealso{
 See \link{summaries} for an overview of all functions for summarizing solutions.
 
-Other summaries: 
+Other functions for summarizing solutions:
 \code{\link{eval_asym_connectivity_summary}()},
 \code{\link{eval_boundary_summary}()},
 \code{\link{eval_connectivity_summary}()},

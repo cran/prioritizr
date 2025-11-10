@@ -73,13 +73,15 @@ NULL
 #'
 #' }
 #' @export
-adjacency_matrix <- function(x, ...) UseMethod("adjacency_matrix")
+adjacency_matrix <- function(x, ...) {
+  assert_required(x)
+  UseMethod("adjacency_matrix")
+}
 
 #' @rdname adjacency_matrix
 #' @method adjacency_matrix Raster
 #' @export
 adjacency_matrix.Raster <- function(x, directions = 4, ...) {
-  assert_required(x)
   assert_required(directions)
   assert_dots_empty()
   assert(inherits(x, "Raster"))
@@ -91,7 +93,6 @@ adjacency_matrix.Raster <- function(x, directions = 4, ...) {
 #' @method adjacency_matrix SpatRaster
 #' @export
 adjacency_matrix.SpatRaster <- function(x, directions = 4, ...) {
-  assert_required(x)
   assert_required(directions)
   assert_dots_empty()
   assert(
@@ -106,7 +107,7 @@ adjacency_matrix.SpatRaster <- function(x, directions = 4, ...) {
   } else {
     # indices of cells with finite values
     include <- terra::cells(min(is.finite(x)), 1)[[1]]
-    # set x to a single raster layer with only values in pixels that are not
+    # set x to a single raster layer with only values in cells that are not
     # NA in all layers
     suppressWarnings(x <- terra::setValues(x[[1]], NA_real_))
     x[include] <- 1
@@ -127,7 +128,6 @@ adjacency_matrix.SpatRaster <- function(x, directions = 4, ...) {
 #' @method adjacency_matrix SpatialPolygons
 #' @export
 adjacency_matrix.SpatialPolygons <- function(x, ...) {
-  assert_required(x)
   assert_dots_empty()
   cli_warning(sp_pkg_deprecation_notice)
   adjacency_matrix(sf::st_as_sf(x), ...)
@@ -137,7 +137,6 @@ adjacency_matrix.SpatialPolygons <- function(x, ...) {
 #' @method adjacency_matrix SpatialLines
 #' @export
 adjacency_matrix.SpatialLines <- function(x,  ...) {
-  assert_required(x)
   assert_dots_empty()
   cli_warning(sp_pkg_deprecation_notice)
   adjacency_matrix(sf::st_as_sf(x), ...)

@@ -16,7 +16,7 @@ for the entire solution or (ii) a \code{numeric} vector to specify
 a separate budget for each management zone.}
 }
 \value{
-An updated \code{problem()} object with the objective added to it.
+An updated \code{\link[=problem]{problem()}} object with the objective added to it.
 }
 \description{
 Set the objective of a conservation planning problem to
@@ -127,7 +127,7 @@ Also see \link{targets} for an overview of all functions for adding targets.
 Additionally, see \link{penalties} for an overview of all functions for adding
 penalties.
 
-Other objectives: 
+Other functions for adding objectives:
 \code{\link{add_max_cover_objective}()},
 \code{\link{add_max_features_objective}()},
 \code{\link{add_max_phylo_div_objective}()},

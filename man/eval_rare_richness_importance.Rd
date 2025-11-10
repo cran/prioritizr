@@ -2,30 +2,9 @@
 % Please edit documentation in R/eval_rare_richness_importance.R
 \name{eval_rare_richness_importance}
 \alias{eval_rare_richness_importance}
-\alias{eval_rare_richness_importance,ConservationProblem,numeric-method}
-\alias{eval_rare_richness_importance,ConservationProblem,matrix-method}
-\alias{eval_rare_richness_importance,ConservationProblem,data.frame-method}
-\alias{eval_rare_richness_importance,ConservationProblem,Spatial-method}
-\alias{eval_rare_richness_importance,ConservationProblem,sf-method}
-\alias{eval_rare_richness_importance,ConservationProblem,Raster-method}
-\alias{eval_rare_richness_importance,ConservationProblem,SpatRaster-method}
 \title{Evaluate solution importance using rarity weighted richness scores}
 \usage{
-eval_rare_richness_importance(x, solution, ...)
-
-\S4method{eval_rare_richness_importance}{ConservationProblem,numeric}(x, solution, rescale, ...)
-
-\S4method{eval_rare_richness_importance}{ConservationProblem,matrix}(x, solution, rescale, ...)
-
-\S4method{eval_rare_richness_importance}{ConservationProblem,data.frame}(x, solution, rescale, ...)
-
-\S4method{eval_rare_richness_importance}{ConservationProblem,Spatial}(x, solution, rescale, ...)
-
-\S4method{eval_rare_richness_importance}{ConservationProblem,sf}(x, solution, rescale, ...)
-
-\S4method{eval_rare_richness_importance}{ConservationProblem,Raster}(x, solution, rescale, ...)
-
-\S4method{eval_rare_richness_importance}{ConservationProblem,SpatRaster}(x, solution, rescale, ...)
+eval_rare_richness_importance(x, solution, rescale = TRUE)
 }
 \arguments{
 \item{x}{\code{\link[=problem]{problem()}} object.}
@@ -35,8 +14,6 @@ eval_rare_richness_importance(x, solution, ...)
 The argument should be in the same format as the planning unit cost
 data in the argument to \code{x}.
 See the Solution format section for more information.}
-
-\item{...}{not used.}
 
 \item{rescale}{\code{logical} flag indicating if replacement cost
 values -- excepting infinite (\code{Inf}) and zero values -- should be
@@ -106,7 +83,7 @@ missing (\code{NA}) values in the argument to \code{solution}.
 }
 
 \item{\code{x} has \code{\link[terra:rast]{terra::rast()}} planning units}{The argument to \code{solution}
-be a \code{\link[terra:rast]{terra::rast()}} object where different grid cells (pixels) correspond
+be a \code{\link[terra:rast]{terra::rast()}} object where different cells correspond
 to different planning units and layers correspond to
 a different management zones. It should have the same dimensionality
 (rows, columns, layers), resolution, extent, and coordinate reference
@@ -214,7 +191,7 @@ areas for conserving diversity using British birds.
 See \link{importance} for an overview of all functions for evaluating
 the importance of planning units selected in a solution.
 
-Other importances: 
+Other functions for evaluating solution importance:
 \code{\link{eval_ferrier_importance}()},
 \code{\link{eval_rank_importance}()},
 \code{\link{eval_replacement_importance}()}

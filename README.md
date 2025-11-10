@@ -14,6 +14,9 @@
 [![Documentation](https://img.shields.io/github/actions/workflow/status/prioritizr/prioritizr/documentation.yaml?branch=main&label=Documentation)](https://github.com/prioritizr/prioritizr/actions)
 [![Coverage-Status](https://img.shields.io/codecov/c/github/prioritizr/prioritizr?label=Coverage)](https://app.codecov.io/gh/prioritizr/prioritizr/branch/main)
 [![CRAN-Status-Badge](https://www.r-pkg.org/badges/version/prioritizr)](https://CRAN.R-project.org/package=prioritizr)
+[![logo](https://img.shields.io/badge/Logo%20by-Theodoros%20Ploumis-blue.svg)](https://www.theodorosploumis.com/en)
+[![publication](https://img.shields.io/badge/Publication-10.1111/cobi.14376-blue.svg)](https://doi.org/10.1111/cobi.14376)
+
 <!-- badges: end -->
 
 The *prioritizr R* package uses mixed integer linear programming (MILP)
@@ -93,10 +96,9 @@ Please cite the *prioritizr R* package when using it in publications. To
 cite the package, please use:
 
 > Hanson JO, Schuster R, Strimas‐Mackey M, Morrell N, Edwards BPM,
-> Arcese P, Bennett JR, and Possingham HP (2024) Systematic conservation
+> Arcese P, Bennett JR, and Possingham HP (2025) Systematic conservation
 > prioritization with the prioritizr R package. *Conservation Biology*,
-> In press:
-> [DOI:10.1111/cobi.14376](https://doi.org/10.1111/cobi.14376).
+> **39**: e14376.
 
 Additionally, we keep a [record of
 publications](https://prioritizr.net/articles/publication_record.html)
@@ -138,7 +140,7 @@ print(wa_pu)
 ```
 
     ## class       : SpatRaster 
-    ## dimensions  : 109, 147, 1  (nrow, ncol, nlyr)
+    ## size        : 109, 147, 1  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
     ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
@@ -174,7 +176,7 @@ print(wa_features)
 ```
 
     ## class       : SpatRaster 
-    ## dimensions  : 109, 147, 396  (nrow, ncol, nlyr)
+    ## size        : 109, 147, 396  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
     ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
@@ -242,13 +244,15 @@ print(p1)
     ## │├•features:    "Recurvirostra americana (breeding)", … (396 total)
     ## │└•planning units:
     ## │ ├•data:       <SpatRaster> (10757 total)
-    ## │ ├•costs:      continuous values (between 0.2987 and 1804.1838)
-    ## │ ├•extent:     -1816381.6182, 247483.5211, -1228381.6182, 683483.5211 (xmin, ymin, xmax, ymax)
+    ## │ ├•costs:      continuous values (between 0.2986647 and 1804.184)
+    ## │ ├•extent:     -1816382, 247483.5, -1228382, 683483.5 (xmin, ymin, xmax, ymax)
     ## │ └•CRS:        +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs (projected)
     ## ├•formulation
-    ## │├•objective:   minimum shortfall objective (`budget` = 8748.4908)
+    ## │├•objective:   minimum shortfall objective (`budget` = 8748.491)
     ## │├•penalties:   none specified
-    ## │├•targets:     relative targets (between 0.2 and 0.2)
+    ## │├•features:
+    ## ││├•targets:    relative targets (all equal to 0.2)
+    ## ││└•weights:    none specified
     ## │├•constraints: none specified
     ## │└•decisions:   binary decision
     ## └•optimization
@@ -275,7 +279,7 @@ print(attr(s1, "runtime"))
 ```
 
     ## solution_1 
-    ##      5.242
+    ##      3.526
 
 ``` r
 # extract state message from the solver
@@ -335,7 +339,7 @@ print(p1_target_coverage)
     ##  7 Spinus t… TRUE          99.9            20.0          22.6               0   
     ##  8 Spinus t… TRUE          99.9            20.0          23.1               0   
     ##  9 Falco sp… TRUE          99.9            20.0          24.9               0   
-    ## 10 Falco sp… TRUE         100.             20.0          24.5               0   
+    ## 10 Falco sp… TRUE         100.0            20.0          24.5               0   
     ## # ℹ 386 more rows
     ## # ℹ 3 more variables: relative_target <dbl>, relative_held <dbl>,
     ## #   relative_shortfall <dbl>
@@ -366,7 +370,7 @@ print(wa_locked_in)
 ```
 
     ## class       : SpatRaster 
-    ## dimensions  : 109, 147, 1  (nrow, ncol, nlyr)
+    ## size        : 109, 147, 1  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
     ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
@@ -417,7 +421,7 @@ print(wa_locked_out)
 ```
 
     ## class       : SpatRaster 
-    ## dimensions  : 109, 147, 1  (nrow, ncol, nlyr)
+    ## size        : 109, 147, 1  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
     ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
@@ -488,18 +492,13 @@ considered more important.
 imp <-
   p4 %>%
   eval_rank_importance(s4, n = 5)
-```
 
-    ## Warning in matrix(compile(x)$lb(), ncol = n_z, nrow = n_pu): data length
-    ## [32239] is not a sub-multiple or multiple of the number of rows [10757]
-
-``` r
 # print scores
 print(imp)
 ```
 
     ## class       : SpatRaster 
-    ## dimensions  : 109, 147, 1  (nrow, ncol, nlyr)
+    ## size        : 109, 147, 1  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
     ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 

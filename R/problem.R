@@ -1,4 +1,4 @@
-#' @include internal.R ConservationProblem-class.R zones.R is_spatial_extents_overlap.R assertions.R cli.R
+#' @include internal.R ConservationProblem-class.R zones.R
 NULL
 
 #' Conservation planning problem
@@ -92,6 +92,18 @@ NULL
 #'   column containing cost data for each management zone when creating
 #'   problems with multiple zones. To create a problem with a single zone, then
 #'   set the argument to `cost_column` as a single column name.
+#'
+#' @param feature_units `character` vector containing the unit of
+#'   measurement for the data associated with each feature.
+#'   Although the data associated with a feature can any unit,
+#'   the `feature_units` must refer to area-based units
+#'   (e.g., `"km^2", "ha", "acre").
+#'   If a feature does not have an area-based unit,
+#'   then a missing (`NA`) value should be specified for it.
+#'   Note that `feature_units` must not be specified if `features`
+#'   has [terra::rast()] data.
+#'   Defaults to `NULL`, such that a missing (`NA`) value is used for each
+#'   feature.
 #'
 #' @param rij `data.frame` containing information on the amount of
 #'    each feature in each planning unit assuming each management zone. Similar
@@ -407,7 +419,7 @@ NULL
 #' s7 <- solve(p7)
 #'
 #' # plot solution
-#' # here, each layer/panel corresponds to a different zone and pixel values
+#' # here, each layer/panel corresponds to a different zone and cell values
 #' # indicate if a given planning unit has been allocated to a given zone
 #' par(mfrow = c(1, 1))
 #' plot(s7, main = c("zone 1", "zone 2", "zone 3"), axes = FALSE)
@@ -592,39 +604,63 @@ methods::setMethod(
         features = features,
         rij_matrix = rij,
         feature_abundances_in_total_units = fatu,
-        planning_unit_indices = idx
+        planning_unit_indices = idx,
+        is_ids_equivalent_to_indices = TRUE
       )
     )
   }
 )
 
 #' @name problem
-#' @usage \S4method{problem}{data.frame,character}(x, features, cost_column, ...)
+#' @usage \S4method{problem}{data.frame,character}(x, features, cost_column, feature_units, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "data.frame", features = "character"),
-  function(x, features, cost_column, ...) {
+  function(x, features, cost_column, feature_units = NULL, ...) {
+    # set defaults
+    if (is.null(feature_units)) {
+      feature_units <- rep(NA_character_, length(features))
+    } else if (assertthat::is.string(feature_units)) {
+      feature_units <- rep(feature_units, length(features))
+    }
+    # assert valid default arguments
     assert_required(cost_column)
-    assert(assertthat::is.string(cost_column))
+    assert(
+      assertthat::is.string(cost_column),
+      all_area_units(feature_units, na.rm = TRUE),
+      length(features) == length(feature_units)
+    )
+    # create ConservationProblem object
     problem(
       x,
       zones(features, zone_names = cost_column, feature_names = features),
       cost_column = cost_column,
+      feature_units = feature_units,
       ...
     )
 })
 
 #' @name problem
-#' @usage \S4method{problem}{data.frame,ZonesCharacter}(x, features, cost_column, ...)
+#' @usage \S4method{problem}{data.frame,ZonesCharacter}(x, features, cost_column, feature_units, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "data.frame", features = "ZonesCharacter"),
-  function(x, features, cost_column, ...) {
+  function(x, features, cost_column, feature_units = NULL, ...) {
+    # set defaults
+    if (is.null(feature_units)) {
+      feature_units <- rep(NA_character_, number_of_features(features))
+    } else if (assertthat::is.string(feature_units)) {
+      feature_units <- rep(feature_units, length(features))
+    }
     # assert that arguments are valid
     assert(
       is.data.frame(x),
+      assertthat::has_name(x, "id"),
+      is_count_vector(x$id),
+      all_finite(x$id),
+      no_duplicates(x$id),
       inherits(features, "ZonesCharacter"),
       nrow(x) > 0,
       is.character(cost_column),
@@ -632,7 +668,9 @@ methods::setMethod(
       all_match_of(cost_column, names(x)),
       number_of_zones(features) == length(cost_column),
       all_columns_inherit(x[, cost_column, drop = FALSE], "numeric"),
-      all_columns_any_finite(x[, cost_column, drop = FALSE])
+      all_columns_any_finite(x[, cost_column, drop = FALSE]),
+      all_area_units(feature_units, na.rm = TRUE),
+      length(feature_units) == number_of_features(features)
     )
     assert_dots_empty()
     assert(
@@ -690,19 +728,30 @@ methods::setMethod(
         cost_column = cost_column,
         rij_matrix = rij,
         feature_abundances_in_total_units = fatu,
-        planning_unit_indices = idx
+        planning_unit_indices = idx,
+        total_unit_ids = x$id,
+        is_ids_equivalent_to_indices = FALSE,
+        feature_units = feature_units
       )
     )
   }
 )
 
 #' @name problem
-#' @usage \S4method{problem}{data.frame,data.frame}(x, features, rij, cost_column, zones, ...)
+#' @usage \S4method{problem}{data.frame,data.frame}(x, features, rij, cost_column, zones, feature_units, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "data.frame", features = "data.frame"),
-  function(x, features, rij, cost_column, zones = NULL, ...) {
+  function(
+    x, features, rij, cost_column, zones = NULL, feature_units = NULL, ...
+  ) {
+    ## set defaults
+    if (is.null(feature_units)) {
+      feature_units <- rep(NA_character_, nrow(features))
+    } else if (assertthat::is.string(feature_units)) {
+      feature_units <- rep(feature_units, nrow(features))
+    }
     # assert that arguments are valid
     assert_required(rij)
     assert_required(cost_column)
@@ -747,7 +796,10 @@ methods::setMethod(
       is.numeric(rij$amount),
       assertthat::noNA(rij$amount),
       all_match_of(rij$pu, x$id),
-      all_match_of(rij$species, features$id)
+      all_match_of(rij$species, features$id),
+      ## feature_units
+      all_area_units(feature_units, na.rm = TRUE),
+      length(feature_units) == nrow(features)
     )
     assert_dots_empty()
     # verifications
@@ -815,37 +867,54 @@ methods::setMethod(
         cost_column = cost_column,
         rij_matrix = rij,
         feature_abundances_in_total_units = fatu,
-        planning_unit_indices = idx
+        planning_unit_indices = idx,
+        total_unit_ids = x$id,
+        is_ids_equivalent_to_indices = FALSE,
+        feature_units = feature_units
       )
     )
   }
 )
 
 #' @name problem
-#' @usage \S4method{problem}{numeric,data.frame}(x, features, rij_matrix, ...)
+#' @usage \S4method{problem}{numeric,data.frame}(x, features, rij_matrix, feature_units, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "numeric", features = "data.frame"),
-  function(x, features, rij_matrix, ...) {
+  function(x, features, rij_matrix, feature_units = NULL, ...) {
+    # assert arguments are valid
     assert_required(rij_matrix)
-    if (!is.list(rij_matrix))
+    # if needed, convert rij_matrix to list
+    if (!is.list(rij_matrix)) {
       rij_matrix <- list("1" = rij_matrix)
-    problem(matrix(x, ncol = 1), features, rij_matrix = rij_matrix, ...)
+    }
+    # create ConservationProblem object
+    problem(
+      matrix(x, ncol = 1), features, rij_matrix = rij_matrix,
+      feature_units = feature_units, ...
+    )
   }
 )
 
 #' @name problem
-#' @usage \S4method{problem}{matrix,data.frame}(x, features, rij_matrix, ...)
+#' @usage \S4method{problem}{matrix,data.frame}(x, features, rij_matrix, feature_units, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "matrix", features = "data.frame"),
-  function(x, features, rij_matrix, ...) {
+  function(x, features, rij_matrix, feature_units = NULL, ...) {
+    ## set defaults
+    if (is.null(feature_units)) {
+      feature_units <- rep(NA_character_, nrow(features))
+    } else if (assertthat::is.string(feature_units)) {
+      feature_units <- rep(feature_units, nrow(features))
+    }
     # assert that arguments are valid
     assert_required(rij_matrix)
-    if (!inherits(rij_matrix, "list"))
+    if (!inherits(rij_matrix, "list")) {
       rij_matrix <- list(rij_matrix)
+    }
     assert(
       is.matrix(x),
       is.data.frame(features),
@@ -870,7 +939,10 @@ methods::setMethod(
       # rij_matrix
       all_elements_inherit(rij_matrix, c("matrix", "dgCMatrix")),
       # multiple arguments
-      ncol(x) == length(rij_matrix)
+      ncol(x) == length(rij_matrix),
+      # feature_units
+      all_area_units(feature_units, na.rm = TRUE),
+      length(feature_units) == nrow(features)
     )
     assert_dots_empty()
     rij_matrix_ncol <- vapply(rij_matrix, ncol, numeric(1))
@@ -927,26 +999,36 @@ methods::setMethod(
     }
     rownames(fatu) <- as.character(features$name)
     colnames(fatu) <- names(rij_matrix)
-    # convert rij matrices to sparse format if needed
+    # check if the rij matrix data need to be processed
+    # if we don't need to process the data, then we want to avoid doing this
+    # to reduce memory consumption
     idx <- planning_unit_indices(x)
-    rij <- lapply(rij_matrix, function(z) {
-      if (inherits(z, "dgCMatrix")) {
-        z@x[which(is.na(z@x))] <- 0
-      } else {
-        z[which(is.na(z))] <- 0
-      }
-      rownames(z) <- as.character(features$name)
-      Matrix::drop0(methods::as(z[, idx, drop = FALSE], "dgCMatrix"))
-    })
-    names(rij) <- names(rij_matrix)
+    is_rij_matrix_need_processing <-
+      !all_elements_inherit(rij_matrix, "dgCMatrix") ||
+      !identical(idx, seq_along(idx)) ||
+      any(vapply(rij_matrix, FUN.VALUE = logical(1), function(z) anyNA(z@x)))
+    # if rij data need to be processed, then do so
+    if (isTRUE(is_rij_matrix_need_processing)) {
+      rij_matrix <- lapply(rij_matrix, function(z) {
+        if (inherits(z, "dgCMatrix")) {
+          z@x[which(is.na(z@x))] <- 0
+        } else {
+          z[which(is.na(z))] <- 0
+        }
+        rownames(z) <- as.character(features$name)
+        Matrix::drop0(methods::as(z[, idx, drop = FALSE], "dgCMatrix"))
+      })
+    }
     # create new problem object
     conservation_problem(
       data = list(
         cost = x,
         features = features,
-        rij_matrix = rij,
+        rij_matrix = rij_matrix,
         feature_abundances_in_total_units = fatu,
-        planning_unit_indices = idx
+        planning_unit_indices = idx,
+        is_ids_equivalent_to_indices = TRUE,
+        feature_units = feature_units
       )
     )
   }
@@ -1051,36 +1133,56 @@ methods::setMethod(
         cost_column = cost_column,
         rij_matrix = rij,
         feature_abundances_in_total_units = fatu,
-        planning_unit_indices = idx
+        planning_unit_indices = idx,
+        is_ids_equivalent_to_indices = TRUE
       )
     )
   }
 )
 
 #' @name problem
-#' @usage \S4method{problem}{sf,character}(x, features, cost_column, ...)
+#' @usage \S4method{problem}{sf,character}(x, features, cost_column, feature_units, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "sf", features = "character"),
-  function(x, features, cost_column, ...) {
+  function(x, features, cost_column, feature_units = NULL, ...) {
+    # set defaults
+    if (is.null(feature_units)) {
+      feature_units <- rep(NA_character_, length(features))
+    } else if (assertthat::is.string(feature_units)) {
+      feature_units <- rep(feature_units, length(features))
+    }
+    # assert that arguments are valid
     assert_required(cost_column)
-    assert(assertthat::is.string(cost_column))
+    assert(
+      assertthat::is.string(cost_column),
+      all_area_units(feature_units, na.rm = TRUE),
+      length(feature_units) == length(features)
+    )
+    # create ConservationProblem object
     problem(
       x,
       zones(features, feature_names = features, zone_names = cost_column),
       cost_column = cost_column,
+      feature_units = feature_units,
       ...
     )
 })
 
 #' @name problem
-#' @usage \S4method{problem}{sf,ZonesCharacter}(x, features, cost_column, ...)
+#' @usage \S4method{problem}{sf,ZonesCharacter}(x, features, cost_column, feature_units, ...)
 #' @rdname problem
 methods::setMethod(
   "problem",
   methods::signature(x = "sf", features = "ZonesCharacter"),
-  function(x, features, cost_column, ...) {
+  function(x, features, cost_column, feature_units = NULL, ...) {
+    # set defaults
+    if (is.null(feature_units)) {
+      feature_units <- rep(NA_character_, number_of_features(features))
+    } else if (assertthat::is.string(feature_units)) {
+      feature_units <- rep(feature_units, length(features))
+    }
     # assert that arguments are valid
     assert_required(cost_column)
     assert(
@@ -1092,7 +1194,9 @@ methods::setMethod(
       all_match_of(cost_column, names(x)),
       all_columns_inherit(x[, cost_column], "numeric"),
       all_columns_any_finite(x[, cost_column]),
-      number_of_zones(features) == length(cost_column)
+      number_of_zones(features) == length(cost_column),
+      all_area_units(feature_units, na.rm = TRUE),
+      length(feature_units) == number_of_features(features)
     )
     assert_dots_empty()
     assert(
@@ -1169,7 +1273,9 @@ methods::setMethod(
         cost_column = cost_column,
         rij_matrix = rij,
         feature_abundances_in_total_units = fatu,
-        planning_unit_indices = idx
+        planning_unit_indices = idx,
+        is_ids_equivalent_to_indices = TRUE,
+        feature_units = feature_units
       )
     )
   }
