@@ -27,11 +27,13 @@ test_that("x = SpatRaster, features = SpatRaster", {
     x$number_of_planning_units(),
     length(terra::cells(is.na(sim_pu_raster), 0)[[1]])
   )
+  expect_equal(number_of_problems(x), 1L)
   expect_equal(x$number_of_total_units(), terra::ncell(sim_pu_raster))
   expect_equal(
     x$planning_unit_indices(),
     terra::cells(is.na(sim_pu_raster), 0)[[1]]
   )
+  expect_equal(number_of_problems(x), 1L)
   expect_error(x$total_unit_ids())
   # tests for planning_unit_costs method
   expect_equal(
@@ -1663,7 +1665,7 @@ test_that("invalid problem inputs (all planning units have NA costs)", {
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
   # update data
-  sim_pu_raster <- raster::setValues(sim_pu_raster, NA_real_)
+  sim_pu_raster <- terra::setValues(sim_pu_raster, NA_real_)
   sim_pu_polygons$id <- seq_len(nrow(sim_pu_polygons))
   sim_pu_polygons$cost <- NA_real_
   sim_pu_polygons$spp_1 <- runif(nrow(sim_pu_polygons))

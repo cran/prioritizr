@@ -15,7 +15,7 @@ add_group_targets(x, groups, method)
 method for each group. Here, the names of \code{method} correspond to different
 values in \code{groups}. Additionally, the elements of \code{method} should be
 the \code{character} names of target setting methods, or objects
-(\code{\linkS4class{TargetMethod}}) that specify target setting methods.
+(\code{\link[=TargetMethod-class]{TargetMethod}}) that specify target setting methods.
 See Target methods below for more information.}
 }
 \value{
@@ -50,6 +50,7 @@ The following \code{character} values can be used to specify target setting
 methods:
 \code{"jung"} (per Jung \emph{et al.} 2021), \code{"polak"}
 (per Polak \emph{et al.} 2016), \code{"rodrigues"} (per Rodrigues \emph{et al.} 2004),
+\code{"sreekar"} (per Sreekar and Watson 2026),
 \code{"ward"} (per Ward \emph{et al.} 2025), and \code{"watson"}
 (per Watson \emph{et al.} 2010).
 (2010). Additionally, the following values can be used to set targets
@@ -86,13 +87,16 @@ For convenience, these options can also be specified with lower case letters (e.
 Note that target setting methods that require additional data or parameters cannot be specified with \code{character} values.
 
 The following functions can be used to create an object for specifying
-a target setting method: \code{\link[=spec_absolute_targets]{spec_absolute_targets()}}, \code{\link[=spec_relative_targets]{spec_relative_targets()}}, \code{\link[=spec_area_targets]{spec_area_targets()}}, \code{\link[=spec_interp_absolute_targets]{spec_interp_absolute_targets()}}, \code{\link[=spec_interp_area_targets]{spec_interp_area_targets()}},
+a target setting method: \code{\link[=spec_absolute_targets]{spec_absolute_targets()}}, \code{\link[=spec_relative_targets]{spec_relative_targets()}},
+\code{\link[=spec_area_targets]{spec_area_targets()}}, \code{\link[=spec_interp_absolute_targets]{spec_interp_absolute_targets()}},
+\code{\link[=spec_interp_area_targets]{spec_interp_area_targets()}},
 \code{\link[=spec_duran_targets]{spec_duran_targets()}}, \code{\link[=spec_jung_targets]{spec_jung_targets()}}, \code{\link[=spec_polak_targets]{spec_polak_targets()}},
 \code{\link[=spec_pop_size_targets]{spec_pop_size_targets()}},
 \code{\link[=spec_rl_ecosystem_targets]{spec_rl_ecosystem_targets()}}, \code{\link[=spec_rl_species_targets]{spec_rl_species_targets()}},
 \code{\link[=spec_rodrigues_targets]{spec_rodrigues_targets()}},
-\code{\link[=spec_rule_targets]{spec_rule_targets()}}, \code{\link[=spec_ward_targets]{spec_ward_targets()}}, \code{\link[=spec_watson_targets]{spec_watson_targets()}},
-\code{\link[=spec_wilson_targets]{spec_wilson_targets()}}, \code{\link[=spec_min_targets]{spec_min_targets()}}, and \code{\link[=spec_max_targets]{spec_max_targets()}}.
+\code{\link[=spec_rule_targets]{spec_rule_targets()}}, \code{\link[=spec_sreekar_targets]{spec_sreekar_targets()}}, \code{\link[=spec_ward_targets]{spec_ward_targets()}},
+\code{\link[=spec_watson_targets]{spec_watson_targets()}}, \code{\link[=spec_wilson_targets]{spec_wilson_targets()}}, \code{\link[=spec_min_targets]{spec_min_targets()}}, and
+\code{\link[=spec_max_targets]{spec_max_targets()}}.
 }
 
 \section{Target setting}{
@@ -134,13 +138,13 @@ you will need to specify the spatial units for the features
 when building a \code{\link[=problem]{problem()}} object if the feature data
 are provided in a different format. In particular, if the feature
 data are provided as a \code{data.frame} or \code{character} vector,
-then you will need to specify an argument to \code{feature_units} when
+then you will need to specify \code{feature_units} when
 using the \code{\link[=problem]{problem()}} function. See the Examples section below for a
 demonstration of using the \code{feature_units} parameter.
 }
 
 \examples{
-\dontrun{
+\dontshow{if (asNamespace("prioritizr")$do_run_example()) withAutoprint(\{ # examplesIf}
 # set seed for reproducibility
 set.seed(500)
 
@@ -223,7 +227,7 @@ s2 <- solve(p2)
 
 # plot solution
 plot(s2[, "solution_1"], axes = FALSE)
-}
+\dontshow{\}) # examplesIf}
 }
 \references{
 Carwardine J, Klein CJ, Wilson KA, Pressey RL, Possingham HP (2009) Hitting
@@ -249,9 +253,9 @@ requires simultaneous planning for species and ecosystems.
 }
 \seealso{
 Other functions for adding targets:
-\code{\link{add_absolute_targets}()},
-\code{\link{add_auto_targets}()},
-\code{\link{add_manual_targets}()},
-\code{\link{add_relative_targets}()}
+\code{\link[=add_absolute_targets]{add_absolute_targets()}},
+\code{\link[=add_auto_targets]{add_auto_targets()}},
+\code{\link[=add_manual_targets]{add_manual_targets()}},
+\code{\link[=add_relative_targets]{add_relative_targets()}}
 }
 \concept{targets}

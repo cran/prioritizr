@@ -8,7 +8,7 @@
 #'
 #' Check if all columns have at least one finite value.
 #'
-#' @param x object.
+#' @param x Object.
 #'
 #' @return A `logical` value.
 #'
@@ -42,11 +42,6 @@ all_columns_any_finite.matrix <- function(x) {
     is.matrix(x)
   )
   all(colSums(is.finite(x)) > 0)
-}
-
-#' @export
-all_columns_any_finite.Spatial <- function(x) {
-  all_columns_any_finite(x@data)
 }
 
 #' @export

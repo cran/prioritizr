@@ -2,20 +2,14 @@
 % Please edit documentation in R/simulate.R
 \name{simulate_cost}
 \alias{simulate_cost}
-\alias{simulate_cost.Raster}
-\alias{simulate_cost.SpatRaster}
 \title{Simulate cost data}
 \usage{
-simulate_cost(x, n, intensity, sd, scale)
-
-\method{simulate_cost}{Raster}(x, n = 1, intensity = 100, sd = 20, scale = 2.5)
-
-\method{simulate_cost}{SpatRaster}(x, n = 1, intensity = 100, sd = 20, scale = 2.5)
+simulate_cost(x, n = 1, intensity = 100, sd = 20, scale = 2.5)
 }
 \arguments{
 \item{x}{\code{\link[terra:rast]{terra::rast()}} object to use as a template.}
 
-\item{n}{\code{integer} number of layers to simulate.
+\item{n}{\code{integer} value denoting the number of layers to simulate.
 Defaults to 1.}
 
 \item{intensity}{\code{numeric} average value of simulated data.
@@ -35,7 +29,7 @@ A \code{\link[terra:rast]{terra::rast()}} object with integer values greater tha
 Generates simulated cost data using Gaussian random fields.
 }
 \examples{
-\dontrun{
+\dontshow{if (asNamespace("prioritizr")$do_run_example()) withAutoprint(\{ # examplesIf}
 # create raster
 r <- terra::rast(
   ncols = 10, nrows = 10, xmin = 0, xmax = 1, ymin = 0, ymax = 1, vals = 1
@@ -46,12 +40,11 @@ cost <- simulate_cost(r)
 
 # plot simulated species
 plot(cost, main = "simulated cost data", axes = FALSE)
-}
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other functions for simulating data:
-\code{\link{simulate_data}()},
-\code{\link{simulate_species}()}
+\code{\link[=simulate_data]{simulate_data()}},
+\code{\link[=simulate_species]{simulate_species()}}
 }
 \concept{simulations}

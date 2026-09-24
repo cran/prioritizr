@@ -8,7 +8,7 @@
 #'
 #' Check if all columns inherit from a particular class.
 #'
-#' @param x object.
+#' @param x Object.
 #'
 #' @param what `character` name of class.
 #'
@@ -47,11 +47,6 @@ all_columns_inherit.data.frame <- function(x, what) {
   }
   # checks
   all(vapply(x, inherits, logical(1), what = w))
-}
-
-#' @export
-all_columns_inherit.Spatial <- function(x, what) {
-  all_columns_inherit(x@data, what)
 }
 
 #' @export

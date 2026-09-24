@@ -7,29 +7,28 @@ NULL
 #'
 #' @param x [terra::rast()] object to use as a template.
 #'
-#' @param n `integer` number of layers to simulate.
-#'   Defaults to 1.
+#' @param n `integer` value denoting the number of layers to simulate.
+#' Defaults to 1.
 #'
-#' @param scale `numeric` parameter to control level of spatial
-#'   auto-correlation in the simulated data.
-#'   Defaults to 0.5.
+#' @param scale `numeric` value denoting the level of spatial
+#' auto-correlation in the simulated data.
+#' Defaults to 0.5.
 #'
-#' @param intensity `numeric` average value of simulated data.
-#'   Defaults to 0.
+#' @param intensity `numeric` value denoting the average value of simulated
+#' data. Defaults to 0.
 #'
-#' @param sd `numeric` standard deviation of simulated data.
-#'   Defaults to 1.
+#' @param sd `numeric` value denoting the standard deviation of simulated data.
+#' Defaults to 1.
 #'
-#' @param transform `function` transform values output from the simulation.
-#'   Defaults to the [identity()] function such that values remain the same
-#'   following transformation.
+#' @param transform `function` to transform simulated data.
+#' Defaults to the [identity()] function such that values remain the same
+#' after simulation.
 #'
 #' @family simulations
 #'
 #' @return A [terra::rast()] object.
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # create raster
 #' r <- terra::rast(
 #'   ncols = 10, nrows = 10, xmin = 0, xmax = 1, ymin = 0, ymax = 1, vals = 1
@@ -40,37 +39,12 @@ NULL
 #'
 #' # plot simulated data
 #' plot(x, main = "simulated data", axes = FALSE)
-#' }
+#'
 #' @export
-simulate_data <- function(x, n, scale, intensity, sd, transform) {
-  assert_required(x)
-  assert(is_inherits(x, c("SpatRaster", "Raster")))
-  UseMethod("simulate_data")
-}
-
-#' @rdname simulate_data
-#' @method simulate_data Raster
-#' @export
-simulate_data.Raster <- function(x, n = 1, scale = 0.5, intensity = 0,
-                                 sd = 1, transform = identity) {
-  cli_warning(raster_pkg_deprecation_notice)
-  raster::stack(
-    simulate_data.SpatRaster(
-      x = terra::rast(x),
-      n = n, scale = scale,
-      intensity = intensity,
-      sd = sd,
-      transform = transform
-    )
-  )
-}
-
-#' @rdname simulate_data
-#' @method simulate_data SpatRaster
-#' @export
-simulate_data.SpatRaster <- function(x, n = 1, scale = 0.5, intensity = 0,
-                                     sd = 1, transform = identity) {
+simulate_data <- function(x, n = 1, scale = 0.5, intensity = 0,
+                          sd = 1, transform = identity) {
   # assert valid arguments
+  assert_required(x)
   assert(
     inherits(x, "SpatRaster"),
     is_numeric_values(x),
@@ -122,8 +96,7 @@ simulate_data.SpatRaster <- function(x, n = 1, scale = 0.5, intensity = 0,
 #'
 #' @family simulations
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # create raster
 #' r <- terra::rast(
 #'   ncols = 10, nrows = 10, xmin = 0, xmax = 1, ymin = 0, ymax = 1, vals = 1
@@ -134,33 +107,10 @@ simulate_data.SpatRaster <- function(x, n = 1, scale = 0.5, intensity = 0,
 #'
 #' # plot simulated species
 #' plot(spp, main = "simulated species distributions", axes = FALSE)
-#' }
 #'
 #' @export
-simulate_species <- function(x, n, scale) {
+simulate_species <- function(x, n = 1, scale = 0.5) {
   assert_required(x)
-  assert(is_inherits(x, c("SpatRaster", "Raster")))
-  UseMethod("simulate_species")
-}
-
-#' @rdname simulate_species
-#' @method simulate_species Raster
-#' @export
-simulate_species.Raster <- function(x, n = 1, scale = 0.5) {
-  cli_warning(raster_pkg_deprecation_notice)
-  raster::stack(
-    simulate_species.SpatRaster(
-      x = terra::rast(x),
-      n = n,
-      scale = scale
-    )
-  )
-}
-
-#' @rdname simulate_species
-#' @method simulate_species SpatRaster
-#' @export
-simulate_species.SpatRaster <- function(x, n = 1, scale = 0.5) {
   simulate_data(
     x = x,
     n = n,
@@ -191,8 +141,7 @@ simulate_species.SpatRaster <- function(x, n = 1, scale = 0.5) {
 #'
 #' @return A [terra::rast()] object with integer values greater than zero.
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # create raster
 #' r <- terra::rast(
 #'   ncols = 10, nrows = 10, xmin = 0, xmax = 1, ymin = 0, ymax = 1, vals = 1
@@ -203,37 +152,10 @@ simulate_species.SpatRaster <- function(x, n = 1, scale = 0.5) {
 #'
 #' # plot simulated species
 #' plot(cost, main = "simulated cost data", axes = FALSE)
-#' }
 #'
 #' @export
-simulate_cost <- function(x, n, intensity, sd, scale) {
+simulate_cost <- function(x, n = 1, intensity = 100, sd = 20, scale = 2.5) {
   assert_required(x)
-  assert(is_inherits(x, c("SpatRaster", "Raster")))
-  UseMethod("simulate_cost")
-}
-
-#' @rdname simulate_cost
-#' @method simulate_cost Raster
-#' @export
-simulate_cost.Raster <- function(x, n = 1, intensity = 100,
-                                 sd = 20, scale = 2.5) {
-  cli_warning(raster_pkg_deprecation_notice)
-  raster::stack(
-    simulate_cost.SpatRaster(
-      x = terra::rast(x),
-      n = n,
-      intensity = intensity,
-      sd = sd,
-      scale = scale
-    )
-  )
-}
-
-#' @rdname simulate_cost
-#' @method simulate_cost SpatRaster
-#' @export
-simulate_cost.SpatRaster <- function(x, n = 1, intensity = 100,
-                                     sd = 20, scale = 2.5) {
   simulate_data(
     x,
     n = n,

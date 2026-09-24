@@ -67,18 +67,6 @@ assertthat::on_failure(all_is_valid_total_unit_ids) <- function(call, env) {
       "For planning units in {.cls ", x$planning_unit_class(),
       "} format, identifiers must be row numbers."
     ),
-    SpatialPolygonsDataFrame = paste0(
-      "For planning units in {.cls ", x$planning_unit_class(),
-      "} format, identifiers must be row numbers."
-    ),
-    SpatialPointsDataFrame = paste0(
-      "For planning units in {.cls ", x$planning_unit_class(),
-      "} format, identifiers must be row numbers."
-    ),
-    SpatialLinesDataFrame = paste0(
-      "For planning units in {.cls ", x$planning_unit_class(),
-      "} format, identifiers must be row numbers."
-    ),
     matrix = paste0(
       "For planning units in {.cls ", x$planning_unit_class(),
       "} format, identifiers must be row numbers."
@@ -88,14 +76,6 @@ assertthat::on_failure(all_is_valid_total_unit_ids) <- function(call, env) {
       "} format, identifiers must be element indices."
     ),
     SpatRaster = paste0(
-      "For planning units in {.cls ", x$planning_unit_class(),
-      "} format, identifiers must be cell indices."
-    ),
-    RasterLayer = paste0(
-      "For planning units in {.cls ", x$planning_unit_class(),
-      "} format, identifiers must be cell indices."
-    ),
-    RasterStack = paste0(
       "For planning units in {.cls ", x$planning_unit_class(),
       "} format, identifiers must be cell indices."
     )
@@ -137,7 +117,7 @@ assert_can_calculate_area_based_targets <- function(x, features,
   assert_required(x, .internal = TRUE)
   assert_required(features, .internal = TRUE)
   # process depending on feature data
-  if (inherits(x$get_data("features"), c("ZonesRaster", "ZonesSpatRaster"))) {
+  if (inherits(x$get_data("features"), "ZonesSpatRaster")) {
     ## if has raster features
     ## get units
     ft_crs <- get_crs(x$get_data("features"))
@@ -150,14 +130,9 @@ assert_can_calculate_area_based_targets <- function(x, features,
           "{.arg x} must not have features in a",
           "geodetic coordinate reference system."
         ),
-        "i" = paste0(
-          "This is because the target calculations involve area-based units."
-        ),
-        "i" = ifelse(
-          inherits(x$get_data("features"), "ZonesSpatRaster"),
-          "Use {.fn terra::project} to reproject data.",
-          "Use {.fn raster::projectRaster} to reproject data."
-        )
+        "i" =
+          "This is because the target calculations involve area-based units.",
+        "i" = "Use {.fn terra::project} to reproject data."
       ),
       call = call
     )
@@ -171,14 +146,9 @@ assert_can_calculate_area_based_targets <- function(x, features,
           "{.arg x} must have features in a",
           "coordinate reference system that has defined units."
         ),
-        "i" = paste0(
-          "This is because the target calculations involve area-based units."
-        ),
-        "i" = ifelse(
-          inherits(x$get_data("features"), "ZonesSpatRaster"),
-          "Use {.fn terra::project} to reproject data.",
-          "Use {.fn raster::projectRaster} to reproject data."
-        )
+        "i" =
+          "This is because the target calculations involve area-based units.",
+        "i" = "Use {.fn terra::project} to reproject data."
       ),
       call = call
     )
@@ -196,9 +166,8 @@ assert_can_calculate_area_based_targets <- function(x, features,
           "{.arg x} must have defined {.arg feature units}",
           "to calculate targets for features."
         ),
-        "i" = paste0(
-          "This is because the target calculations involve area-based units."
-        ),
+        "i" =
+          "This is because the target calculations involve area-based units.",
         "x" = paste(
           "{.arg x} is missing units for the following features:",
           "{repr.character(n)}."
@@ -224,7 +193,7 @@ assert_can_calculate_area_based_targets <- function(x, features,
 #' @noRd
 is_pu_spatially_explicit <- function(x) {
   assert(inherits(x, "ConservationProblem"), .internal = TRUE)
-  inherits(x$data$cost, c("Spatial", "Raster", "sf", "SpatRaster"))
+  inherits(x$data$cost, c("sf", "SpatRaster"))
 }
 
 assertthat::on_failure(is_pu_spatially_explicit) <- function(call, env) {
@@ -248,7 +217,7 @@ assertthat::on_failure(is_pu_spatially_explicit) <- function(call, env) {
 #'
 #' @param x [problem()] object.
 #'
-#' @param y [terra::rast()] or [raster::raster()] object.
+#' @param y [terra::rast()] object.
 #'
 #' @param call Caller environment.
 #'
@@ -299,4 +268,168 @@ assertthat::on_failure(has_single_zone) <- function(call, env) {
       x$number_of_zones(), "}} zones."
     )
   )
+}
+
+#' All conservation planning problems comparable?
+#'
+#' @param x set of [problem()] objects.
+#'
+#' @return A `logical` value.
+#'
+#' @noRd
+all_comparable_problem <- function(...) {
+  # store arguments as list
+  x <- list(...)
+
+  # assert that all arguments are valid
+  assert(
+    is.list(x),
+    length(x) >= 1,
+    all_elements_inherit(x, "ConservationProblem"),
+    .internal = TRUE
+  )
+
+  # run checks on arguments
+  isTRUE(
+    ## all problems must have same number of zones
+    all(vapply(
+      lapply(x, number_of_zones), identical,
+      logical(1), x[[1]]$number_of_zones()
+    )) &&
+    ## if these are multi-zone problems, then they must have the same zone
+    ## names. note that this is not so important for the single-zone
+    ## problems because the zone name is automatically derived from the
+    ## name of the cost layer, and so it could be more reasonable for
+    ## a user to consider single-zone problems that have different
+    ## zone names
+    (
+      isTRUE(identical(x[[1]]$number_of_zones(), 1L)) ||
+      all(vapply(
+        lapply(x, zone_names), identical,
+        logical(1), x[[1]]$zone_names()
+      ))
+    ) &&
+    ## all problems have same types of planning units
+    all(vapply(
+      lapply(x, function(z) z$planning_unit_class()), identical,
+      logical(1), x[[1]]$planning_unit_class()
+    )) &&
+    ## all problems have the same decision types
+    all(vapply(
+      lapply(x, function(z) z$decisions$name), identical,
+      logical(1), x[[1]]$decisions$name
+    )) &&
+    ## all problems have same number of total units
+    all(vapply(
+      lapply(x, number_of_total_units), identical,
+      logical(1), x[[1]]$number_of_total_units()
+    )) &&
+    ## all problems have same planning unit indices (in other words,
+    ## the pixel or row number indices for planning units are the
+    ## same across all problems)
+    all(vapply(
+      lapply(x, function(z) z$planning_unit_indices()), identical,
+      logical(1), x[[1]]$planning_unit_indices()
+    )) &&
+    ## all problems have same number of planning units
+    all(vapply(
+      lapply(x, number_of_planning_units), identical,
+      logical(1), x[[1]]$number_of_planning_units()
+    )) &&
+    ## all problems have same decision type
+    all(vapply(
+      lapply(x, function(z) z$decisions$name), identical,
+      logical(1), x[[1]]$decisions$name
+    ))
+  )
+}
+
+assertthat::on_failure(all_comparable_problem) <- function(call, env) {
+  # get the list of problems passed to all_comparable_problem()
+  if (identical(as.list(call)[[2]], as.name("..1"))) {
+    # if the function is called by passing arguments as ..., then:
+    x <- as.list(eval(substitute(list(...)), env))
+  } else {
+    # otherwise, if the function is called by passing arguments directly, then:
+    x <- lapply(as.list(call)[-1], function(x) eval(x, envir = env))
+  }
+
+  # replicate the same checks as the main function, individually
+  checks <- c(
+    number_zones = isTRUE(all(vapply(
+      lapply(x, number_of_zones), identical,
+      logical(1), x[[1]]$number_of_zones()
+    ))),
+    zones_names = isTRUE(all(vapply(
+      lapply(x, zone_names), identical,
+      logical(1), x[[1]]$zone_names()
+    ))),
+    number_pu = isTRUE(all(vapply(
+      lapply(x, number_of_planning_units), identical,
+      logical(1), x[[1]]$number_of_planning_units()
+    ))),
+    number_total = isTRUE(all(vapply(
+      lapply(x, number_of_total_units), identical,
+      logical(1), x[[1]]$number_of_total_units()
+    ))),
+    pu_class = isTRUE(all(vapply(
+      lapply(x, function(z) z$planning_unit_class()), identical,
+      logical(1), x[[1]]$planning_unit_class()
+    ))),
+    pu_indices = isTRUE(all(vapply(
+      lapply(x, function(z) z$planning_unit_indices()), identical,
+      logical(1), x[[1]]$planning_unit_indices()
+    ))),
+    decisions = isTRUE(all(vapply(
+      lapply(x, function(z) z$decisions$name), identical,
+      logical(1), x[[1]]$decisions$name
+    )))
+  )
+
+  # identify number of failed checks
+  n <- sum(!checks)
+
+  # if couldn't determine failed checks, then throw internal error
+  # nocov start
+  if (identical(n, 0L)) {
+    rlang::abort(
+      paste(
+        "An issue was detected with the problems,",
+        "but could not identify precise details."
+      ),
+      .internal = TRUE
+    )
+  }
+  # nocov end
+
+  # define messages for each type of failure
+  messages <- c(
+    number_zones =
+      "All problems must have the same number of zones.",
+    zones_names =
+      "All problems must have identical zone names.",
+    number_pu =
+      "All problems must have the same number of planning units.",
+    number_total =
+      "All problems must have the same total units.",
+    pu_class =
+      "All problems must have identical planning unit classes.",
+    pu_indices =
+      "All problems must have identical planning unit indices.",
+    decisions =
+      "All problems must have identical decision types."
+  )
+
+  # return message
+  msg <- c(
+    "!" = "{.arg ...} must have comparable problems.",
+    "i" = paste0(
+      "{cli::qty(", n, ")}The following issue{?s} {?was/were} detected:"
+    ),
+    stats::setNames(
+      messages[names(checks)[!checks]],
+      rep(">", n)
+    )
+  )
+
 }

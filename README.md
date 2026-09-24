@@ -37,6 +37,8 @@ read input data formatted for the *Marxan* conservation planning
 program, and find much cheaper solutions in a much shorter period of
 time than *Marxan*.
 
+<a href="https://www.youtube.com/watch?v=c7XgODGr9lE" rel="nofollow" target="_blank"><img src="man/figures/youtube-thumbnail.png" alt="YouTube video" style="max-width: 100%;"></a>
+
 ## Installation
 
 #### Official version
@@ -116,6 +118,9 @@ package. Additionally, we will use the *terra R* package to perform
 raster calculations. To begin with, we will load the packages.
 
 ``` r
+# to install packages for this example, please use:
+# install.packages(c("prioritizr", "prioritizrdata"))
+
 # load packages
 library(prioritizr)
 library(prioritizrdata)
@@ -139,22 +144,22 @@ wa_pu <- get_wa_pu()
 print(wa_pu)
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 109, 147, 1  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
-    ## source      : wa_pu.tif 
-    ## name        :         cost 
-    ## min value   :    0.2986647 
-    ## max value   : 1804.1838379
+    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs
+    ## source      : wa_pu.tif
+    ## name        :        cost
+    ## min value   :    0.298665
+    ## max value   : 1804.183838
 
 ``` r
 # plot data
 plot(wa_pu, main = "Costs", axes = FALSE)
 ```
 
-<img src="man/figures/README-planning_units-1.png" width="500" style="display: block; margin: auto;" />
+<img src="man/figures/README-planning_units-1.png" alt="" width="500" style="display: block; margin: auto;" />
 
 Next, we will use the `get_wa_features()` function to import the
 conservation feature data. Although the *prioritizr R* package can
@@ -175,14 +180,14 @@ wa_features <- get_wa_features()
 print(wa_features)
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 109, 147, 396  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
-    ## source      : wa_features.tif 
-    ## names       : Recur~ding), Botau~ding), Botau~ding), Corvu~ding), Corvu~ding), Cincl~full), ... 
-    ## min values  :       0.000,       0.000,       0.000,       0.000,       0.000,        0.00, ... 
+    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs
+    ## source      : wa_features.tif
+    ## names       : Recur~ding), Botau~ding), Botau~ding), Corvu~ding), Corvu~ding), Cincl~full), ...
+    ## min values  :           0,           0,           0,           0,           0,           0, ...
     ## max values  :       0.514,       0.812,       3.129,       0.115,       0.296,        0.06, ...
 
 ``` r
@@ -190,7 +195,7 @@ print(wa_features)
 plot(wa_features[[1:9]], nr = 3, axes = FALSE)
 ```
 
-<img src="man/figures/README-features-1.png" width="800" style="display: block; margin: auto;" />
+<img src="man/figures/README-features-1.png" alt="" width="800" style="display: block; margin: auto;" />
 
 Let’s make sure that you have a solver installed on your computer. This
 is important so that you can use optimization algorithms to generate
@@ -256,9 +261,9 @@ print(p1)
     ## │├•constraints: none specified
     ## │└•decisions:   binary decision
     ## └•optimization
-    ##  ├•portfolio:   default portfolio
-    ##  └•solver:      gurobi solver (`gap` = 0.1, `time_limit` = 2147483647, `first_feasible` = FALSE, …)
-    ## # ℹ Use `summary(...)` to see complete formulation.
+    ##  ├•portfolio:   single portfolio
+    ##  └•solver:      gurobi solver (`gap` = 0.1, `time_limit` = 2147483647, `presolve` = 2, `threads` = 1, …)
+    ## # ℹ Use `summary(...)` to see further details.
 
 After we have built a `problem()`, we can solve it to obtain a solution.
 
@@ -279,7 +284,7 @@ print(attr(s1, "runtime"))
 ```
 
     ## solution_1 
-    ##      3.526
+    ##      3.321
 
 ``` r
 # extract state message from the solver
@@ -294,7 +299,7 @@ print(attr(s1, "status"))
 plot(s1, main = "Solution", axes = FALSE)
 ```
 
-<img src="man/figures/README-minimal_solution-1.png" width="500" style="display: block; margin: auto;" />
+<img src="man/figures/README-minimal_solution-1.png" alt="" width="500" style="display: block; margin: auto;" />
 
 After generating a solution, it is important to evaluate it. Here, we
 will calculate the number of planning units selected by the solution,
@@ -327,7 +332,7 @@ p1_target_coverage <- eval_target_coverage_summary(p1, s1)
 print(p1_target_coverage)
 ```
 
-    ## # A tibble: 396 × 9
+    ## # A tibble: 396 × 10
     ##    feature   met   total_amount absolute_target absolute_held absolute_shortfall
     ##    <chr>     <lgl>        <dbl>           <dbl>         <dbl>              <dbl>
     ##  1 Recurvir… TRUE         100.             20.0          23.4               0   
@@ -341,8 +346,8 @@ print(p1_target_coverage)
     ##  9 Falco sp… TRUE          99.9            20.0          24.9               0   
     ## 10 Falco sp… TRUE         100.0            20.0          24.5               0   
     ## # ℹ 386 more rows
-    ## # ℹ 3 more variables: relative_target <dbl>, relative_held <dbl>,
-    ## #   relative_shortfall <dbl>
+    ## # ℹ 4 more variables: relative_target <dbl>, relative_held <dbl>,
+    ## #   relative_shortfall <dbl>, relative_met <dbl>
 
 ``` r
 # check percentage of the features that have their target met given the solution
@@ -369,14 +374,14 @@ wa_locked_in <- get_wa_locked_in()
 print(wa_locked_in)
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 109, 147, 1  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
-    ## source      : wa_locked_in.tif 
-    ## name        : protected areas 
-    ## min value   :               0 
+    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs
+    ## source      : wa_locked_in.tif
+    ## name        : protected areas
+    ## min value   :               0
     ## max value   :               1
 
 ``` r
@@ -384,7 +389,7 @@ print(wa_locked_in)
 plot(wa_locked_in, main = "Existing protected areas", axes = FALSE)
 ```
 
-<img src="man/figures/README-locked_in_constraints-1.png" width="500" style="display: block; margin: auto;" />
+<img src="man/figures/README-locked_in_constraints-1.png" alt="" width="500" style="display: block; margin: auto;" />
 
 ``` r
 # create new problem with locked in constraints added to it
@@ -399,7 +404,7 @@ s2 <- solve(p2)
 plot(s2, main = "Solution", axes = FALSE)
 ```
 
-<img src="man/figures/README-locked_in_constraints-2.png" width="500" style="display: block; margin: auto;" />
+<img src="man/figures/README-locked_in_constraints-2.png" alt="" width="500" style="display: block; margin: auto;" />
 
 This solution is an improvement over the previous solution. However,
 there are some places in the study area that are not available for
@@ -420,14 +425,14 @@ wa_locked_out <- get_wa_locked_out()
 print(wa_locked_out)
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 109, 147, 1  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
-    ## source      : wa_locked_out.tif 
-    ## name        : urban areas 
-    ## min value   :           0 
+    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs
+    ## source      : wa_locked_out.tif
+    ## name        : urban areas
+    ## min value   :           0
     ## max value   :           1
 
 ``` r
@@ -435,7 +440,7 @@ print(wa_locked_out)
 plot(wa_locked_out, main = "Areas not available for protection", axes = FALSE)
 ```
 
-<img src="man/figures/README-locked_out_constraints-1.png" width="500" style="display: block; margin: auto;" />
+<img src="man/figures/README-locked_out_constraints-1.png" alt="" width="500" style="display: block; margin: auto;" />
 
 ``` r
 # create new problem with locked out constraints added to it
@@ -450,7 +455,7 @@ s3 <- solve(p3)
 plot(s3, main = "Solution", axes = FALSE)
 ```
 
-<img src="man/figures/README-locked_out_constraints-2.png" width="500" style="display: block; margin: auto;" />
+<img src="man/figures/README-locked_out_constraints-2.png" alt="" width="500" style="display: block; margin: auto;" />
 
 This solution is even better then the previous solution. However, we are
 not finished yet. The planning units selected by the solution are fairly
@@ -476,7 +481,7 @@ s4 <- solve(p4)
 plot(s4, main = "Solution", axes = FALSE)
 ```
 
-<img src="man/figures/README-boundary_penalties-1.png" width="500" style="display: block; margin: auto;" />
+<img src="man/figures/README-boundary_penalties-1.png" alt="" width="500" style="display: block; margin: auto;" />
 
 Now, let’s explore which planning units selected by the solution are
 most important for cost-effectively meeting the targets. To achieve
@@ -497,15 +502,15 @@ imp <-
 print(imp)
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 109, 147, 1  (nrow, ncol, nlyr)
     ## resolution  : 4000, 4000  (x, y)
     ## extent      : -1816382, -1228382, 247483.5, 683483.5  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs 
+    ## coord. ref. : +proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs
     ## source(s)   : memory
-    ## varname     : wa_pu 
-    ## name        : rs 
-    ## min value   :  0 
+    ## varname     : wa_pu
+    ## name        : rs
+    ## min value   :  0
     ## max value   :  1
 
 ``` r
@@ -521,7 +526,7 @@ imp <- terra::mask(imp, s4, maskvalues = 0, updatevalue = -1)
 plot(imp, axes = FALSE,  main = "Importance scores")
 ```
 
-<img src="man/figures/README-importance-1.png" width="500" style="display: block; margin: auto;" />
+<img src="man/figures/README-importance-1.png" alt="" width="500" style="display: block; margin: auto;" />
 
 This short example demonstrates how the *prioritizr R* package can be
 used to build and customize conservation problems, and then solve them
@@ -574,9 +579,11 @@ Additional resources can also be found in [online repositories under the
 *prioritizr* organization](https://github.com/prioritizr). These
 resources include [slides for talks and seminars about the
 package](https://github.com/prioritizr/teaching). Additionally, workshop
-materials are available too (e.g., the [Carleton 2023
-workshop](https://prioritizr.github.io/workshop/) and [ECCB 2024
-workshop](https://iiasa.github.io/eccb2024/)).
+materials are available too (e.g., [Carleton 2023
+workshop](https://prioritizr.github.io/workshop/), [ECCB 2024
+workshop](https://iiasa.github.io/eccb2024/), and [Statistical Methods
+Webinar series 2025
+workshop](https://github.com/eco4cast/Statistical-Methods-Seminar-Series/tree/main/schuster_prioritizr)).
 
 ## Getting help
 

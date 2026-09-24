@@ -10,8 +10,8 @@ NULL
 #'
 #' @param y [sf::st_sf()] or [terra::rast()] object.
 #'
-#' @return An `integer` vector of indices of the units in `x` that intersect
-#'   with `y`.
+#' @return
+#' An `integer` vector with indices of the units in `x`.
 #'
 #' @name intersecting_units
 #'
@@ -29,10 +29,9 @@ NULL
 #'
 #' @exportMethod intersecting_units
 #'
-#' @aliases intersecting_units,Raster,ANY-method intersecting_units,ANY,Raster-method intersecting_units,Spatial,ANY-method intersecting_units,ANY,Spatial-method intersecting_units,sf,sf-method intersecting_units,SpatRaster,sf-method intersecting_units,SpatRaster,SpatRaster-method intersecting_units,sf,SpatRaster-method intersecting_units,data.frame,ANY-method
+#' @aliases intersecting_units,sf,sf-method intersecting_units,SpatRaster,sf-method intersecting_units,SpatRaster,SpatRaster-method intersecting_units,sf,SpatRaster-method intersecting_units,data.frame,ANY-method
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # create data
 #' r <- terra::rast(matrix(1:9, byrow = TRUE, ncol = 3))
 #' r_with_holes <- r
@@ -63,7 +62,6 @@ NULL
 #' plot(ply, main = "x = sf", key.pos = NULL, reset = FALSE)
 #' plot(ply_with_holes, main = "y = sf", key.pos = NULL, reset = FALSE)
 #' print(intersecting_units(ply, ply_with_holes))
-#' }
 #'
 #' @export
 methods::setGeneric(
@@ -74,59 +72,11 @@ methods::setGeneric(
     assert_required(y)
     assert(
       is_inherits(
-        x, c("data.frame", "sf", "SpatRaster", "Spatial", "Raster")
+        x, c("data.frame", "sf", "SpatRaster")
       ),
       is_spatially_explicit(y)
     )
     standardGeneric("intersecting_units")
-  }
-)
-
-#' @name intersecting_units
-#' @usage \S4method{intersecting_units}{Raster,ANY}(x, y)
-#' @rdname intersecting_units
-methods::setMethod(
-  "intersecting_units",
-  methods::signature(x = "Raster", y = "ANY"),
-  function(x, y) {
-    cli_warning(raster_pkg_deprecation_notice)
-    intersecting_units(terra::rast(x), y)
-  }
-)
-
-#' @name intersecting_units
-#' @usage \S4method{intersecting_units}{ANY,Raster}(x, y)
-#' @rdname intersecting_units
-methods::setMethod(
-  "intersecting_units",
-  methods::signature(x = "ANY", y = "Raster"),
-  function(x, y) {
-    cli_warning(raster_pkg_deprecation_notice)
-    intersecting_units(x, terra::rast(y))
-  }
-)
-
-#' @name intersecting_units
-#' @usage \S4method{intersecting_units}{Spatial,ANY}(x, y)
-#' @rdname intersecting_units
-methods::setMethod(
-  "intersecting_units",
-  methods::signature(x = "Spatial", y = "ANY"),
-  function(x, y) {
-    cli_warning(sp_pkg_deprecation_notice)
-    intersecting_units(sf::st_as_sf(x), y)
-  }
-)
-
-#' @name intersecting_units
-#' @usage \S4method{intersecting_units}{ANY,Spatial}(x, y)
-#' @rdname intersecting_units
-methods::setMethod(
-  "intersecting_units",
-  methods::signature(x = "ANY", y = "Spatial"),
-  function(x, y) {
-    cli_warning(sp_pkg_deprecation_notice)
-    intersecting_units(x, sf::st_as_sf(y))
   }
 )
 
@@ -230,5 +180,3 @@ methods::setMethod("intersecting_units",
     which(c(fast_extract(y[[1]] > 0, x, fun = "mean")) > 1e-7)
   }
 )
-
-na_crs <- "ENGCRS[\"Undefined Cartesian SRS\",\n    EDATUM[\"\"],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"Meter\",1]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"Meter\",1]]]"

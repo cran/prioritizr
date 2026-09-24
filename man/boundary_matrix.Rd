@@ -2,26 +2,14 @@
 % Please edit documentation in R/boundary_matrix.R
 \name{boundary_matrix}
 \alias{boundary_matrix}
-\alias{boundary_matrix.Raster}
 \alias{boundary_matrix.SpatRaster}
-\alias{boundary_matrix.SpatialPolygons}
-\alias{boundary_matrix.SpatialLines}
-\alias{boundary_matrix.SpatialPoints}
 \alias{boundary_matrix.sf}
 \alias{boundary_matrix.default}
 \title{Boundary matrix}
 \usage{
 boundary_matrix(x, ...)
 
-\method{boundary_matrix}{Raster}(x, ...)
-
 \method{boundary_matrix}{SpatRaster}(x, ...)
-
-\method{boundary_matrix}{SpatialPolygons}(x, ...)
-
-\method{boundary_matrix}{SpatialLines}(x, ...)
-
-\method{boundary_matrix}{SpatialPoints}(x, ...)
 
 \method{boundary_matrix}{sf}(x, ...)
 
@@ -75,7 +63,7 @@ perimeter associated with each planning unit.
 }
 
 \examples{
-\dontrun{
+\dontshow{if (asNamespace("prioritizr")$do_run_example()) withAutoprint(\{ # examplesIf}
 # load data
 sim_pu_raster <- get_sim_pu_raster()
 sim_pu_polygons <- get_sim_pu_polygons()
@@ -103,7 +91,7 @@ plot(ply[, 1], main = "polygons", axes = FALSE)
 # plot boundary matrix
 # here each row and column corresponds to a different planning unit
 Matrix::image(bm_ply, main = "boundary matrix")
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Boundary matrix data might need rescaling to improve optimization

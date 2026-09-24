@@ -31,6 +31,7 @@ NULL
 #'
 #' # print category vector
 #' print(y)
+#'
 #' @name category_vector
 #'
 #' @export
@@ -58,15 +59,6 @@ category_vector.data.frame <- function(x) {
 category_vector.sf <- function(x) {
   assert(inherits(x, "sf"))
   category_vector(sf::st_drop_geometry(x))
-}
-
-#' @rdname category_vector
-#' @method category_vector Spatial
-#' @export
-category_vector.Spatial <- function(x) {
-  assert(inherits(x, "Spatial"))
-  cli_warning(sp_pkg_deprecation_notice)
-  category_vector(x@data)
 }
 
 #' @rdname category_vector

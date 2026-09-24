@@ -9,11 +9,11 @@ NULL
 #' @param x [terra::rast()] or [sf::sf()] object representing planning units.
 #'
 #' @param distance `numeric` distance threshold. Planning units
-#'   that are further apart from each other than this threshold are
-#'   not treated as being within proximity of each other.
+#' that are further apart from each other than this threshold are
+#' not treated as being within proximity of each other.
 #'
-#' @details Proximity calculations are performed using
-#'   [sf::st_is_within_distance()].
+#' @details
+#' Proximity calculations are performed using [sf::st_is_within_distance()].
 #'
 #' @return
 #' A [`Matrix::dsCMatrix-class`] symmetric sparse matrix object.
@@ -21,7 +21,7 @@ NULL
 #' Cells values indicate if the pair-wise distances between different
 #' planning units are within the distance threshold or not (using ones and
 #' zeros). To reduce computational burden, cells among the matrix diagonal are
-#' set to zero. Furthermore, if the argument to `x` is a
+#' set to zero. Furthermore, if `x` is a
 #' [terra::rast()] object, then cells with missing (`NA`)
 #' values are set to zero too.
 #'
@@ -29,12 +29,11 @@ NULL
 #'
 #' @seealso
 #' Proximity matrix data might need rescaling to improve optimization
-#' performance, see [rescale_matrix()] to perform these calculations.
+#' performance. See [rescale_matrix()] to perform rescaling.
 #'
 #' @rdname proximity_matrix
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # load data
 #' sim_pu_raster <- get_sim_pu_raster()
 #' sim_pu_polygons <- get_sim_pu_polygons()
@@ -84,20 +83,12 @@ NULL
 #' ## plot points and proximity matrix
 #' plot(pts[, 1], main = "points", axes = FALSE)
 #' Matrix::image(cm_pts, main = "proximity matrix")
-#' }
+#'
 #' @export
 proximity_matrix <- function(x, distance) {
   assert_required(x)
   assert_required(distance)
   UseMethod("proximity_matrix")
-}
-
-#' @rdname proximity_matrix
-#' @method proximity_matrix Raster
-#' @export
-proximity_matrix.Raster <- function(x, distance) {
-  assert(inherits(x, "Raster"))
-  proximity_matrix(terra::rast(x), distance)
 }
 
 #' @rdname proximity_matrix
@@ -138,27 +129,6 @@ proximity_matrix.SpatRaster <- function(x, distance) {
   )
   Matrix::diag(prx) <- 0
   Matrix::drop0(Matrix::forceSymmetric(prx))
-}
-
-#' @rdname proximity_matrix
-#' @method proximity_matrix SpatialPolygons
-#' @export
-proximity_matrix.SpatialPolygons <- function(x, distance) {
-  proximity_matrix(sf::st_as_sf(x), distance)
-}
-
-#' @rdname proximity_matrix
-#' @method proximity_matrix SpatialLines
-#' @export
-proximity_matrix.SpatialLines <- function(x, distance) {
-  proximity_matrix(sf::st_as_sf(x), distance)
-}
-
-#' @rdname proximity_matrix
-#' @method proximity_matrix SpatialPoints
-#' @export
-proximity_matrix.SpatialPoints <- function(x, distance) {
-  proximity_matrix(sf::st_as_sf(x), distance)
 }
 
 #' @rdname proximity_matrix

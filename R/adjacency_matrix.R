@@ -8,11 +8,11 @@ NULL
 #'
 #' @param x [terra::rast()] or [sf::sf()] object representing planning units.
 #'
-#' @param directions `integer` If `x` is a
-#'   [terra::rast()] object, the number of directions
-#'   in which cells should be considered adjacent: 4 (rook's case), 8 (queen's
-#'   case), 16 (knight and one-cell queen moves), or "bishop" to for cells
-#'   with one-cell diagonal moves.
+#' @param directions `integer` value. If `x` is a
+#' [terra::rast()] object, the number of directions
+#' in which cells should be considered adjacent: 4 (rook's case), 8 (queen's
+#' case), or 16 (knight and one-cell queen moves).
+#' Note if `x` is a [sf::sf()] object, then `directions` has no effect.
 #'
 #' @param ... not used.
 #'
@@ -24,25 +24,25 @@ NULL
 #' adjacent.
 #'
 #' @section Notes:
-#'   In earlier versions (< 5.0.0), this function was named as the
-#'   `connected_matrix` function. It has been renamed to be consistent
-#'   with other spatial association matrix functions.
+#' In earlier versions (< 5.0.0), this function was named as the
+#' `connected_matrix` function. It has been renamed to be consistent
+#' with other spatial association matrix functions.
 #'
-#' @return A [`Matrix::dsCMatrix-class`] sparse symmetric matrix.
-#'   Each row and column represents a planning unit.
-#'   Cells values indicate if different planning units are
-#'   adjacent to each other or not (using ones and zeros).
-#'   To reduce computational burden, cells among the matrix diagonal are
-#'   set to zero. Furthermore, if the argument to `x` is a
-#'   [terra::rast()] object, then cells with `NA` values are set to
-#'   zero too.
+#' @return
+#' A [`Matrix::dsCMatrix-class`] sparse symmetric matrix.
+#' Each row and column represents a planning unit.
+#' Cells values indicate if different planning units are
+#' adjacent to each other or not (using ones and zeros).
+#' To reduce computational burden, cells among the matrix diagonal are
+#' set to zero. Furthermore, if `x` is a
+#' [terra::rast()] object, then cells with `NA` values are set to
+#' zero too.
 #'
 #' @name adjacency_matrix
 #'
 #' @rdname adjacency_matrix
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # load data
 #' sim_pu_raster <- get_sim_pu_raster()
 #' sim_pu_polygons <- get_sim_pu_polygons()
@@ -71,22 +71,10 @@ NULL
 #' plot(ply[, 1], main = "polygons")
 #' Matrix::image(am_ply, main = "adjacency matrix")
 #'
-#' }
 #' @export
 adjacency_matrix <- function(x, ...) {
   assert_required(x)
   UseMethod("adjacency_matrix")
-}
-
-#' @rdname adjacency_matrix
-#' @method adjacency_matrix Raster
-#' @export
-adjacency_matrix.Raster <- function(x, directions = 4, ...) {
-  assert_required(directions)
-  assert_dots_empty()
-  assert(inherits(x, "Raster"))
-  cli_warning(raster_pkg_deprecation_notice)
-  adjacency_matrix.SpatRaster(terra::rast(x), directions = directions, ...)
 }
 
 #' @rdname adjacency_matrix
@@ -122,34 +110,6 @@ adjacency_matrix.SpatRaster <- function(x, directions = 4, ...) {
   )
   # return result
   Matrix::drop0(Matrix::forceSymmetric(m))
-}
-
-#' @rdname adjacency_matrix
-#' @method adjacency_matrix SpatialPolygons
-#' @export
-adjacency_matrix.SpatialPolygons <- function(x, ...) {
-  assert_dots_empty()
-  cli_warning(sp_pkg_deprecation_notice)
-  adjacency_matrix(sf::st_as_sf(x), ...)
-}
-
-#' @rdname adjacency_matrix
-#' @method adjacency_matrix SpatialLines
-#' @export
-adjacency_matrix.SpatialLines <- function(x,  ...) {
-  assert_dots_empty()
-  cli_warning(sp_pkg_deprecation_notice)
-  adjacency_matrix(sf::st_as_sf(x), ...)
-}
-
-#' @rdname adjacency_matrix
-#' @method adjacency_matrix SpatialPoints
-#' @export
-adjacency_matrix.SpatialPoints <- function(x, ...) {
-  assert_required(x)
-  assert_dots_empty()
-  cli_warning(sp_pkg_deprecation_notice)
-  adjacency_matrix(sf::st_as_sf(x), ...)
 }
 
 #' @rdname adjacency_matrix

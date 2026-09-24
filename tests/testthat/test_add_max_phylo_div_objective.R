@@ -1,4 +1,5 @@
 test_that("compile (compressed formulation, single zone)", {
+  skip_if_not_installed("ape")
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -19,17 +20,11 @@ test_that("compile (compressed formulation, single zone)", {
   n_f <- terra::nlyr(sim_features)
   n_br <- nrow(sim_phylogeny$edge)
   bm <- branch_matrix(sim_phylogeny)
-  scaled_costs <- c(
-    p$planning_unit_costs() *
-    c(
-      (-0.01* min(sim_phylogeny$edge.length)) /
-      sum(p$planning_unit_costs(), na.rm = TRUE)
-    )
-  )
+  # run tests
   expect_equal(o$modelsense(), "max")
   expect_equal(
     o$obj(),
-    c(scaled_costs, rep(0, n_f), sim_phylogeny$edge.length)
+    c(rep(0, n_pu), rep(0, n_f), sim_phylogeny$edge.length)
   )
   expect_equal(o$sense(), c(rep(">=", n_f), "<=", rep(">=", n_br)))
   expect_equal(o$rhs(), c(rep(0, n_f), b, rep(0, n_br)))
@@ -71,8 +66,9 @@ test_that("compile (compressed formulation, single zone)", {
   expect_true(all(o$ub() == 1))
 })
 
-test_that("solution (compressed formulation, single zone)", {
+test_that("solve (compressed formulation, single zone)", {
   skip_on_cran()
+  skip_if_not_installed("ape")
   skip_if_no_fast_solvers_installed()
   # create data
   budget <- 4.23
@@ -113,6 +109,7 @@ test_that("solution (compressed formulation, single zone)", {
 })
 
 test_that("compile (expanded formulation)", {
+  skip_if_not_installed("ape")
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -135,18 +132,11 @@ test_that("compile (expanded formulation)", {
   rij <- rij_matrix(sim_pu_raster, sim_features)
   n_rij <- length(rij@x)
   bm <- branch_matrix(sim_phylogeny)
-  scaled_costs <- c(
-    p$planning_unit_costs() *
-    c(
-      (-0.01* min(sim_phylogeny$edge.length)) /
-      sum(p$planning_unit_costs(), na.rm = TRUE)
-    )
-  )
   # tests
   expect_equal(o$modelsense(), "max")
   expect_equal(
     o$obj(),
-    c(scaled_costs, rep(0, n_f), rep(0, n_pu * n_f), sim_phylogeny$edge.length)
+    c(rep(0, n_pu), rep(0, n_f), rep(0, n_pu * n_f), sim_phylogeny$edge.length)
   )
   expect_equal(
     o$sense(),
@@ -201,8 +191,9 @@ test_that("compile (expanded formulation)", {
   }
 })
 
-test_that("solution (expanded formulation, single zone)", {
+test_that("solve (expanded formulation, single zone)", {
   skip_on_cran()
+  skip_if_not_installed("ape")
   skip_if_no_fast_solvers_installed()
   # create data
   cost <- terra::rast(matrix(c(1, 2, NA, 4), nrow = 1))
@@ -240,7 +231,94 @@ test_that("solution (expanded formulation, single zone)", {
   expect_equal(c(terra::values(s)), c(0, 0, NA, 1))
 })
 
+test_that("compile (compressed formulation, single zone, budget = NULL)", {
+  skip_if_not_installed("ape")
+  # import data
+  sim_pu_raster <- get_sim_pu_raster()
+  sim_features <- get_sim_features()
+  sim_phylogeny <- get_sim_phylogeny()
+  # calculate targets data
+  targ <- floor(terra::global(sim_features, "sum", na.rm = TRUE)[[1]] * 0.25)
+  # create problem
+  p <-
+    problem(sim_pu_raster, sim_features) %>%
+    add_max_phylo_div_objective(budget = NULL, tree = sim_phylogeny) %>%
+    add_absolute_targets(targ) %>%
+    add_binary_decisions()
+  o <- compile(p)
+  # calculations for tests
+  n_pu <- length(sim_pu_raster[[1]][!is.na(sim_pu_raster)])
+  n_f <- terra::nlyr(sim_features)
+  n_br <- nrow(sim_phylogeny$edge)
+  bm <- branch_matrix(sim_phylogeny)
+  # run tests
+  expect_equal(o$modelsense(), "max")
+  expect_equal(
+    o$obj(),
+    c(rep(0, n_pu), rep(0, n_f), sim_phylogeny$edge.length)
+  )
+  expect_equal(o$sense(), c(rep(">=", n_f), rep(">=", n_br)))
+  expect_equal(o$rhs(), c(rep(0, n_f), rep(0, n_br)))
+  expect_equal(
+    o$col_ids(),
+    c(rep("pu", n_pu), rep("spp_met", n_f), rep("branch_met", n_br))
+  )
+  expect_equal(
+    o$row_ids(),
+    c(rep("spp_target", n_f), rep("branch_target", n_br))
+  )
+  expect_true(
+    all(o$A()[seq_len(n_f), seq_len(n_pu)] == p$data$rij_matrix[[1]])
+  )
+  expect_true(
+    all(
+      o$A()[seq_len(n_f), n_pu + seq_len(n_f)] ==
+      triplet_sparse_matrix(
+        i = seq_len(n_f), j = seq_len(n_f), x = (-1 * targ)
+      )
+    )
+  )
+  expect_true(
+    all(o$A()[n_f + seq_len(n_br), n_pu + seq_len(n_f)] == Matrix::t(bm))
+  )
+  expect_true(
+    all(
+      o$A()[n_f + seq_len(n_br), n_pu + n_f + seq_len(n_br)] ==
+      Matrix::sparseMatrix(
+        i = seq_len(n_br), j = seq_len(n_br), x = rep(-1, n_br)
+      )
+    )
+  )
+  expect_true(all(o$lb() == 0))
+  expect_true(all(o$ub() == 1))
+})
+
+test_that("solve (compressed formulation, single zone, budget = NULL)", {
+  skip_on_cran()
+  skip_if_not_installed("ape")
+  skip_if_no_fast_solvers_installed()
+  # import data
+  sim_pu_raster <- get_sim_pu_raster()
+  sim_features <- get_sim_features()
+  sim_phylogeny <- get_sim_phylogeny()
+  # create problem
+  p <-
+    problem(sim_pu_raster, sim_features) %>%
+    add_max_phylo_div_objective(budget = NULL, sim_phylogeny) %>%
+    add_relative_targets(1) %>%
+    add_default_solver(gap = 0, verbose = FALSE)
+  # solve problem
+  s <- solve(p, run_checks = FALSE)
+  # run tests
+  expect_inherits(s, "SpatRaster")
+  expect_equal(
+    terra::global(s, "sum", na.rm = TRUE)[[1]],
+    terra::global(s, "notNA")[[1]]
+  )
+})
+
 test_that("invalid inputs (single zone)", {
+  skip_if_not_installed("ape")
   # import data
   sim_pu_raster <- get_sim_pu_raster()
   sim_features <- get_sim_features()
@@ -273,6 +351,7 @@ test_that("invalid inputs (single zone)", {
 })
 
 test_that("compile (compressed formulation, multiple zones, scalar budget)", {
+  skip_if_not_installed("ape")
   # import data
   sim_zones_pu_raster <- get_sim_zones_pu_raster()
   sim_zones_features <- get_sim_zones_features()
@@ -304,17 +383,11 @@ test_that("compile (compressed formulation, multiple zones, scalar budget)", {
   n_z <- p$number_of_zones()
   n_br <- nrow(sim_phylogeny$edge)
   bm <- branch_matrix(sim_phylogeny)
-  scaled_costs <- c(
-    c(p$planning_unit_costs()) *
-    c(
-      (-0.01* min(sim_phylogeny$edge.length)) /
-      sum(p$planning_unit_costs(), na.rm = TRUE)
-    )
-  )
+  # run tests
   expect_equal(o$modelsense(), "max")
   expect_equal(
     o$obj(),
-    c(scaled_costs, rep(0, n_f), sim_phylogeny$edge.length)
+    c(rep(0, n_pu * n_z), rep(0, n_f), sim_phylogeny$edge.length)
   )
   expect_equal(
     o$sense(),
@@ -370,6 +443,7 @@ test_that("compile (compressed formulation, multiple zones, scalar budget)", {
 
 test_that("solve (compressed formulation, multiple zones, scalar budget)", {
   skip_on_cran()
+  skip_if_not_installed("ape")
   skip_if_no_fast_solvers_installed()
   # create data
   budget <- 20
@@ -425,6 +499,7 @@ test_that("solve (compressed formulation, multiple zones, scalar budget)", {
 })
 
 test_that("compile (compressed formulation, multiple zones, vector budget)", {
+  skip_if_not_installed("ape")
   # import data
   sim_zones_pu_raster <- get_sim_zones_pu_raster()
   sim_zones_features <- get_sim_zones_features()
@@ -456,18 +531,11 @@ test_that("compile (compressed formulation, multiple zones, vector budget)", {
   n_z <- p$number_of_zones()
   n_br <- nrow(sim_phylogeny$edge)
   bm <- branch_matrix(sim_phylogeny)
-  scaled_costs <- c(
-    c(p$planning_unit_costs()) *
-    c(
-      c(-0.01 * min(sim_phylogeny$edge.length)) /
-      sum(p$planning_unit_costs(), na.rm = TRUE)
-    )
-  )
   # tests
   expect_equal(o$modelsense(), "max")
   expect_equal(
     o$obj(),
-    c(scaled_costs, rep(0, n_f), sim_phylogeny$edge.length)
+    c(rep(0, n_pu * n_z), rep(0, n_f), sim_phylogeny$edge.length)
   )
   expect_equal(
     o$sense(),
@@ -525,6 +593,7 @@ test_that("compile (compressed formulation, multiple zones, vector budget)", {
 
 test_that("solve (compressed formulation, multiple zones, vector budget)", {
   skip_on_cran()
+  skip_if_not_installed("ape")
   skip_if_no_fast_solvers_installed()
   # create data
   budget <- c(5, 15)
@@ -578,6 +647,7 @@ test_that("solve (compressed formulation, multiple zones, vector budget)", {
 })
 
 test_that("compile (expanded formulation, multiple zones, scalar budget)", {
+  skip_if_not_installed("ape")
   # create problem
   sim_zones_pu_raster <- get_sim_zones_pu_raster()
   sim_zones_features <- get_sim_zones_features()
@@ -610,19 +680,12 @@ test_that("compile (expanded formulation, multiple zones, scalar budget)", {
   n_z <- p$number_of_zones()
   n_br <- nrow(sim_phylogeny$edge)
   bm <- branch_matrix(sim_phylogeny)
-  scaled_costs <- c(
-    c(p$planning_unit_costs()) *
-    c(
-      (-0.01* min(sim_phylogeny$edge.length)) /
-      sum(p$planning_unit_costs(), na.rm = TRUE)
-    )
-  )
   # tests
   expect_equal(o$modelsense(), "max")
   expect_equal(
     o$obj(),
     c(
-      scaled_costs, rep(0, n_pu * n_z * n_f), rep(0, n_t),
+      rep(0, n_pu * n_z), rep(0, n_pu * n_z * n_f), rep(0, n_t),
       sim_phylogeny$edge.length
     )
   )
@@ -708,6 +771,7 @@ test_that("compile (expanded formulation, multiple zones, scalar budget)", {
 
 test_that("solve (expanded formulation, multiple zones, scalar budget)", {
   skip_on_cran()
+  skip_if_not_installed("ape")
   skip_if_no_fast_solvers_installed()
   # create data
   budget <- 20
@@ -762,6 +826,7 @@ test_that("solve (expanded formulation, multiple zones, scalar budget)", {
 })
 
 test_that("compile (expanded formulation, multiple zones, vector budget)", {
+  skip_if_not_installed("ape")
   # import data
   sim_zones_pu_raster <- get_sim_zones_pu_raster()
   sim_zones_features <- get_sim_zones_features()
@@ -800,18 +865,12 @@ test_that("compile (expanded formulation, multiple zones, vector budget)", {
   n_z <- p$number_of_zones()
   n_br <- nrow(sim_phylogeny$edge)
   bm <- branch_matrix(sim_phylogeny)
-  scaled_costs <- c(
-    c(p$planning_unit_costs()) *
-    c(
-      (-0.01 * min(sim_phylogeny$edge.length)) /
-      sum(p$planning_unit_costs(), na.rm = TRUE)
-    )
-  )
+  # run tests
   expect_equal(o$modelsense(), "max")
   expect_equal(
     o$obj(),
     c(
-      scaled_costs, rep(0, n_pu * n_z * n_f), rep(0, n_t),
+      rep(0, n_pu * n_z), rep(0, n_pu * n_z * n_f), rep(0, n_t),
       sim_phylogeny$edge.length
     )
   )
@@ -902,6 +961,7 @@ test_that("compile (expanded formulation, multiple zones, vector budget)", {
 
 test_that("solve (expanded formulation, multiple zones, vector budget)", {
   skip_on_cran()
+  skip_if_not_installed("ape")
   skip_if_no_fast_solvers_installed()
   # create data
   budget <- c(5, 15)
@@ -956,6 +1016,7 @@ test_that("solve (expanded formulation, multiple zones, vector budget)", {
 })
 
 test_that("invalid inputs (multiple zones)", {
+  skip_if_not_installed("ape")
   # import data
   sim_zones_pu_raster <- get_sim_zones_pu_raster()
   sim_zones_features <- get_sim_zones_features()

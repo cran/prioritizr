@@ -34,8 +34,7 @@ NULL
 #'
 #' @family methods
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # set seed for reproducibility
 #' set.seed(500)
 #'
@@ -80,7 +79,7 @@ NULL
 #'
 #' # plot solution
 #' plot(s2, main = "solution based on varying targets", axes = FALSE)
-#' }
+#'
 #' @export
 spec_absolute_targets <- function(targets, ...) {
   assert_valid_method_arg(targets)
@@ -126,8 +125,7 @@ calc_absolute_targets <- function(x, features, targets,
   # if features have user-defined area units, then throw warning indicating
   # that these targets do not consider the spatial units
   verify(
-    inherits(x$data$cost, c("SpatRaster", "Raster")) ||
-      all(is.na(x$feature_units())),
+    inherits(x$data$cost, "SpatRaster") || all(is.na(x$feature_units())),
     msg = c(
       "!" = "{.arg x} has spatial units defined for the features.",
       "i" = paste(

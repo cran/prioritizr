@@ -46,8 +46,7 @@ NULL
 #'
 #' @encoding UTF-8
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # load data
 #' sim_pu_raster <- get_sim_pu_raster()
 #' sim_features <- get_sim_features()
@@ -65,7 +64,7 @@ NULL
 #'
 #' # plot solution
 #' plot(s, main = "solution", axes = FALSE)
-#' }
+#'
 #' @name add_lsymphony_solver
 NULL
 
@@ -81,7 +80,7 @@ add_lpsymphony_solver <- function(x, gap = 0.1,
   assert_required(first_feasible)
   assert_required(verbose)
   assert(
-    is_conservation_problem(x),
+    is_generic_conservation_problem(x),
     assertthat::is.number(gap),
     all_finite(gap),
     gap >= 0,
@@ -163,13 +162,16 @@ add_lpsymphony_solver <- function(x, gap = 0.1,
             x <- do.call(lpsymphony::lpsymphony_solve_LP, append(model, p))
           })
           # manually return NULL to indicate error if no solution
-          #nocov start
-          if (is.null(x$solution) ||
-              names(x$status) %in% c("TM_NO_SOLUTION", "PREP_NO_SOLUTION"))
+          # nocov start
+          if (
+            is.null(x$solution) ||
+            names(x$status) %in% c("TM_NO_SOLUTION", "PREP_NO_SOLUTION")
+          ) {
             return(NULL)
-          #nocov end
+          }
+          # nocov end
           # fix floating point issues with binary variables
-          #nocov start
+          # nocov start
           b <- which(model$types == "B")
           if (any(x$solution[b] > 1)) {
             if (max(x$solution[b]) < 1.01) {
@@ -203,13 +205,15 @@ add_lpsymphony_solver <- function(x, gap = 0.1,
               )
             }
           }
-          #nocov end
-          # fix floating point issues with continuous variables
-          cv <- which(model$types == "C")
-          x$solution[cv] <-
-            pmax(x$solution[cv], self$internal$model$bounds$lower$val[cv])
-          x$solution[cv] <-
-            pmin(x$solution[cv], self$internal$model$bounds$upper$val[cv])
+          # nocov end
+          # sanitize solver output
+          if (is.numeric(x$solution)) {
+            x$solution <- sanitize_solver_output(
+              x$solution,
+              lb = model$bounds$lower$val, ub = model$bounds$upper$val,
+              is_integer = model$types %in% c("I", "B")
+            )
+          }
           # return output
           list(
             x = x$solution,

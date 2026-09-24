@@ -48,7 +48,7 @@ test_that("x = matrix (nrow == ncol", {
   )
   expect_match(
     repr(diag(3) * runif(3)),
-    "diagonal matrix \\(non-zero values"
+    "diagonal matrix \\(non-zeros"
   )
 })
 
@@ -109,7 +109,7 @@ test_that("x = crs", {
     "NA (unknown)"
   )
   expect_equal(
-    repr(get_crs(get_sim_pu_polygons())),
+    repr(sf::st_crs(na_crs)),
     "Undefined Cartesian SRS (projected)"
   )
   skip_if_not_installed("prioritizrdata", minimum_version = "0.3.0")
@@ -121,6 +121,7 @@ test_that("x = crs", {
 })
 
 test_that("x = phylo", {
+  skip_if_not_installed("ape")
   sim_phylogeny <- get_sim_phylogeny()
   expect_inherits(repr(sim_phylogeny), "character")
 })

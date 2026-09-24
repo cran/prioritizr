@@ -2,26 +2,14 @@
 % Please edit documentation in R/adjacency_matrix.R
 \name{adjacency_matrix}
 \alias{adjacency_matrix}
-\alias{adjacency_matrix.Raster}
 \alias{adjacency_matrix.SpatRaster}
-\alias{adjacency_matrix.SpatialPolygons}
-\alias{adjacency_matrix.SpatialLines}
-\alias{adjacency_matrix.SpatialPoints}
 \alias{adjacency_matrix.sf}
 \alias{adjacency_matrix.default}
 \title{Adjacency matrix}
 \usage{
 adjacency_matrix(x, ...)
 
-\method{adjacency_matrix}{Raster}(x, directions = 4, ...)
-
 \method{adjacency_matrix}{SpatRaster}(x, directions = 4, ...)
-
-\method{adjacency_matrix}{SpatialPolygons}(x, ...)
-
-\method{adjacency_matrix}{SpatialLines}(x, ...)
-
-\method{adjacency_matrix}{SpatialPoints}(x, ...)
 
 \method{adjacency_matrix}{sf}(x, ...)
 
@@ -32,11 +20,11 @@ adjacency_matrix(x, ...)
 
 \item{...}{not used.}
 
-\item{directions}{\code{integer} If \code{x} is a
+\item{directions}{\code{integer} value. If \code{x} is a
 \code{\link[terra:rast]{terra::rast()}} object, the number of directions
 in which cells should be considered adjacent: 4 (rook's case), 8 (queen's
-case), 16 (knight and one-cell queen moves), or "bishop" to for cells
-with one-cell diagonal moves.}
+case), or 16 (knight and one-cell queen moves).
+Note if \code{x} is a \code{\link[sf:sf]{sf::sf()}} object, then \code{directions} has no effect.}
 }
 \value{
 A \code{\link[Matrix:dsCMatrix-class]{Matrix::dsCMatrix}} sparse symmetric matrix.
@@ -44,7 +32,7 @@ Each row and column represents a planning unit.
 Cells values indicate if different planning units are
 adjacent to each other or not (using ones and zeros).
 To reduce computational burden, cells among the matrix diagonal are
-set to zero. Furthermore, if the argument to \code{x} is a
+set to zero. Furthermore, if \code{x} is a
 \code{\link[terra:rast]{terra::rast()}} object, then cells with \code{NA} values are set to
 zero too.
 }
@@ -54,7 +42,7 @@ each other.
 }
 \details{
 Spatial processing is completed using
-\code{\link[sf:geos_binary_pred]{sf::st_intersects()}} for \code{\link[sf:sf]{sf::sf()}} objects,
+\code{\link[sf:st_intersects]{sf::st_intersects()}} for \code{\link[sf:sf]{sf::sf()}} objects,
 and \code{\link[terra:adjacent]{terra::adjacent()}} for \code{\link[terra:rast]{terra::rast()}} objects.
 Note that spatially overlapping planning units are considered
 adjacent.
@@ -67,7 +55,7 @@ with other spatial association matrix functions.
 }
 
 \examples{
-\dontrun{
+\dontshow{if (asNamespace("prioritizr")$do_run_example()) withAutoprint(\{ # examplesIf}
 # load data
 sim_pu_raster <- get_sim_pu_raster()
 sim_pu_polygons <- get_sim_pu_polygons()
@@ -95,6 +83,5 @@ Matrix::image(am_raster, main = "adjacency matrix")
 ## plot polygons and adjacency matrix
 plot(ply[, 1], main = "polygons")
 Matrix::image(am_ply, main = "adjacency matrix")
-
-}
+\dontshow{\}) # examplesIf}
 }

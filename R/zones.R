@@ -7,11 +7,6 @@ if (!methods::isClass("ZonesCharacter"))
 NULL
 
 #' @export
-if (!methods::isClass("ZonesRaster"))
-  methods::setOldClass("ZonesRaster")
-NULL
-
-#' @export
 if (!methods::isClass("ZonesSpatRaster"))
   methods::setOldClass("ZonesSpatRaster")
 NULL
@@ -27,75 +22,60 @@ NULL
 #' is allocated to a different zone.
 #'
 #' @param ... [terra::rast()] or `character` objects that
-#'   pertain to the biodiversity data. See Details for more information.
+#' pertain to the feature data. See Details for more information.
 #'
-#' @param zone_names `character` names of the management zones. Defaults
-#'   to `NULL` which results in sequential integers.
+#' @param zone_names `character` names of the management zones.
+#' Defaults to `NULL` such that zones are assigned names according
+#' in sequential integers.
 #'
-#' @param feature_names `character` names of the features zones. Defaults
-#'   to `NULL` which results in sequential integers.
+#' @param feature_names `character` names of the features.
+#' Defaults to `NULL` such that features are assigned names according
+#' in sequential integers.
 #'
 #' @details
 #' This function is used to store and organize data for use in a
 #' conservation planning [problem()] that has multiple management
 #' zones.
-#' In all cases, the data for each zone is input as a separate argument.
+#' In particular, the data for each zone should be specified as a separate
+#' argument.
 #' The correct arguments depends on the type of planning unit data
 #' used when building the conservation planning [problem()].
 #'
 #' \describe{
 #'
 #' \item{[problem()] will have [terra::rast()] or [sf::st_sf()] planning units}{
-#'   [terra::rast()] object can be supplied to specify the expected amount of
-#'   each feature within each planning unit under each management zone.
-#'   Data for each zone should be specified as separate
-#'   arguments, and the data for each feature in a given zone are specified
-#'   in separate layers in a [terra::rast()] object.
-#'   Note that all layers for a given zone must have missing (`NA`) values in
-#'   exactly the same cells.}
+#' Here [terra::rast()] objects can be specified to specify the expected amount
+#' of each feature within each planning unit under each management zone.
+#' Data for each zone should be specified as separate
+#' arguments, and the data for each feature in a given zone are specified
+#' in separate layers in a [terra::rast()] object.
+#' Note that all layers for a given zone must have missing (`NA`) values in
+#' exactly the same cells.
+#' }
 #'
 #' \item{[problem()] will have [sf::st_sf()] or `data.frame` planning units}{
-#'   `character` vector containing column names can
-#'   be supplied to specify the expected amount of each feature under each
-#'   zone. Note that these columns must not contain any missing (`NA`) values.}
-#'
-#' \item{[problem()] will have [sf::st_sf()], `data.frame`, or
-#'   `matrix` planning units}{
-#'   `data.frame` object can be supplied to specify the
-#'   expected amount of each feature under each zone.
-#'   Following conventions used in *Marxan*, the
-#'   `data.frame` object should contain the following columns.
-#'   \describe{
-#'     \item{pu}{`integer` planning unit identifier.}
-#'     \item{species}{`integer` feature identifier.}
-#'     \item{amount}{`numeric` amount of the feature in the
-#'     planning unit for a given zone.}
-#'   }
-#'
-#'   Note that data for each zone are specified in a separate argument, and
-#'   the data contained in a single `data.frame` object should correspond to
-#'   a single zone. Also, note that data are not required for all
-#'   combinations of planning units, features, and zones. The expected amount of
-#'   features in planning units under management zones that are
-#'   missing from the table are assumed to be zero.}
+#' Here `character` vectors containing column names can
+#' be used to specify the expected amount of each feature under each
+#' zone. Note that these columns must not contain any missing (`NA`) values.
+#' }
 #'
 #' }
 #'
-#' @return A [`Zones-class`] object containing data for each zone, and
-#' the feature and zone names.
+#' @return
+#' A [`Zones-class`] object containing data for each zone, as well as the
+#' names of the features and zones.
 #'
 #' @seealso
 #' See [problem()] for information on using this function to generate
 #' a prioritization with multiple management zones.
 #'
-#' @aliases Zones-class ZonesCharacter ZonesRaster ZonesSpatRaster Zones
+#' @aliases Zones-class ZonesCharacter ZonesSpatRaster Zones
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # load planning unit data
 #' sim_pu_raster <- get_sim_pu_raster()
 #'
-#  # simulate distributions for three species under two management zones
+#' # simulate distributions for three species under two management zones
 #' zone_1 <- simulate_species(sim_pu_raster, 3)
 #' zone_2 <- simulate_species(sim_pu_raster, 3)
 #'
@@ -137,7 +117,7 @@ NULL
 #'   feature_names = c("spp1", "spp2")
 #' )
 #' print(z)
-#' }
+#'
 #' @export
 zones <- function(..., zone_names = NULL, feature_names = NULL) {
   # parse arguments
@@ -151,7 +131,7 @@ zones <- function(..., zone_names = NULL, feature_names = NULL) {
   names(args) <- NULL
   # check arguments
   assert(
-    all_elements_inherit(args, c("SpatRaster", "Raster", "character")),
+    all_elements_inherit(args, c("SpatRaster", "character")),
     no_duplicates(zone_names),
     assertthat::noNA(zone_names)
   )
@@ -166,25 +146,15 @@ zones <- function(..., zone_names = NULL, feature_names = NULL) {
       "x" = "{.code length(zone_names)}: {.val {length(zone_names)}}."
     )
   )
-  # throw deprecation notice if needed
-  if (inherits(args[[1]], "Raster")) {
-    cli_warning(raster_pkg_deprecation_notice)
-  }
-  # checks for SpatRaster/Raster input
-  if (inherits(args[[1]], c("SpatRaster", "Raster"))) {
-    # set functions for calculating lengths
-    if (inherits(args[[1]], "SpatRaster")) {
-      n_fun <- terra::nlyr
-    } else if (inherits(args[[1]], "Raster")) {
-      n_fun <- raster::nlayers
-    }
-    # set names using defaults if none set
+  # checks for SpatRaster input
+  if (inherits(args[[1]], "SpatRaster")) {
+    # if not layer names set, then set default
     if (is.null(feature_names)) {
-      feature_names <- as.character(seq_len(n_fun(args[[1]])))
+      feature_names <- as.character(seq_len(terra::nlyr(args[[1]])))
     }
     # check feature names
     assert(
-      length(feature_names) == n_fun(args[[1]]),
+      length(feature_names) == terra::nlyr(args[[1]]),
       msg = c(
         paste(
           "The number of layers in each {.code ...} argument must match the",
@@ -192,14 +162,14 @@ zones <- function(..., zone_names = NULL, feature_names = NULL) {
         ),
         "x" = paste(
           "Number of layers in first {.code ...} argument:",
-          "{.val {n_fun(args[[1]])}}."
+          "{.val {terra::nlyr(args[[1]])}}."
         ),
         "x" = "{.code length(feature_names)}: {.val {length(feature_names)}}."
       )
     )
     # data integrity checks
     assert(
-      length(unique(vapply(args, n_fun, numeric(1)))) == 1,
+      length(unique(vapply(args, terra::nlyr, numeric(1)))) == 1,
       msg = "All {.code ...} arguments must have the same number of layers."
     )
     assert(
@@ -207,7 +177,7 @@ zones <- function(..., zone_names = NULL, feature_names = NULL) {
       msg = "All {.code ...} must not contain categorical values."
     )
     assert(
-      all(vapply(args, n_fun, numeric(1)) >= 1),
+      all(vapply(args, terra::nlyr, numeric(1)) >= 1),
       msg = "All {.code ...} arguments must have at least one layer."
     )
     assert(
@@ -219,11 +189,7 @@ zones <- function(..., zone_names = NULL, feature_names = NULL) {
       )
     )
     # set class
-    zone_class <- ifelse(
-      inherits(args[[1]], "SpatRaster"),
-      "ZonesSpatRaster",
-      "ZonesRaster"
-    )
+    zone_class <- "ZonesSpatRaster"
   }
   # checks for character input
   if (inherits(args[[1]], "character")) {

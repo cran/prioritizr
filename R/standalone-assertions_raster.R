@@ -9,24 +9,20 @@
 #'
 #' This function checks if two [terra::rast()] objects are comparable.
 #'
-#' @param x [terra::rast()] or [raster::raster()] object.
+#' @param x [terra::rast()] object.
 #'
-#' @param y [terra::rast()] or [raster::raster()] object.
+#' @param y [terra::rast()] object.
 #'
-#' @param call Caller environment.
-#'
-#' @return A `logical` value indicating if the
-#'   objects have the same
-#'   resolution, extent, dimensionality, and coordinate system.
+#' @return
+#' A `logical` value indicating if the
+#' objects have the same
+#' resolution, extent, dimensionality, and coordinate system.
 #'
 #' @noRd
 is_comparable_raster <- function(x, y) {
-  # wrapper for ZonesRaster and ZonesSpatRaster objects
-  if (inherits(x, c("ZonesRaster", "ZonesSpatRaster"))) x <- x[[1]]
-  if (inherits(y, c("ZonesRaster", "ZonesSpatRaster"))) y <- y[[1]]
-  # wrapper for Raster objects
-  if (inherits(x, "Raster")) x <- terra::rast(x)
-  if (inherits(y, "Raster")) y <- terra::rast(y)
+  # wrapper for ZonesSpatRaster objects
+  if (inherits(x, "ZonesSpatRaster")) x <- x[[1]]
+  if (inherits(y, "ZonesSpatRaster")) y <- y[[1]]
   # assert valid arguments
   assert(
     inherits(x, "SpatRaster"),

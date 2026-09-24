@@ -7,15 +7,16 @@ NULL
 #' minimize the overall shortfall for as many [targets] as possible while
 #' ensuring that the cost of the solution does not exceed a budget.
 #'
-#' @inheritParams add_max_features_objective
+#' @inheritParams add_max_cover_objective
 #'
 #' @details
 #' The minimum shortfall objective aims to
 #' find the set of planning units that minimize the overall
-#' (weighted sum) shortfall for the
-#' representation targets---that is, the fraction of each target that
-#' remains unmet---for as many features as possible while staying within a
-#' fixed budget (inspired by Table 1, equation IV, Arponen *et al.*
+#' (weighted sum) relative shortfall for the
+#' representation targets (i.e., the fraction of each target that
+#' remains unmet) for as many features as possible, whilst ensuring
+#' that the total cost of the solution does not exceed a pre-specified
+#' budget (inspired by Table 1, equation IV, Arponen *et al.*
 #' 2005). Additionally, weights can be used
 #' to favor the representation of certain features over other features (see
 #' [add_feature_weights()].
@@ -46,22 +47,16 @@ NULL
 #' variable bounded between zero and one, and denotes the relative shortfall
 #' for target \eqn{j}{j}.
 #'
-#' @seealso
-#' See [objectives] for an overview of all functions for adding objectives.
-#' Also, see [targets] for an overview of all functions for adding targets, and
-#' [add_feature_weights()] to specify weights for different features.
+#' @inherit add_max_n_targets_met_objective return seealso
 #'
 #' @family objectives
-#'
-#' @inherit add_min_set_objective return
 #'
 #' @references
 #' Arponen A, Heikkinen RK, Thomas CD, and Moilanen A (2005) The value of
 #' biodiversity in reserve selection: representation, species weighting, and
 #' benefit functions. *Conservation Biology*, 19: 2009--2014.
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf asNamespace("prioritizr")$do_run_example()
 #' # load data
 #' sim_pu_raster <- get_sim_pu_raster()
 #' sim_features <- get_sim_features()
@@ -114,7 +109,7 @@ NULL
 #'
 #' # plot solution
 #' plot(category_layer(s3), main = "solution", axes = FALSE)
-#' }
+#'
 #' @name add_min_shortfall_objective
 NULL
 
@@ -124,13 +119,15 @@ add_min_shortfall_objective <- function(x, budget) {
   # assert arguments are valid
   assert_required(x)
   assert_required(budget)
-  assert(
-    is_conservation_problem(x),
-    is.numeric(budget),
-    all_finite(budget),
-    all_positive(budget),
-    is_budget_length(x, budget)
-  )
+  assert(is_conservation_problem(x))
+  if (!is.null(budget)) {
+    assert(
+      is.numeric(budget),
+      all_finite(budget),
+      all_positive(budget),
+      is_budget_length(x, budget)
+    )
+  }
   # add objective to problem
   x$add_objective(
     R6::R6Class(
@@ -142,18 +139,23 @@ add_min_shortfall_objective <- function(x, budget) {
         has_targets = TRUE,
         data = list(budget = budget),
         apply = function(x, y, weights) {
+          # assert valid arguments
           assert(
             inherits(x, "OptimizationProblem"),
             inherits(y, "ConservationProblem"),
             is.numeric(weights),
             .internal = TRUE
           )
+          # if needed, replace budget with NA value
+          b <- self$get_data("budget")
+          if (is.null(b)) b <- NA_real_
+          # apply objective
           invisible(
             rcpp_apply_min_shortfall_objective(
               x$ptr,
               y$feature_targets(),
               y$planning_unit_costs(),
-              self$get_data("budget"),
+              b,
               weights
             )
           )

@@ -8,7 +8,7 @@
 #'
 #' Check if an object only has finite values?
 #'
-#' @param object.
+#' @param x Object.
 #'
 #' @return A `logical` value.
 #'
@@ -66,11 +66,6 @@ all_finite.Matrix <- function(x) {
 #' @export
 all_finite.data.frame <- function(x) {
   all(vapply(x, all_finite, logical(1)))
-}
-
-#' @export
-all_finite.Spatial <- function(x) {
-  all(vapply(x@data, all_finite, logical(1)))
 }
 
 #' @export

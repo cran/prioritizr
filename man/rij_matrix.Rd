@@ -2,41 +2,31 @@
 % Please edit documentation in R/rij_matrix.R
 \name{rij_matrix}
 \alias{rij_matrix}
-\alias{rij_matrix,Raster,Raster-method}
-\alias{rij_matrix,Spatial,Raster-method}
-\alias{rij_matrix,sf,Raster-method}
-\alias{rij_matrix,SpatRaster,SpatRaster-method}
-\alias{rij_matrix,sf,SpatRaster-method}
+\alias{rij_matrix.SpatRaster}
+\alias{rij_matrix.sf}
 \title{Feature by planning unit matrix}
 \usage{
-rij_matrix(x, y, ...)
+rij_matrix(x, y, memory = NA, idx = NULL, ...)
 
-\S4method{rij_matrix}{SpatRaster,SpatRaster}(x, y, memory, idx, ...)
+\method{rij_matrix}{SpatRaster}(x, y, memory = NA, idx = NULL, ...)
 
-\S4method{rij_matrix}{sf,SpatRaster}(x, y, fun, memory, idx, ...)
-
-\S4method{rij_matrix}{Raster,Raster}(x, y, memory, idx, ...)
-
-\S4method{rij_matrix}{sf,Raster}(x, y, fun, memory, idx, ...)
-
-\S4method{rij_matrix}{Spatial,Raster}(x, y, fun, memory, idx, ...)
+\method{rij_matrix}{sf}(x, y, memory = FALSE, idx = NULL, fun = "sum", ...)
 }
 \arguments{
-\item{x}{\code{\link[terra:rast]{terra::rast()}} or \code{\link[sf:sf]{sf::sf()}} object representing planning units.}
+\item{x}{\code{\link[terra:rast]{terra::rast()}} or \code{\link[sf:sf]{sf::sf()}} object with planning unit data.}
 
-\item{y}{\code{\link[terra:rast]{terra::rast()}}  object.}
-
-\item{...}{not used.}
+\item{y}{\code{\link[terra:rast]{terra::rast()}} object with feature data.}
 
 \item{memory}{\code{logical} should calculations be performed using a method
 that prioritizes reduced memory consumption over speed?
 This is useful when processing particularly large raster datasets.
-If \code{TRUE}, then calculations are performed by processing each raster layer
+If \code{memory = TRUE},
+then calculations are performed by processing each raster layer
 in \code{y} in a sequential manner.
-If \code{FALSE}, then calculations are performed by processing all raster layers
-in \code{y} together.
-If \code{NA}, then the memory requirements will be estimated and, if required,
-processing will be performed using the method that reduces memory
+If \code{memory = FALSE}, then calculations are performed by processing all
+raster layers in \code{y} together.
+If \code{memory = NA}, then the memory requirements will be estimated and, if
+required, processing will be performed using the method that reduces memory
 consumption.
 Defaults to \code{NA}.}
 
@@ -44,9 +34,10 @@ Defaults to \code{NA}.}
 indices. Defaults to \code{NULL} such that the indices are computed
 automatically based on \code{x}.}
 
+\item{...}{not used.}
+
 \item{fun}{\code{character} for summarizing values inside each planning unit.
-This parameter is only used when the argument to \code{x} is a
-\code{\link[sf:sf]{sf::sf()}} object.
+This parameter is only used if \code{x} is a \code{\link[sf:sf]{sf::sf()}} object.
 Defaults to \code{"sum"}.}
 }
 \value{
@@ -63,7 +54,7 @@ Generate a matrix showing the amount of each feature in each planning
 unit (also known as an \emph{rij} matrix).
 }
 \details{
-Generally, processing \code{\link[sf:sf]{sf::st_sf()}} data takes much longer to process than
+Generally, processing \code{\link[sf:st_sf]{sf::st_sf()}} data takes much longer to process than
 \code{\link[terra:rast]{terra::rast()}} data.
 As such, it is recommended to use \code{\link[terra:rast]{terra::rast()}} data for planning units
 where possible.
@@ -76,7 +67,7 @@ For example, the following code can be used to set the cache size to 4 GB.
 }\if{html}{\out{</div>}}
 }
 \examples{
-\dontrun{
+\dontshow{if (asNamespace("prioritizr")$do_run_example()) withAutoprint(\{ # examplesIf}
 # load data
 sim_pu_raster <- get_sim_pu_raster()
 sim_pu_polygons <- get_sim_pu_polygons()
@@ -94,5 +85,5 @@ print(rij_polygons)
 # create rij matrix using raster planning units with multiple zones
 rij_zones_raster <- rij_matrix(sim_zones_pu_raster, sim_features)
 print(rij_zones_raster)
-}
+\dontshow{\}) # examplesIf}
 }

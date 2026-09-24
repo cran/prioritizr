@@ -8,7 +8,7 @@
 #'
 #' Check if an object has only proportion values?
 #'
-#' @param object.
+#' @param x Object.
 #'
 #' @return A `logical` value.
 #'
@@ -45,11 +45,6 @@ all_proportion.matrix <- function(x) {
 #' @export
 all_proportion.data.frame <- function(x) {
   all(vapply(x, all_proportion, logical(1)))
-}
-
-#' @export
-all_proportion.Spatial <- function(x) {
-  all(vapply(x@data, all_proportion, logical(1)))
 }
 
 #' @export

@@ -4,7 +4,6 @@
 \alias{category_vector}
 \alias{category_vector.data.frame}
 \alias{category_vector.sf}
-\alias{category_vector.Spatial}
 \alias{category_vector.matrix}
 \title{Category vector}
 \usage{
@@ -13,8 +12,6 @@ category_vector(x)
 \method{category_vector}{data.frame}(x)
 
 \method{category_vector}{sf}(x)
-
-\method{category_vector}{Spatial}(x)
 
 \method{category_vector}{matrix}(x)
 }
@@ -30,7 +27,7 @@ Convert an object containing binary (\code{integer}) columns into a
 highest value.
 }
 \details{
-This function is conceptually similar to \code{\link[base:maxCol]{base::max.col()}}
+This function is conceptually similar to \code{\link[base:max.col]{base::max.col()}}
 except that rows with all values equal to zero value are assigned a
 value of zero.
 }
@@ -46,7 +43,8 @@ y <- category_vector(x)
 
 # print category vector
 print(y)
+
 }
 \seealso{
-The \code{\link[base:maxCol]{base::max.col()}} provides similar functionality.
+The \code{\link[base:max.col]{base::max.col()}} provides similar functionality.
 }

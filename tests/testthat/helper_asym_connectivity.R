@@ -1,9 +1,7 @@
 r_asym_connectivity_given_matrix <- function(solution, zones,
                                              connectivity_matrix) {
-  # convert sf solution to Spatial
-  if (inherits(solution, "sf")) solution <- sf::as_Spatial(solution)
-  # convert Spatial solution to matrix
-  if (inherits(solution, "Spatial")) solution <- as.matrix(solution@data)
+  # convert sf solution to data.frame
+  if (inherits(solution, "sf")) solution <- sf::st_drop_geometry(solution)
   # convert data.frame solution to matrix
   if (inherits(solution, "data.frame")) solution <- as.matrix(solution)
   # coerce solution to matrix if not a matrix
@@ -58,6 +56,42 @@ as_connectivity_array <- function(zones, data) {
       out[, , z1, z2] <- as.matrix(data * zones[z1, z2])
     }
   }
+  # return result
+  out
+}
+
+as_connectivity_dataframe <- function(x, zones, data) {
+  # assert arguments are valid
+  assertthat::assert_that(
+    inherits(x, "ConservationProblem"),
+    is.matrix(zones),
+    nrow(zones) == ncol(zones),
+    inherits(data, c("matrix", "Matrix")),
+    nrow(data) == ncol(data)
+  )
+  # init
+  n_z <- nrow(zones)
+  n_pu  <- nrow(data)
+  d <- matrix_to_triplet_dataframe(data)
+  # generate data.frame
+  out <- list()
+  i <- 1
+  for (z1 in seq_len(n_z)) {
+    for (z2 in seq_len(n_z)) {
+      out[[i]] <- data.frame(
+        zone1 = x$zone_names()[[z1]],
+        zone2 = x$zone_names()[[z2]],
+        id1 = d$i,
+        id2 = d$j,
+        boundary = d$x * zones[z1, z2]
+      )
+      i <- i + 1
+    }
+  }
+  # combine data for different zone combinations
+  out <- do.call(rbind, out)
+  # exclude rows with 0 connectivity
+  out <- out[out$boundary != 0, , drop = FALSE]
   # return result
   out
 }
